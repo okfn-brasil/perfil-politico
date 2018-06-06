@@ -1,0 +1,9 @@
+# api
+django
+restless
+mongoengine
+
+# notebooks
+pymongo
+jupyter
+numpy
