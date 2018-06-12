@@ -20,5 +20,5 @@ from candidates import urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('candidates/', include(urls))
+    path('', include(urls))
 ]

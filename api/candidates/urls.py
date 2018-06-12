@@ -3,5 +3,6 @@ from django.urls import include, path
 from . import views
 
 urlpatterns = [
-    path('person/', include(views.PersonResource.urls())),
+    path('candidate/', include(views.CandidateResource.urls())),
+    path('state/', include(views.StateResource.urls())),
 ]
