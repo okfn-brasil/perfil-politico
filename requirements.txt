@@ -3,6 +3,11 @@ django
 restless
 mongoengine
 
+#api tests
+pytest
+pytest-django
+mongomock
+
 # notebooks
 pymongo
 jupyter
