@@ -1,8 +1,12 @@
+from decouple import config
 from collections import Counter
 
 from pymongo import MongoClient
 
-client = MongoClient()
+
+MONGO_URL = config('MONGO_URL')
+
+client = MongoClient(MONGO_URL)
 
 
 def get_collection():
