@@ -1,4 +1,5 @@
 # api
+decouple
 django
 restless
 mongoengine
