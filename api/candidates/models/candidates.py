@@ -5,6 +5,7 @@ from mongoengine import (
     StringField,
 )
 
+from .companies import Company
 from .deputy import DeputyInfo
 from .elections import Election, ElectionsCount
 from .sessions import Sessions
@@ -12,7 +13,7 @@ from .sessions import Sessions
 
 class Candidates(Document):
     civil_name = StringField(required=True)
-    cpf = StringField(required=True)
+    cpf = StringField(required=True, unique=True)
     voter_id = StringField()
     state = StringField()
     gender = StringField()
@@ -21,3 +22,4 @@ class Candidates(Document):
     deputy_info = EmbeddedDocumentField(DeputyInfo)
     sessions_presence = EmbeddedDocumentField(Sessions)
     elections = EmbeddedDocumentListField(Election)
+    companies = EmbeddedDocumentListField(Company)
