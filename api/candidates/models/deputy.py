@@ -13,6 +13,6 @@ class Term(EmbeddedDocument):
 
 
 class DeputyInfo(EmbeddedDocument):
-    congressperson_id = StringField()
+    congressperson_id = StringField(unique=True)
     congressperson_name = StringField()
     terms = EmbeddedDocumentListField(Term)
