@@ -1,16 +1,41 @@
 # Medido de Poder
 
+## Settings
+
+To run the API, you must copy the `env-template` to a `.env` file and
+add the MongoDB URL.
+
+## Docker install
+
+Starting the application:
+
+```sh
+$ docker-compose up
+```
+
+The API will be available at [`localhost:8000`](http://localhost:8000) and the
+notebooks at [`localhost:8888`](http://localhost:8888).
+
+To run the API tests:
+
+```sh
+$ docker-compose run --rm api sh
+```
+
+## Local install
+
 Project is currently developed in Python `3.6.1`
 
-## Dependencies
+### Dependencies
 
 Add dependencies:
 
 ```
-$ pip install -r requirements
+$ pip install -r api/requirements.txt
+$ pip install -r notebooks/requirements.txt
 ```
 
-## API
+### API
 
 Run the api:
 
@@ -18,12 +43,9 @@ Run the api:
 $ python api/manage.py runserver
 ```
 
-To run the api, you must copy the `env-template` to a `.env` file and 
-add the url for the MongoDB where the data is stored.
-
 Run api tests:
 
 ```
 $ cd api
-$ pytest 
+$ pytest
 ```
