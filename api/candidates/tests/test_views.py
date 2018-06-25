@@ -1,6 +1,7 @@
 import json
 
 import pytest
+from mongoengine.errors import NotUniqueError
 
 from candidates.models import Candidates
 
@@ -14,7 +15,12 @@ def candidate():
         state='SP',
 
     )
-    Candidates.objects.insert(candidate)
+
+    try:
+        Candidates.objects.insert(candidate)
+    except NotUniqueError:
+        pass
+
     return candidate
 
 
