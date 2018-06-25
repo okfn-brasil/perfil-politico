@@ -1,0 +1,4 @@
+python-decouple
+jupyter
+mongoengine
+numpy

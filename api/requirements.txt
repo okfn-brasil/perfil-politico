@@ -1,5 +1,5 @@
 # api
-decouple
+python-decouple
 django
 restless
 mongoengine
@@ -8,8 +8,3 @@ mongoengine
 pytest
 pytest-django
 mongomock
-
-# notebooks
-pymongo
-jupyter
-numpy
