@@ -9,8 +9,9 @@ from mongoengine import (
 class Election(EmbeddedDocument):
     year = IntField()
     party = StringField()
-    elected = BooleanField()
     position = StringField()
+    result = StringField()
+    elected = BooleanField()
 
 
 class ElectionsCount(EmbeddedDocument):
