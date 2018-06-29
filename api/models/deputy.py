@@ -3,6 +3,7 @@ from mongoengine import (
     EmbeddedDocumentListField,
     IntField,
     StringField,
+    URLField,
 )
 
 
@@ -15,4 +16,5 @@ class Term(EmbeddedDocument):
 class DeputyInfo(EmbeddedDocument):
     congressperson_id = StringField(unique=True, sparse=True)
     congressperson_name = StringField()
+    congressperson_bio = URLField()
     terms = EmbeddedDocumentListField(Term)
