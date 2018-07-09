@@ -1,4 +1,5 @@
 from mongoengine import (
+    DateTimeField,
     Document,
     EmbeddedDocumentField,
     EmbeddedDocumentListField,
@@ -20,6 +21,7 @@ class Candidates(Document):
     state = StringField()
     gender = StringField()
     birthday = StringField()
+    birthdate = DateTimeField()
     birthplace = StringField()
     phone_number = StringField()
     email = StringField()
