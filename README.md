@@ -1,4 +1,8 @@
-# Medido de Poder
+# Perfil 
+
+A platform for profiling public figures in Brazilian politics, 
+searching for weird patterns or figures with inconsistent politics paths 
+(changes in parties, unpopular law projects, high expenses on public money). 
 
 ## Settings
 
