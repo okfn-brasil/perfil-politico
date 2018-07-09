@@ -6,8 +6,8 @@ from mongoengine import (
 
 
 class Term(EmbeddedDocument):
-    begin = IntField()
-    end = IntField()
+    begin = IntField(null=True)
+    end = IntField(null=True)
     position = StringField()
     region = StringField()
     party = StringField()
