@@ -2,3 +2,5 @@ MONGO_URL=mongodb://
 SECRET_KEY=a-very-secret-key
 DEBUG=True
 ALLOWED_HOSTS=0.0.0.0,localhost,127.0.0.1
+NEO4J_USER=''
+NEO4J_PASSWORD=''
