@@ -1,4 +1,4 @@
-TERMs = {
+TERMS = {
     55: {
         'begin': 2015,
         'end': 2019,
