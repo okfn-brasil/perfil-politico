@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     # apps
     'company',
     'election',
+    'mandate',
     'party',
     'person',
 
