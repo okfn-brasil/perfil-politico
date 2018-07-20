@@ -1,0 +1,11 @@
+# api
+python-decouple
+django
+restless
+
+#api tests
+pytest
+pytest-django
+
+# dev
+django-extensions
