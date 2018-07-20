@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'mandate',
     'party',
     'person',
+    'utils',
 
     # third-party
 ]
