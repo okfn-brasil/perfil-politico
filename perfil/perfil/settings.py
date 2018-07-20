@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     # apps
     'company',
+    'election',
     'party',
     'person',
 
