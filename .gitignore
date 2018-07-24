@@ -108,3 +108,4 @@ data/
 
 # MongoDB storage for Docker Compose
 mongo/
+perfil/mydb
