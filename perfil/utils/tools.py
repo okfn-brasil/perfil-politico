@@ -18,7 +18,10 @@ def get_birthdate(birthday):
 
     if year < 100:
         year += 1900
-    return date(year, values[1], values[0])
+    try:
+        return date(year, values[1], values[0])
+    except ValueError:
+        return
 
 
 def treat_birthday(date):
