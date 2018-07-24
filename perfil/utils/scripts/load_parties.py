@@ -1,17 +1,15 @@
 import sys
 import os
-import django
-from time import sleep
 
-from django.conf import settings
+import django
+
+import pandas as pd
 
 sys.path.append('/code')
 os.environ['DJANGO_SETTINGS_MODULE'] = 'perfil.settings'
 django.setup()
 
-import pandas as pd
-
-from party.models import Party
+from party.models import Party  # noqa
 
 df = pd.read_csv('data/parties.csv')
 

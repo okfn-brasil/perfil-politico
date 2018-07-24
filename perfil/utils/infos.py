@@ -109,7 +109,7 @@ TERMS_BY_YEAR = {
 }
 
 POSITIONS = {
-    'VEREADOR' : '1',
+    'VEREADOR': '1',
     'VEREADORA': '1',
     'VEREADOR SUPLENTE': '2',
     'VEREADORA SUPLENTE': '2',

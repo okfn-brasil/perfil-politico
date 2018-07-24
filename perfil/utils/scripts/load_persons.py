@@ -1,17 +1,14 @@
 import sys
 import os
 import django
-from time import sleep
 
-from django.conf import settings
+import pandas as pd
 
 sys.path.append('/code')
 os.environ['DJANGO_SETTINGS_MODULE'] = 'perfil.settings'
 django.setup()
 
-import pandas as pd
-
-from person.models import Person
+from person.models import Person  # noqa
 
 df = pd.read_csv('data/cpfs.csv', dtype={'cpf_candidato': str})
 print('Dataset loaded...')

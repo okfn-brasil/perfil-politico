@@ -8,6 +8,7 @@ class ElectionInline(admin.TabularInline):
     model = Election
     exclude = ['legend_name', 'legend_composition']
 
+
 @admin.register(Person)
 class PersonAdmin(admin.ModelAdmin):
     inlines = [ElectionInline]

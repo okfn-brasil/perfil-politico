@@ -2,7 +2,7 @@ from django.db import models
 
 from party.models import Party
 from person.models import Person
-from .choices import ASSETS, ELECTION_RESULT, POSITIONS
+from .choices import ELECTION_RESULT, POSITIONS
 
 
 class Election(models.Model):
