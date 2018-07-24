@@ -3,7 +3,7 @@ import json
 import pytest
 from mongoengine.errors import NotUniqueError
 
-from candidates.models import Candidates
+from models import Candidates
 
 
 @pytest.fixture
