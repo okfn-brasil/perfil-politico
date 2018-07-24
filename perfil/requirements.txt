@@ -2,6 +2,7 @@
 python-decouple
 django
 restless
+psycopg2
 
 #api tests
 pytest
@@ -9,3 +10,6 @@ pytest-django
 
 # dev
 django-extensions
+pandas
+unidecode
+ipdb
