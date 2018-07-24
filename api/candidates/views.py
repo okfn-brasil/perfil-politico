@@ -4,7 +4,7 @@ from restless.dj import DjangoResource
 from restless.preparers import FieldsPreparer
 from restless.serializers import JSONSerializer
 
-from .models import Candidates
+from models.candidates import Candidates
 
 
 class CandidateResource(DjangoResource):
