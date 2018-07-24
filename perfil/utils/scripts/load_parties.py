@@ -3,7 +3,9 @@ import os
 import django
 from time import sleep
 
-sys.path.append('/Users/leportella/src/serenata/new_perfil/perfil/perfil')
+from django.conf import settings
+
+sys.path.append('/code')
 os.environ['DJANGO_SETTINGS_MODULE'] = 'perfil.settings'
 django.setup()
 
