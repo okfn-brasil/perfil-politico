@@ -1,5 +1,5 @@
-jupyter
-matplotlib
-numpy
-pandas
-python-decouple
+jupyter==1.0.0
+matplotlib==2.2.2
+numpy==1.15.0
+pandas==0.23.3
+python-decouple==3.1
