@@ -1,6 +1,6 @@
 from django.db import models
 
-from utils.infos import STATES
+from perfil.utils.infos import STATES
 
 
 class Person(models.Model):

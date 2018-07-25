@@ -1,7 +1,7 @@
 from django.db import models
 
-from party.models import Party
-from person.models import Person
+from perfil.party.models import Party
+from perfil.person.models import Person
 from .choices import ELECTION_RESULT, POSITIONS
 
 

@@ -40,12 +40,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # apps
-    'company',
-    'election',
-    'mandate',
-    'party',
-    'person',
-    'utils',
+    'perfil.company',
+    'perfil.election',
+    'perfil.mandate',
+    'perfil.party',
+    'perfil.person',
+    'perfil.utils',
 
     # third-party
     'django_extensions',

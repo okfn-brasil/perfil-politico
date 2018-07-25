@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from election.models import Election
+from perfil.election.models import Election
 from .models import Person
 
 
