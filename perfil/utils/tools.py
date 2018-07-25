@@ -1,27 +1,41 @@
-from datetime import date
-
-from utils.translation import MONTHS
+from datetime import datetime
 
 
-def get_birthdate(birthday):
+MONTHS = {
+    'JAN': '01',
+    'FEB': '02',
+    'FEV': '02',
+    'MAR': '03',
+    'APR': '04',
+    'ABR': '04',
+    'MAY': '05',
+    'MAI': '05',
+    'JUN': '06',
+    'JUL': '07',
+    'AUG': '08',
+    'AGO': '08',
+    'SEP': '09',
+    'SET': '09',
+    'OCT': '10',
+    'OUT': '10',
+    'NOV': '11',
+    'DEC': '12',
+    'DEZ': '12',
+}
+
+
+def parse_birthdate(birthday):
     if not birthday or not isinstance(birthday, str):
         return
 
-    try:
-        values = [int(d) for d in birthday.split('/')]
-    except ValueError:
-        return
+    patterns = ('%d/%m/%Y', '%d/%m/%y')
+    for pattern in patterns:
+        try:
+            return datetime.strptime(birthday, pattern).date()
+        except ValueError:
+            pass
 
-    if len(values) != 3:
-        return
-    year = values[2]
-
-    if year < 100:
-        year += 1900
-    try:
-        return date(year, values[1], values[0])
-    except ValueError:
-        return
+    return None
 
 
 def treat_birthday(date):
