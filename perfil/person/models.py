@@ -17,3 +17,9 @@ class Person(models.Model):
 
     def __str__(self):
         return self.civil_name
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['cpf']),
+            models.Index(fields=['civil_name', 'birthdate']),
+        ]

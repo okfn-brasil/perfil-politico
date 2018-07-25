@@ -10,6 +10,12 @@ class Politic(models.Model):
     congressperson_bio = models.URLField()
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
 
+    class Meta:
+        indexes = [
+            models.Index(fields=['congressperson_id']),
+            models.Index(fields=['congressperson_name']),
+        ]
+
 
 class Term(models.Model):
     number = models.IntegerField()
@@ -20,6 +26,11 @@ class Term(models.Model):
     party = models.ForeignKey(Party, on_delete=models.CASCADE)
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
 
+    class Meta:
+        indexes = [
+            models.Index(fields=['position']),
+        ]
+
 
 class Activity(models.Model):
     area = models.CharField(max_length=250)
@@ -28,3 +39,8 @@ class Activity(models.Model):
     begin = models.IntegerField()
     end = models.IntegerField()
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['position']),
+        ]
