@@ -1,14 +1,16 @@
 import sys
 import os
+from pathlib import Path
+
 import django
 
 import pandas as pd
 
-sys.path.append('/code')
+sys.path.append(str(Path().parent.parent))
 os.environ['DJANGO_SETTINGS_MODULE'] = 'perfil.settings'
 django.setup()
 
-from person.models import Person  # noqa
+from perfil.person.models import Person  # noqa
 
 df = pd.read_csv('data/cpfs.csv', dtype={'cpf_candidato': str})
 print('Dataset loaded...')

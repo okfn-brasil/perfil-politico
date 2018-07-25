@@ -1,15 +1,16 @@
 import sys
 import os
+from pathlib import Path
 
 import django
 
 import pandas as pd
 
-sys.path.append('/code')
+sys.path.append(str(Path().parent.parent))
 os.environ['DJANGO_SETTINGS_MODULE'] = 'perfil.settings'
 django.setup()
 
-from party.models import Party  # noqa
+from perfil.party.models import Party  # noqa
 
 df = pd.read_csv('data/parties.csv')
 
