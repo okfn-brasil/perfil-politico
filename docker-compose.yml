@@ -1,11 +1,11 @@
 version: '3'
 services:
 
-  api:
+  django:
     build:
       context: perfil
     depends_on:
-      - db 
+      - db
     env_file:
       - .env
     ports:
@@ -24,9 +24,9 @@ services:
       - ./notebooks:/code
 
   db:
-    image: postgres
+    image: postgres:10.4-alpine
     environment:
       - PGDATA=./perfil/db
       - POSTGRES_DB=mydb
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres 
+      - POSTGRES_PASSWORD=postgres
