@@ -1,4 +1,5 @@
-python-decouple
 jupyter
-mongoengine
+matplotlib
 numpy
+pandas
+python-decouple

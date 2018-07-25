@@ -7,7 +7,7 @@ searching for weird patterns or figures with inconsistent politics paths
 ## Settings
 
 To run the API, you must copy the `env-template` to a `.env` file and
-add the MongoDB URL.
+edit it accordingly.
 
 ## Install
 
