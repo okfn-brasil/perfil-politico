@@ -4,7 +4,7 @@ from perfil.party.models import Party
 from perfil.person.models import Person
 
 
-class Politic(models.Model):
+class Politician(models.Model):
     congressperson_id = models.CharField(unique=True, max_length=250)
     congressperson_name = models.CharField(max_length=250)
     congressperson_bio = models.URLField()
