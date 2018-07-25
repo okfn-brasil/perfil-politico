@@ -1,23 +1,21 @@
 version: '3'
 services:
 
-  api:
+  django:
     build:
-      context: api
+      context: .
     depends_on:
-      - mongo
+      - db
     env_file:
       - .env
     ports:
       - "8000:8000"
     volumes:
-      - ./api:/code
+      - ./perfil:/code/perfil
 
   notebooks:
     build:
       context: notebooks
-    depends_on:
-      - mongo
     env_file:
       - .env
     ports:
@@ -25,9 +23,10 @@ services:
     volumes:
       - ./notebooks:/code
 
-  mongo:
-    image: mongo:3.6.5-jessie
-    ports:
-      - "27017:27017"
-    volumes:
-      - ./mongo:/data/db
+  db:
+    image: postgres:10.4-alpine
+    environment:
+      - PGDATA=./perfil/db
+      - POSTGRES_DB=mydb
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
