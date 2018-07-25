@@ -8,3 +8,4 @@ engines:
 exclude_paths:
   - "**/migrations/"
   - "**/tests/*.py"
+  - "notebooks/**/*.py"
