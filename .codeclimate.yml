@@ -1,0 +1,10 @@
+engines:
+  pep8:
+    enabled: true
+
+  fixme:
+    enabled: true
+
+exclude_paths:
+  - "**/migrations/"
+  - "**/tests/*.py"
