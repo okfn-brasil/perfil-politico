@@ -8,7 +8,7 @@ COPY requirements.txt requirements.txt
 RUN apk update && \
     apk --no-cache add libpq && \
     apk add postgresql-libs && \
-    apk add --virtual .build-deps gcc musl-dev postgresql-dev && \
+    apk add --virtual .build-deps g++ gcc musl-dev postgresql-dev && \
     python -m pip --no-cache install -U pip && \
     python -m pip --no-cache install -r requirements.txt && \
     apk --purge del .build-deps && \
