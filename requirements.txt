@@ -3,6 +3,7 @@ python-decouple
 django
 restless
 psycopg2
+rows
 
 #api tests
 pytest
@@ -10,6 +11,5 @@ pytest-django
 
 # dev
 django-extensions
-pandas
 unidecode
 ipdb

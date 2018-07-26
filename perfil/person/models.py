@@ -19,6 +19,7 @@ class Person(models.Model):
         return self.civil_name
 
     class Meta:
+        verbose_name_plural = 'people'
         indexes = [
             models.Index(fields=['cpf']),
             models.Index(fields=['civil_name', 'birthdate']),
