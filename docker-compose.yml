@@ -12,6 +12,7 @@ services:
       - "8000:8000"
     volumes:
       - ./perfil:/code/perfil
+      - ./data:/mnt/data
 
   notebooks:
     build:
