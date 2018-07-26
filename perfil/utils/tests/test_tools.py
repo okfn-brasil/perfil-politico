@@ -2,7 +2,7 @@ from datetime import date
 
 import pytest
 
-from perfil.utils.tools import parse_birthdate
+from perfil.utils.tools import normalize, parse_birthdate, probably_same_entity
 
 
 @pytest.mark.parametrize('input,expected', [
@@ -14,3 +14,16 @@ from perfil.utils.tools import parse_birthdate
 ])
 def test_parse_birthdate(input, expected):
     assert parse_birthdate(input) == expected
+
+
+def test_normalize():
+    assert 'aeiouc' == normalize('àéîõùç')
+
+
+@pytest.mark.parametrize('input,expected', [
+    (('Cuducos', 'cuducos', 'Çuducos', 'Cuduco'), True),
+    (('Rafael da Silva', 'Raphael de Silva'), True),
+    (('Rafael Gomes', 'Raphaello Gomez'), False)
+])
+def test_probably_same_entity(input, expected):
+    assert probably_same_entity(input) == expected

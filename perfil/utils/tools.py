@@ -1,4 +1,8 @@
+import unicodedata
 from datetime import datetime
+from itertools import combinations
+
+from Levenshtein import distance
 
 
 MONTHS = {
@@ -47,3 +51,21 @@ def treat_birthday(date):
     for month in MONTHS.keys():
         date = date.replace(month, MONTHS[month])
     return date
+
+
+def normalize(value):
+    """Normalize accented characters"""
+    return ''.join(
+        char for char in unicodedata.normalize('NFD', value)
+        if unicodedata.category(char) != 'Mn'
+    )
+
+
+def probably_same_entity(values, threshould=3):
+    """Uses Levenshtein to determine, from a list of entity names (as strings),
+    if these names probably refer to the same entity (but differ, for example,
+    due to grammar differences or minor typos)"""
+    normalized = (normalize(value.upper()) for value in values)
+    pairs = combinations(normalized, 2)
+    distances = (distance(*pair) for pair in pairs)
+    return max(distances) <= threshould

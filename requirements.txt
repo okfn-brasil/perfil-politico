@@ -1,8 +1,9 @@
 # api
-python-decouple
 django
-restless
 psycopg2
+python-Levenshtein
+python-decouple
+restless
 rows
 
 #api tests
