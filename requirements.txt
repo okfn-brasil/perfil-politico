@@ -7,8 +7,10 @@ python-Levenshtein==0.12.0
 restless==2.1.1
 rows==0.3.1
 
-#api tests
+# tests
+codecov==2.0.15
 pytest==3.6.3
+pytest-cov==2.5.1
 pytest-django==3.3.2
 
 # dev
