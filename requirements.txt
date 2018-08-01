@@ -1,15 +1,16 @@
 # api
-python-decouple
-django
-restless
-psycopg2
-rows
+Django==2.0.7
+psycopg2==2.7.5
+python-decouple==3.1
+python-levenshtein==0.12.0
+restless==2.1.1
+rows==0.3.1
 
 #api tests
-pytest
-pytest-django
+pytest==3.6.3
+pytest-django==3.3.2
 
 # dev
-django-extensions
-unidecode
-ipdb
+django-extensions==2.1.0
+ipdb==0.11
+Unidecode==1.0.22
