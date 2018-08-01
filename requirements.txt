@@ -3,7 +3,7 @@ dj-database-url==0.5.0
 Django==2.0.7
 psycopg2==2.7.5
 python-decouple==3.1
-python-levenshtein==0.12.0
+python-Levenshtein==0.12.0
 restless==2.1.1
 rows==0.3.1
 

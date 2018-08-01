@@ -22,15 +22,21 @@ class ImportCsvCommand(BaseCommand):
             raise CommandError(f'{self.path} does not exist')
 
         with open(self.path) as fobj:
-            reader = DictReader(fobj, fieldnames=self.headers)
-            next(reader)  # skip header row
 
-            data = (self.model(**line) for line in reader)
-            for bulk in ipartition(data, self.bulk_size):
+            if hasattr(self, 'headers'):
+                reader = DictReader(fobj, fieldnames=self.headers)
+                next(reader)  # skip header row
+            else:
+                reader = DictReader(fobj)
+
+            for bulk in ipartition(self.serialize(reader), self.bulk_size):
                 self.model.objects.bulk_create(bulk)
                 self.stats(len(bulk))
 
             print(self.message)
+
+    def serialize(self, reader):
+        yield from (self.model(**line) for line in reader)
 
     def stats(self, items_added):
         self.count += items_added
