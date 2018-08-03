@@ -1,12 +1,12 @@
 from django.db import models
 
-from perfil.utils.infos import STATES
+from perfil.utils.infos import STATES, GENDER_CHOICES
 
 
 class Person(models.Model):
     civil_name = models.CharField(max_length=250)
     cpf = models.CharField(max_length=14, unique=True)
-    gender = models.CharField(max_length=250, blank=True)
+    gender = models.CharField(max_length=1, blank=True, choices=GENDER_CHOICES)
     voter_id = models.CharField(max_length=250, blank=True)
     birthday = models.CharField(max_length=250, blank=True)
     birthdate = models.DateField(max_length=250, null=True)
