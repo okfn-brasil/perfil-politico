@@ -1,3 +1,4 @@
+from argparse import RawTextHelpFormatter
 from contextlib import contextmanager
 from csv import DictReader
 from pathlib import Path
@@ -12,6 +13,12 @@ class ImportCsvCommand(BaseCommand):
         super(BaseCommand, self).__init__(*args, **kwargs)
         self.count = 0
         self.path = None
+
+    def create_parser(self, *args, **kwargs):
+        """Allow multi-line help text"""
+        parser = super(ImportCsvCommand, self).create_parser(*args, **kwargs)
+        parser.formatter_class = RawTextHelpFormatter
+        return parser
 
     def add_arguments(self, parser):
         parser.add_argument('csv', help='Path to CSV file')
