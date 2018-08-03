@@ -60,7 +60,8 @@ class Command(ImportCsvCommand):
                     party_id=party_id,
                     place=line['descricao_ue'],
                     position=POSITIONS[line['descricao_cargo']],
-                    result=ELECTION_RESULT.get(line['desc_sit_tot_turno'], '0'),
+                    result=ELECTION_RESULT.get(line['desc_sit_tot_turno'],
+                                               '0'),
                     state=line['sigla_uf'],
                     year=line['ano_eleicao'],
                 )
