@@ -2,7 +2,9 @@ from collections import Counter
 
 from perfil.person.models import Person
 from perfil.utils.management.commands import ImportCsvCommand
-from perfil.utils.tools import probably_same_entity
+from perfil.utils.infos import GENDERS
+from perfil.utils.tools import (parse_birthdate, probably_same_entity,
+                                treat_birthday)
 
 
 class Command(ImportCsvCommand):
@@ -16,9 +18,17 @@ class Command(ImportCsvCommand):
         grouped = {}
         for line in reader:
             cpf, name = line['cpf_candidato'], line['nome_candidato']
-            names = grouped.get(cpf, set())
+            grouped_cpf = grouped.get(cpf, {})
+            names = grouped_cpf.get('names', set())
             names.add(name)
-            grouped[cpf] = names
+            grouped[cpf] = {
+                'names': names,
+                'birthday': treat_birthday(line['data_nascimento']),
+                'voter_id': line['num_titulo_eleitoral_candidato'],
+                'gender': line['descricao_sexo'],
+                'birthplace_state': line['sigla_uf_nascimento'],
+                'birthplace_city': line['nome_municipio_nascimento'],
+            }
 
         return grouped
 
@@ -27,7 +37,17 @@ class Command(ImportCsvCommand):
         data = self.group_names_by_cpf(reader)
 
         print('Importing data…')
-        for cpf, names in data.items():
+        for cpf, infos in data.items():
+            names = infos['names']
             if len(names) == 1 or probably_same_entity(names):
                 *_, name = names  # last should be the most recent one
-                yield Person(civil_name=name, cpf=cpf)
+                yield Person(
+                    civil_name=name,
+                    cpf=cpf,
+                    gender=GENDERS[infos['gender']],
+                    voter_id=infos['voter_id'],
+                    birthday=infos['birthday'],
+                    birthdate=parse_birthdate(infos['birthday']),
+                    birthplace_city=infos['birthplace_city'],
+                    birthplace_state=infos['birthplace_state'],
+                )
