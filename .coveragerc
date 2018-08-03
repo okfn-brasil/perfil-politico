@@ -1,0 +1,6 @@
+  [run]
+  source = perfil
+  omit =
+      **/tests/*.py
+      **/migrations/*.py
+      perfil/wsgi.py

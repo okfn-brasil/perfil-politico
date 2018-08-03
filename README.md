@@ -1,3 +1,7 @@
+![Travis CI](https://img.shields.io/travis/okfn-brasil/perfil.svg)
+![Codecov](https://img.shields.io/codecov/c/github/okfn-brasil/perfil.svg)
+![Code Climate](https://img.shields.io/codeclimate/maintainability/okfn-brasil/perfil.svg)
+
 # Perfil
 
 A platform for profiling public figures in Brazilian politics,
