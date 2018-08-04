@@ -5,4 +5,3 @@ from perfil.person.api import PersonResource
 urlpatterns = [
     path('', include(PersonResource.urls())),
 ]
-
