@@ -2,7 +2,7 @@ from django.db import models
 
 from perfil.party.models import Party
 from perfil.person.models import Person
-from .choices import ELECTION_RESULT, POSITIONS
+from .choices import ELECTION_RESULT, POSITIONS, TYPE_OF_ASSET
 
 
 class Election(models.Model):
@@ -19,6 +19,12 @@ class Election(models.Model):
     year = models.IntegerField()
 
     def __str__(self):
-        return '{} - {} - {}'.format(self.candidate.civil_name,
-                                     self.year,
-                                     self.position)
+        return f'{self.candidate.civil_name} - {self.year} - {self.position}'
+
+
+class Asset(models.Model):
+    election = models.ForeignKey(Election, on_delete=models.CASCADE,
+                                 related_name='assets')
+    description = models.CharField(max_length=250, blank=True)
+    type = models.CharField(max_length=2, choices=TYPE_OF_ASSET)
+    value = models.FloatField()
