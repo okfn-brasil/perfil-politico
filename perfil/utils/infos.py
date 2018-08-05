@@ -130,6 +130,15 @@ ELECTION_RESULT = {
     'CASSADO COM RECURSO': '6',
 }
 
+
+GENDER_CHOICES = (
+    ('0', 'NÃO INFORMADO'),
+    ('1', 'FEMININO'),
+    ('2', 'MASCULINO'),
+    ('3', 'OUTRO'),
+)
+
+
 GENDERS = {
     'FEMININO': '1',
     'FEM': '1',
@@ -138,4 +147,5 @@ GENDERS = {
     'M': '2',
     'MASC': '2',
     'OUTRO': '3',
+    'NÃO INFORMADO': 0,
 }
