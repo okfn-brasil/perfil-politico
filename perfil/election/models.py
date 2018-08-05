@@ -6,7 +6,8 @@ from .choices import ELECTION_RESULT, POSITIONS
 
 
 class Election(models.Model):
-    candidate = models.ForeignKey(Person, on_delete=models.CASCADE)
+    candidate = models.ForeignKey(Person, on_delete=models.CASCADE,
+                                  related_name='elections')
     candidate_sequential = models.CharField(max_length=50)
     legend_composition = models.CharField(max_length=250)
     legend_name = models.CharField(max_length=250)
