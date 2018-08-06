@@ -58,23 +58,23 @@ class Command(ImportCsvCommand):
     )
 
     def serialize(self, reader):
-        for line in reader:
-            for key, value in line.items():
+        for row in reader:
+            for key, value in row.items():
                 if value == '\\N':  # MySQL default for NULL values as string
-                    line[key] = None
+                    row[key] = None
 
-            election_id = self.cache.get(election_keys(line))
+            election_id = self.cache.get(election_keys(row))
             if not election_id:
                 yield None
                 continue
 
             yield Donation(
                 election_id=election_id,
-                donator=line['doador'],
-                donator_id=parse_document(line['cpf_doador']),
-                original_donator=line['doador_original'],
-                original_donator_id=parse_document(line['cpf_doador_original']),
-                date=parse_date(line['data']),
-                value=parse_decimal(line['valor']),
-                description=line['recurso']
+                donator=row['doador'],
+                donator_id=parse_document(row['cpf_doador']),
+                original_donator=row['doador_original'],
+                original_donator_id=parse_document(row['cpf_doador_original']),
+                date=parse_date(row['data']),
+                value=parse_decimal(row['valor']),
+                description=row['recurso']
             )
