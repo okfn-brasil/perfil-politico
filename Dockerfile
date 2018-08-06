@@ -14,4 +14,7 @@ RUN apk update && \
     apk --purge del .build-deps && \
     rm -rfv /var/cache/apk/*
 
+COPY .coveragerc .coveragerc
+COPY perfil/ perfil/
+
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

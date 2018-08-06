@@ -1,0 +1,21 @@
+language: python
+python: 3.7
+dist: xenial
+sudo: true
+
+services:
+  - docker
+  - postgresql
+
+env:
+  - DATABASE_URL=postgres://postgres@localhost/perfil
+
+before_install:
+  - cp env-template .env
+  - pip install -r requirements.txt
+
+script:
+  - pytest --cov
+
+after_success:
+  - codecov

@@ -2,11 +2,12 @@ from django.db import models
 
 from perfil.party.models import Party
 from perfil.person.models import Person
-from .choices import ELECTION_RESULT, POSITIONS
+from .choices import ELECTION_RESULT, POSITIONS, TYPE_OF_ASSET
 
 
 class Election(models.Model):
-    candidate = models.ForeignKey(Person, on_delete=models.CASCADE)
+    candidate = models.ForeignKey(Person, on_delete=models.CASCADE,
+                                  related_name='elections')
     candidate_sequential = models.CharField(max_length=50)
     legend_composition = models.CharField(max_length=250)
     legend_name = models.CharField(max_length=250)
@@ -36,3 +37,11 @@ class Donation(models.Model):
             models.Index(fields=['donator_id']),
             models.Index(fields=['value'])
         ]
+
+
+class Asset(models.Model):
+    election = models.ForeignKey(Election, on_delete=models.CASCADE,
+                                 related_name='assets')
+    description = models.CharField(max_length=250, blank=True)
+    type = models.CharField(max_length=2, choices=TYPE_OF_ASSET)
+    value = models.FloatField()
