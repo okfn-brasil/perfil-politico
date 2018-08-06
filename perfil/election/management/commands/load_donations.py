@@ -1,14 +1,9 @@
 from textwrap import dedent
 
+from perfil.election.management.commands import election_keys
 from perfil.election.models import Donation, Election
 from perfil.utils.management.commands import ImportCsvCommand
 from perfil.utils.tools import parse_date, parse_decimal, parse_document
-
-
-def election_keys(election):
-    if isinstance(election, Election):
-        return election.year, election.state, election.candidate_sequential
-    return election['ano'], election['uf'], election['numero']
 
 
 class Command(ImportCsvCommand):
