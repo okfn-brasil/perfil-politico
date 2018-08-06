@@ -42,11 +42,14 @@ $ docker-compose run django ./manage.py createsuperuser
 ## Filling up the database
 
 The database can be populated by django commands such as `load_people`, 
-`load_parties`, `load_elections`, etc. You must pass a csv to the command such 
+`load_parties`, `load_elections`, etc. 
+It is important to notice that the `data/` folder of the project will be stored 
+inside the container on the `/mnt/data`.
+You must pass a csv to the command such 
 as:
 
 ```sh
-$ docker-compose run django ./manage.py load_people candidates.csv
+$ docker-compose run django ./manage.py load_people /mnt/data/candidates.csv
 ```
 
 Each command uses a CSV from a public and available source. Use `--help` for 
