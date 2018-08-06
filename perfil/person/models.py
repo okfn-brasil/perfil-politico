@@ -24,3 +24,8 @@ class Person(models.Model):
             models.Index(fields=['cpf']),
             models.Index(fields=['civil_name', 'birthdate']),
         ]
+
+    @property
+    def election_parties(self):
+        parties = [x[0] for x in self.elections.values_list('party__initials')]
+        return list(set(parties))
