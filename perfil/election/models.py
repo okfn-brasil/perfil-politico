@@ -25,9 +25,9 @@ class Election(models.Model):
 class Donation(models.Model):
     election = models.ForeignKey(Election, on_delete=models.CASCADE)
     donator = models.CharField(max_length=250)
-    donator_id = models.CharField(max_length=14, null=True)
-    original_donator = models.CharField(max_length=250, null=True)
-    original_donator_id = models.CharField(max_length=14, null=True)
+    donator_id = models.CharField(max_length=14, default='', blank=True)
+    original_donator = models.CharField(max_length=250, default='', blank=True)
+    original_donator_id = models.CharField(max_length=14, default='', blank=True)
     date = models.DateField(null=True)
     value = models.DecimalField(max_digits=15, decimal_places=2, null=True)
     description = models.CharField(max_length=250, null=True)
