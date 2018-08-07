@@ -1,6 +1,6 @@
-![Travis CI](https://img.shields.io/travis/okfn-brasil/perfil.svg)
-![Codecov](https://img.shields.io/codecov/c/github/okfn-brasil/perfil.svg)
-![Code Climate](https://img.shields.io/codeclimate/maintainability/okfn-brasil/perfil.svg)
+[![Travis CI](https://img.shields.io/travis/okfn-brasil/perfil.svg)](https://travis-ci.org/okfn-brasil/perfil)
+[![Codecov](https://img.shields.io/codecov/c/github/okfn-brasil/perfil.svg)](https://codecov.io/gh/okfn-brasil/perfil)
+[![Code Climate](https://img.shields.io/codeclimate/maintainability/okfn-brasil/perfil.svg)](https://codeclimate.com/github/okfn-brasil/perfil)
 
 # Perfil
 
