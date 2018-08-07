@@ -10,7 +10,7 @@ rows==0.3.1
 
 # tests
 codecov==2.0.15
-pytest==3.6.3
+pytest==3.7.1
 pytest-cov==2.5.1
 pytest-django==3.3.2
 
