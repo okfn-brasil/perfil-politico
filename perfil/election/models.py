@@ -27,7 +27,11 @@ class Donation(models.Model):
     donator = models.CharField(max_length=250)
     donator_id = models.CharField(max_length=14, default='', blank=True)
     original_donator = models.CharField(max_length=250, default='', blank=True)
-    original_donator_id = models.CharField(max_length=14, default='', blank=True)
+    original_donator_id = models.CharField(
+        max_length=14,
+        default='',
+        blank=True
+    )
     date = models.DateField(null=True)
     value = models.DecimalField(max_digits=15, decimal_places=2, null=True)
     description = models.CharField(max_length=250, null=True)
