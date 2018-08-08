@@ -22,6 +22,27 @@ class Election(models.Model):
         return f'{self.candidate.civil_name} - {self.year} - {self.position}'
 
 
+class Donation(models.Model):
+    election = models.ForeignKey(Election, on_delete=models.CASCADE)
+    donator = models.CharField(max_length=250)
+    donator_id = models.CharField(max_length=14, default='', blank=True)
+    original_donator = models.CharField(max_length=250, default='', blank=True)
+    original_donator_id = models.CharField(
+        max_length=14,
+        default='',
+        blank=True
+    )
+    date = models.DateField(null=True)
+    value = models.DecimalField(max_digits=15, decimal_places=2, null=True)
+    description = models.CharField(max_length=250, null=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['donator_id']),
+            models.Index(fields=['value'])
+        ]
+
+
 class Asset(models.Model):
     election = models.ForeignKey(Election, on_delete=models.CASCADE,
                                  related_name='assets')
