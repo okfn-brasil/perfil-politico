@@ -42,8 +42,9 @@ class CsvSlicer(ContextDecorator):
             reader = csv.reader(input)
             headers = self.headers or next(reader)
 
-            print('\nSlicing CSV into smaller files…')
-            with tqdm(total=self.total_slices) as progress_bar:
+            total = self.total_slices
+            desc = 'Slicing CSV into smaller files'
+            with tqdm(total=total, desc=desc, unit='slices') as progress_bar:
                 slices = ipartition(reader, self.bulk_size)
                 for count, lines in enumerate(slices):
                     output_path = Path(self.tmp.name) / f'{count}.csv'
@@ -91,32 +92,57 @@ class ImportCsvCommand(BaseCommand):
 
             # Pre-cache related models
             for model, get_key in getattr(self, 'to_cache', tuple()):
-                print(f'Caching {model.__name__.lower()} data…')
-                with tqdm(total=model.objects.count()) as progress_bar:
+                desc = f'Caching {model.__name__.lower()} data'
+                total = model.objects.count()
+                unit = model.verbose_name_plural
+                with tqdm(total=total, desc=desc, unit=unit) as progress_bar:
                     for obj in model.objects.iterator():
                         cache.set(get_key(obj), obj.id)
                         progress_bar.update(1)
 
-            # Import data
+            # import
+            slice = getattr(self, 'slice_csv', True)
+            method = self.slice_and_import_csv if slice else self.import_csv
+            method()
+
+            if self.import_errors:
+                print(f'{self.import_errors:,} lines could not be imported')
+
+    def import_bulk(self, bulk, progress_bar):
+        """Generic import method used in `import_csv` and in
+        `slice_and_import_csv` methods."""
+        objects = tuple(obj for obj in bulk if isinstance(obj, self.model))
+        self.model.objects.bulk_create(objects)
+        progress_bar.update(len(bulk))
+
+        diff = len(bulk) - len(objects)
+        if diff:
+            self.import_errors += diff
+
+    def import_csv(self):
+        headers = getattr(self, 'headers', None)
+        with open(self.path) as fobj:
+            total_lines = sum(1 for line in fobj.readlines())
+            fobj.seek(0)
+
+            reader = csv.DictReader(fobj, fieldnames=headers)
+            desc = f'Importing {self.model.__name__.lower()} data'
+            with tqdm(total=total_lines, desc=desc, unit='lines') as progress:
+                objects = self.serialize(reader, total_lines, progress)
+                for bulk in ipartition(objects, self.bulk_size):
+                    self.import_bulk(bulk, progress)
+
+    def slice_and_import_csv(self):
             kwargs = {
                 'bulk_size': self.bulk_size,
                 'headers': getattr(self, 'headers', None)
             }
             with CsvSlicer(self.path, **kwargs) as source:
-                print(f'\nImporting {self.model.__name__.lower()} data…')
-                with tqdm(total=source.total_lines) as progress_bar:
+                desc = f'Importing {self.model.__name__.lower()} data'
+                total = source.total_lines
+                with tqdm(total=total, desc=desc, unit='lines') as progress:
                     for reader in source.readers:
-                        bulk = []
-                        for obj in self.serialize(reader):
-                            if isinstance(obj, self.model):
-                                bulk.append(obj)
-                            else:
-                                self.import_errors += 1
-                            progress_bar.update(1)
-                        self.model.objects.bulk_create(bulk)
-
-            if self.import_errors:
-                print(f'{self.import_errors:,} lines could not be imported')
+                        self.import_bulk(self.serialize(reader), progress)
 
     def serialize(self, reader):
         yield from (self.model(**line) for line in reader)
