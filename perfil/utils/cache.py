@@ -19,7 +19,7 @@ class DiskCache(ContextDecorator):
 
     def _key(self, keys):
         """Given a sequence of keys, returns a single key as a string"""
-        key = os.sep.join(str(k) for k in keys)
+        key = os.sep.join(str(k) or '_' for k in keys)
         return os.path.join(self.uuid, key)
 
     def _path(self, keys):
@@ -42,7 +42,7 @@ class DiskCache(ContextDecorator):
             return cached
 
         path = self._path(keys)
-        if not os.path.exists(path):
+        if not os.path.exists(path) or not os.path.isfile(path):
             return None
 
         with open(path) as fobj:
