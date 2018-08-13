@@ -21,6 +21,9 @@ class Election(models.Model):
     def __str__(self):
         return f'{self.candidate.civil_name} - {self.year} - {self.position}'
 
+    class Meta:
+        verbose_name_plural = 'elections'
+
 
 class Donation(models.Model):
     election = models.ForeignKey(Election, on_delete=models.CASCADE)
@@ -37,6 +40,7 @@ class Donation(models.Model):
     description = models.CharField(max_length=250, null=True)
 
     class Meta:
+        verbose_name_plural = 'donations'
         indexes = [
             models.Index(fields=['donator_id']),
             models.Index(fields=['value'])
@@ -49,3 +53,6 @@ class Asset(models.Model):
     description = models.CharField(max_length=250, blank=True)
     type = models.CharField(max_length=2, choices=TYPE_OF_ASSET)
     value = models.FloatField()
+
+    class Meta:
+        verbose_name_plural = 'assets'
