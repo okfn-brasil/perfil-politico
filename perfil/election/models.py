@@ -37,7 +37,7 @@ class Donation(models.Model):
     )
     date = models.DateField(null=True)
     value = models.DecimalField(max_digits=15, decimal_places=2, null=True)
-    description = models.CharField(max_length=250, null=True)
+    description = models.CharField(max_length=250, default='', blank=True)
 
     class Meta:
         verbose_name_plural = 'donations'
