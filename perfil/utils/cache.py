@@ -11,7 +11,7 @@ class DiskCache(ContextDecorator):
     """Context manager to cache key/values on disk optionally having Django
     cache (usually in memory) as in intermediary for faster resuts."""
 
-    def __init__(self, expires_in_memory=None):
+    def __init__(self, expires_in_memory=600):
         self.uuid = str(uuid4())
         self.cache = cache
         self.tmp = TemporaryDirectory()
