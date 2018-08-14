@@ -6,6 +6,14 @@ from perfil.person.models import Person
 def election_keys(election):
     if isinstance(election, Election):
         return election.year, election.state, election.candidate_sequential
+
+    if 'ano_eleicao' in election:  # assets CSV
+        return (
+            election['ano_eleicao'],
+            election['sigla_uf'],
+            election['sq_candidato']
+        )
+
     return election['ano'], election['uf'], election['numero']
 
 

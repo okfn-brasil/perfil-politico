@@ -63,18 +63,24 @@ class Command(ImportCsvCommand):
                 if value == '\\N':  # MySQL default for NULL values as string
                     row[key] = None
 
-            election_id = self.cache.get(election_keys(row))
-            if not election_id:
-                yield None
-                continue
+            for key in ('cpf_doador', 'cpf_doador_original'):
+                row[key] = parse_document(row[key])
 
-            yield Donation(
-                election_id=election_id,
-                donator=row['doador'],
-                donator_id=parse_document(row['cpf_doador']),
-                original_donator=row['doador_original'],
-                original_donator_id=parse_document(row['cpf_doador_original']),
-                date=parse_date(row['data']),
-                value=parse_decimal(row['valor']),
-                description=row['recurso']
-            )
+            for keys in row.keys():
+                row[key] = row[key] if row[key] else ''
+
+            election_id = self.cache.get(election_keys(row))
+            if election_id and row.get('doador'):
+                data = {key: value for key, value in row.items() if value}
+                yield Donation(
+                    election_id=election_id,
+                    donator=data['doador'],
+                    donator_id=data.get('cpf_doador', ''),
+                    original_donator=data.get('doador_original', ''),
+                    original_donator_id=data.get('cpf_doador_original', ''),
+                    date=parse_date(data.get('data')),
+                    value=parse_decimal(data.get('valor')),
+                    description=data.get('recurso', '')
+                )
+            else:
+                yield None

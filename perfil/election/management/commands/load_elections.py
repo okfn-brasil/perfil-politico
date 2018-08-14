@@ -15,7 +15,7 @@ class Command(ImportCsvCommand):
     """)
 
     model = Election
-    bulk_size = 2 ** 13
+    bulk_size = 2 ** 12
     to_cache = (Person, person_keys), (Party, party_keys)
 
     def serialize(self, reader):
@@ -36,3 +36,5 @@ class Command(ImportCsvCommand):
                     state=line['sigla_uf'],
                     year=line['ano_eleicao'],
                 )
+            else:
+                yield None

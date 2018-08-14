@@ -11,7 +11,7 @@ class DiskCache(ContextDecorator):
     """Context manager to cache key/values on disk optionally having Django
     cache (usually in memory) as in intermediary for faster resuts."""
 
-    def __init__(self, expires_in_memory=None):
+    def __init__(self, expires_in_memory=600):
         self.uuid = str(uuid4())
         self.cache = cache
         self.tmp = TemporaryDirectory()
@@ -19,7 +19,7 @@ class DiskCache(ContextDecorator):
 
     def _key(self, keys):
         """Given a sequence of keys, returns a single key as a string"""
-        key = os.sep.join(str(k) for k in keys)
+        key = os.sep.join(str(k) or '_' for k in keys)
         return os.path.join(self.uuid, key)
 
     def _path(self, keys):
@@ -42,7 +42,7 @@ class DiskCache(ContextDecorator):
             return cached
 
         path = self._path(keys)
-        if not os.path.exists(path):
+        if not os.path.exists(path) or not os.path.isfile(path):
             return None
 
         with open(path) as fobj:

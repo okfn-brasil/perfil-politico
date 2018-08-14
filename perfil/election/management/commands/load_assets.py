@@ -25,3 +25,5 @@ class Command(ImportCsvCommand):
                     type=line['cd_tipo_bem_candidato'],
                     value=line['valor_bem']
                 )
+            else:
+                None

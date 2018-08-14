@@ -11,6 +11,7 @@ class Politician(models.Model):
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
 
     class Meta:
+        verbose_name_plural = 'politicians'
         indexes = [
             models.Index(fields=['congressperson_id']),
             models.Index(fields=['congressperson_name']),
@@ -27,6 +28,7 @@ class Term(models.Model):
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
 
     class Meta:
+        verbose_name_plural = 'terms'
         indexes = [
             models.Index(fields=['position']),
         ]
@@ -41,6 +43,7 @@ class Activity(models.Model):
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
 
     class Meta:
+        verbose_name_plural = 'activities'
         indexes = [
             models.Index(fields=['position']),
         ]

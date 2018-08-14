@@ -24,11 +24,13 @@ services:
       - "8888:8888"
     volumes:
       - ./notebooks:/code
+      - ./data:/mnt/data
 
   db:
     image: postgres:10.4-alpine
+    volumes:
+      - ./perfil/db:/var/lib/postgresql/data
     environment:
-      - PGDATA=./perfil/db
       - POSTGRES_DB=mydb
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres

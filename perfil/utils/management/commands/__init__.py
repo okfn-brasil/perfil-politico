@@ -94,7 +94,7 @@ class ImportCsvCommand(BaseCommand):
             for model, get_key in getattr(self, 'to_cache', tuple()):
                 desc = f'Caching {model.__name__.lower()} data'
                 total = model.objects.count()
-                unit = model.verbose_name_plural
+                unit = model._meta.verbose_name_plural
                 with tqdm(total=total, desc=desc, unit=unit) as progress_bar:
                     for obj in model.objects.iterator():
                         cache.set(get_key(obj), obj.id)
@@ -111,6 +111,7 @@ class ImportCsvCommand(BaseCommand):
     def import_bulk(self, bulk, progress_bar):
         """Generic import method used in `import_csv` and in
         `slice_and_import_csv` methods."""
+        bulk = tuple(bulk)
         objects = tuple(obj for obj in bulk if isinstance(obj, self.model))
         self.model.objects.bulk_create(objects)
         progress_bar.update(len(bulk))
