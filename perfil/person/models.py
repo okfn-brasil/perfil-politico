@@ -31,6 +31,11 @@ class Person(models.Model):
         return list(set(parties))
 
     @property
+    def filiation_parties(self):
+        parties = [x[0] for x in self.filiations.values_list('party__initials')]
+        return list(set(parties))
+
+    @property
     def asset_evolution(self):
         election_assets = dict()
         for election in self.elections.all():

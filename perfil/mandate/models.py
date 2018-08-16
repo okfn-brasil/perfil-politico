@@ -51,4 +51,5 @@ class Activity(models.Model):
 
 class PartyFiliation(models.Model):
     party = models.ForeignKey(Party, on_delete=models.CASCADE)
-    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    person = models.ForeignKey(Person, on_delete=models.CASCADE,
+                               related_name='filiations')
