@@ -11,7 +11,7 @@ class Command(ImportCsvCommand):
 
     to_cache = ((Person, person_keys_birthdate), (Party, party_keys))
     model = PartyFiliation
-    bulk_size = 2 ** 4
+    bulk_size = 2 ** 10
     slice_csv = False
     headers = (
         'name',
