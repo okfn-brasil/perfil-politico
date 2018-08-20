@@ -27,12 +27,14 @@ class Person(models.Model):
 
     @property
     def election_parties(self):
-        parties = [x[0] for x in self.elections.values_list('party__initials')]
+        initials = 'party__initials'
+        parties = [x[0] for x in self.elections.values_list(initials)]
         return list(set(parties))
 
     @property
     def filiation_parties(self):
-        parties = [x[0] for x in self.filiations.values_list('party__initials')]
+        initials = 'party__initials'
+        parties = [x[0] for x in self.filiations.values_list(initials)]
         return list(set(parties))
 
     @property

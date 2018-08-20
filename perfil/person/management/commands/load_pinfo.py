@@ -14,8 +14,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         desc = 'Creating Information table'
-        total = Person.objects.count()
         people = Person.objects.all()
+        total = people.count()
 
         position_congress = ['15', '16', '17', '18', '25', '26', '27', '28']
 
