@@ -27,8 +27,15 @@ class Person(models.Model):
 
     @property
     def election_parties(self):
-        parties = [x[0] for x in self.elections.values_list('party__initials')]
-        return list(set(parties))
+        initials = 'party__initials'
+        parties = (x[0] for x in self.elections.values_list(initials))
+        return tuple(set(parties))
+
+    @property
+    def filiation_parties(self):
+        initials = 'party__initials'
+        parties = (x[0] for x in self.filiations.values_list(initials))
+        return tuple(set(parties))
 
     @property
     def asset_evolution(self):
@@ -37,3 +44,26 @@ class Person(models.Model):
             total = sum([x[0] for x in election.assets.values_list('value')])
             election_assets[election.year] = total
         return election_assets
+
+    @property
+    def biggest_asset_evolution(self):
+        if not self.asset_evolution:
+            return 0
+        max_key = max(self.asset_evolution,
+                      key=lambda k: self.asset_evolution[k])
+        return self.asset_evolution[max_key]
+
+
+class PersonInformation(models.Model):
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    civil_name = models.CharField(max_length=250)
+    num_elections = models.IntegerField()
+    total_elections_won = models.IntegerField()
+    num_elections_won_by_quota = models.IntegerField()
+    biggest_asset_evolutions = models.FloatField()
+    election_parties = models.CharField(max_length=200)
+    election_parties_changed = models.IntegerField()
+    filiation_parties = models.CharField(max_length=200)
+    filiation_parties_changed = models.IntegerField()
+    total_parties_changed = models.IntegerField()
+    elected_as_congressperson = models.BooleanField()

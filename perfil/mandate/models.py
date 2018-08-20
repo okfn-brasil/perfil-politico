@@ -5,7 +5,7 @@ from perfil.person.models import Person
 
 
 class Politician(models.Model):
-    congressperson_id = models.CharField(unique=True, max_length=250)
+    congressperson_id = models.CharField(max_length=250)
     congressperson_name = models.CharField(max_length=250)
     congressperson_bio = models.URLField()
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
@@ -47,3 +47,9 @@ class Activity(models.Model):
         indexes = [
             models.Index(fields=['position']),
         ]
+
+
+class PartyFiliation(models.Model):
+    party = models.ForeignKey(Party, on_delete=models.CASCADE)
+    person = models.ForeignKey(Person, on_delete=models.CASCADE,
+                               related_name='filiations')
