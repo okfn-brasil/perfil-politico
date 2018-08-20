@@ -54,10 +54,14 @@ class Person(models.Model):
 
 class PersonInformation(models.Model):
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
-    num_of_elections = models.IntegerField()
-    num_of_elections_won = models.IntegerField()
-    num_of_elections_won_by_quota = models.IntegerField()
+    civil_name = models.CharField(max_length=250)
+    num_elections = models.IntegerField()
+    total_elections_won = models.IntegerField()
+    num_elections_won_by_quota = models.IntegerField()
     biggest_asset_evolutions = models.FloatField()
-    total_parties_changed = models.IntegerField()
     election_parties = models.CharField(max_length=200)
+    election_parties_changed = models.IntegerField()
     filiation_parties = models.CharField(max_length=200)
+    filiation_parties_changed = models.IntegerField()
+    total_parties_changed = models.IntegerField()
+    elected_as_congressperson = models.BooleanField()
