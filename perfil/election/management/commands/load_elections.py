@@ -18,7 +18,7 @@ class Command(ImportCsvCommand):
     bulk_size = 2 ** 12
     to_cache = (Person, person_keys), (Party, party_keys)
 
-    def serialize(self, reader):
+    def serialize(self, reader, total, progress):
         for line in reader:
             person_id = self.cache.get(person_keys(line))
             party_id = self.cache.get(party_keys(line))

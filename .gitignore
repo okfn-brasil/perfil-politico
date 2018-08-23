@@ -107,4 +107,4 @@ venv.bak/
 data/
 
 # PostgreSQL files
-perfil/mydb
+**/db/**
