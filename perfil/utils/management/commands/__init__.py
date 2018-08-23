@@ -143,7 +143,7 @@ class ImportCsvCommand(BaseCommand):
                 total = source.total_lines
                 with tqdm(total=total, desc=desc, unit='lines') as progress:
                     for reader in source.readers:
-                        self.import_bulk(self.serialize(reader, total, progress))
+                        self.import_bulk(self.serialize(reader, total, progress), progress)
 
     def serialize(self, reader):
         yield from (self.model(**line) for line in reader)

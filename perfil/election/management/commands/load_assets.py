@@ -15,7 +15,7 @@ class Command(ImportCsvCommand):
     bulk_size = 2 ** 13
     to_cache = (Election, election_keys),
 
-    def serialize(self, reader):
+    def serialize(self, reader, total, progress):
         for line in reader:
             election_id = self.cache.get(election_keys(line))
             if election_id:
