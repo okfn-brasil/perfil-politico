@@ -16,6 +16,7 @@ def person():
 @pytest.mark.parametrize('url,qty,expected', [
     ('snow', 2, ['JOHN SNOW TARGARYEN', 'RAMSAY SNOW']),
     ('snow+targaryen', 1, ['JOHN SNOW TARGARYEN']),
+    ('john+targaryen', 1, ['JOHN SNOW TARGARYEN']),
     ('snail', 0, []),
 ])
 def test_person_list_by_last_name(client, person, url, qty, expected):
