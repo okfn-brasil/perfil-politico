@@ -37,7 +37,7 @@ POSITIONS = (
 )
 
 ELECTION_RESULT = (
-    ('0 ', 'NÃO INFORMADO'),
+    ('0', 'NÃO INFORMADO'),
     ('1', 'ELEITO'),
     ('2', 'ELEITO POR QP'),
     ('3', 'SUPLENTE'),
