@@ -14,7 +14,8 @@ class ElectionByPositionResource(DjangoResource):
 
     def list(self):
         '''
-        The request should be like:  /person/?position=deputado+estadual&year=2014
+        The request should be like:
+            /person/?position=deputado+estadual&year=2014
 
         Positions available:
             * vereador

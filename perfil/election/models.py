@@ -31,6 +31,7 @@ class Election(models.Model):
     def result_name(self):
         return self.get_result_display()
 
+
 class Donation(models.Model):
     election = models.ForeignKey(Election, on_delete=models.CASCADE)
     donator = models.CharField(max_length=250)
