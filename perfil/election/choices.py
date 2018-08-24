@@ -1,3 +1,14 @@
+POSITIONS_IDS = {
+    'VEREADOR': ('1', '2', '3', '4', '5'),
+    'PREFEITO': ('6', '7'),
+    'GOVERNADOR': ('11', '12'),
+    'DEPUTADO FEDERAL': ('15', '16', '17', '18'),
+    'DEPUTADO ESTADUAL': ('19', '20', '21', '22'),
+    'DEPUTADO DISTRITAL': ('23', '24'),
+    'SENADOR': ('25', '26', '27', '28'),
+    'PRESIDENTE': ('29', '30'),
+}
+
 POSITIONS = (
     ('1', 'VEREADOR(A)'),
     ('2', 'VEREADOR(A) SUPLENTE'),
