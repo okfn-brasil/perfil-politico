@@ -1,3 +1,7 @@
+from functools import reduce
+
+from django.db.models import Q
+
 from restless.dj import DjangoResource
 from restless.preparers import FieldsPreparer
 
@@ -13,5 +17,8 @@ class PersonResource(DjangoResource):
         '''
         The request should be like:  /person/?name=first+last
         '''
-        name = self.request.GET.get('name', '').replace('+', ' ')
-        return Person.objects.filter(civil_name__contains=name.upper())
+        name = self.request.GET.get('name', '').upper()
+        names = name.split(' ')
+        filters = [Q(civil_name__contains=name) for name in names]
+        query = reduce(lambda x, y: x & y, filters)
+        return Person.objects.filter(query)

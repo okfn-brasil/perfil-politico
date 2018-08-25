@@ -23,6 +23,13 @@ class Election(models.Model):
 
     class Meta:
         verbose_name_plural = 'elections'
+        ordering = ['-year']
+
+    def position_name(self):
+        return self.get_position_display()
+
+    def result_name(self):
+        return self.get_result_display()
 
 
 class Donation(models.Model):
