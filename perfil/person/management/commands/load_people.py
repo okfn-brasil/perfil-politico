@@ -1,4 +1,5 @@
 from collections import Counter
+from unidecode import unidecode
 
 from tqdm import tqdm
 
@@ -47,7 +48,7 @@ class Command(ImportCsvCommand):
             if len(names) == 1 or probably_same_entity(names):
                 *_, name = names  # last should be the most recent one
                 yield Person(
-                    civil_name=name,
+                    civil_name=unidecode(name),
                     cpf=cpf,
                     gender=GENDERS[infos['gender']],
                     voter_id=infos['voter_id'],
