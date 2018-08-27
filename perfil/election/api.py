@@ -1,14 +1,13 @@
-from django.core.paginator import Paginator
-
 from restless.dj import DjangoResource
 from restless.preparers import FieldsPreparer
 
 from perfil.election.choices import POSITIONS_IDS
 from perfil.election.models import Election
 from perfil.election.preparers import ELECTION_PREPARER
+from perfil.utils.apis import ApiResource
 
 
-class ElectionByPositionResource(DjangoResource):
+class ElectionByPositionResource(ApiResource):
 
     preparer = FieldsPreparer(fields=ELECTION_PREPARER)
 
@@ -30,12 +29,11 @@ class ElectionByPositionResource(DjangoResource):
 
         position = self.request.GET.get('position', '')
         positions_ids = POSITIONS_IDS[position.upper()]
-        page = self.request.GET.get('page', 1)
         year = self.request.GET.get('year')
 
         elections = Election.objects.filter(position__in=positions_ids)
         if year:
             elections = elections.filter(year=int(year))
 
-        pagination = Paginator(elections, 10)
-        return pagination.page(page).object_list
+        self.paginate(elections)
+        return self.paginator.page(self.page)
