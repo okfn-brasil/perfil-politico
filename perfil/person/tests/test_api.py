@@ -4,6 +4,7 @@ import pytest
 
 from perfil.person.tests.factories import PersonFactory
 
+
 @pytest.fixture
 def person():
     return [
@@ -24,5 +25,27 @@ def test_person_list_by_last_name(client, person, url, qty, expected):
     content = json.loads(response.content)
     names = [obj['nome'] for obj in content['objects']]
 
-    assert len(content['objects']) == qty
     assert names == expected
+    assert content['per_page'] == 10
+    assert content['count'] == qty
+    assert content['num_page'] == 1
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize('query,page', [
+    ('', 1),
+    ('&page=1', 1),
+    ('&page=8', 8),
+    ('&page=10', 10),
+])
+def test_pagination(client, query, page):
+    for i in range(100):
+        PersonFactory(civil_name='TARGARYEN')
+
+    response = client.get(f'/person/?name=targaryen{query}', follow=True)
+    content = json.loads(response.content)
+
+    assert content['per_page'] == 10
+    assert content['count'] == 100
+    assert content['num_page'] == 10
+    assert content['page'] == page

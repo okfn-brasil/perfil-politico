@@ -40,5 +40,7 @@ def test_filter_election_by_position(client, people, position, year, qty,
                           follow=True)
     content = json.loads(response.content)
     names = [obj['nome'] for obj in content['objects']]
-    assert len(content['objects']) == qty
     assert names == expected
+    assert content['per_page'] == 10
+    assert content['count'] == qty
+    assert content[ 'num_page']  == 1
