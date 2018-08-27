@@ -16,10 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
+from perfil.hotsite.views import hotsite
 from perfil.person import urls as person_urls
 from perfil.election import urls as election_urls
 
 urlpatterns = [
+    path('', hotsite),
     path('admin/', admin.site.urls),
     path('person/', include(person_urls)),
     path('election/', include(election_urls)),
