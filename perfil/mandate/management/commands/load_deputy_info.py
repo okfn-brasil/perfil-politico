@@ -36,6 +36,7 @@ class Command(ImportCsvCommand):
             row['name'] = row['name'].replace('  ', ' ')
             person_id = self.cache.get(person_keys_birthdate(row))
             if person_id:
+                break
                 yield Politician(
                     congressperson_id=row['congressperson_id'],
                     congressperson_name=row['deputy_name'],
