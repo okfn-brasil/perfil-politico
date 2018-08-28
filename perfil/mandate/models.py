@@ -1,3 +1,4 @@
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 from perfil.party.models import Party
@@ -70,3 +71,15 @@ class Tweet(models.Model):
     is_reply = models.BooleanField()
     is_retweet = models.BooleanField()
     twitter_id = models.BigIntegerField()
+
+
+class LawProject(models.Model):
+    date = models.DateField()
+    authors = models.ManyToManyField(Politician)
+    text = models.TextField()
+    url_id = models.IntegerField()
+    area = models.TextField()
+    name = models.CharField(max_length=250)
+    keywords = ArrayField(models.CharField(max_length=250))
+    original_keywords = ArrayField(models.CharField(max_length=250))
+    url = models.URLField(max_length=500)
