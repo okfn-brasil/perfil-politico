@@ -1,6 +1,7 @@
 from unidecode import unidecode
 
 from perfil.election.models import Election
+from perfil.mandate.models import Politician
 from perfil.party.models import Party
 from perfil.person.models import Person
 from perfil.utils.tools import parse_date, treat_birthday
@@ -37,3 +38,9 @@ def party_keys(party):
     if isinstance(party, Party):
         return party.initials,
     return party['sigla_partido'],
+
+
+def politician_keys(politician):
+    if isinstance(politician, Politician):
+        return politician.congressperson_id,
+    return str(politician['congressperson_id']),
