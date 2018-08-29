@@ -1,8 +1,8 @@
 import re
-import unicodedata
 from datetime import datetime
 from decimal import Decimal, InvalidOperation
 from itertools import combinations
+from unidecode import unidecode
 
 from brazilnum.cnpj import validate_cnpj
 from brazilnum.cpf import validate_cpf
@@ -75,19 +75,11 @@ def treat_birthday(date):
     return date
 
 
-def normalize(value):
-    """Normalize accented characters"""
-    return ''.join(
-        char for char in unicodedata.normalize('NFD', value)
-        if unicodedata.category(char) != 'Mn'
-    )
-
-
 def probably_same_entity(values, threshould=3):
     """Uses Levenshtein to determine, from a list of entity names (as strings),
     if these names probably refer to the same entity (but differ, for example,
     due to grammar differences or minor typos)"""
-    normalized = (normalize(value.upper()) for value in values)
+    normalized = (unidecode(value.upper()) for value in values)
     pairs = combinations(normalized, 2)
     distances = (distance(*pair) for pair in pairs)
     return max(distances) <= threshould

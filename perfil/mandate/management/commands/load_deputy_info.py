@@ -1,8 +1,10 @@
-from perfil.utils.management.commands import ImportCsvCommand
+from unidecode import unidecode
+
 
 from perfil.election.management.commands import person_keys_birthdate
 from perfil.mandate.models import Politician
 from perfil.person.models import Person
+from perfil.utils.management.commands import ImportCsvCommand
 
 
 class Command(ImportCsvCommand):
@@ -27,6 +29,7 @@ class Command(ImportCsvCommand):
 
     def serialize(self, reader, total, progress_bar):
         for row in reader:
+            row['name'] = row['name'].replace('  ', ' ')
             person_id = self.cache.get(person_keys_birthdate(row))
             if person_id:
                 yield Politician(
