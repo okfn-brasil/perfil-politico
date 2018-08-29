@@ -1,13 +1,14 @@
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
+from perfil.mandate.choices import POLITIC_AREA
 from perfil.party.models import Party
 from perfil.person.models import Person
 
 
 class Politician(models.Model):
-    # TODO: add information from where the ID is from (deputy/senate)
-    congressperson_id = models.CharField(max_length=250, unique=True)
+    area = models.CharField(max_length=2, choices=POLITIC_AREA, default='1')
+    congressperson_id = models.CharField(max_length=250)
     congressperson_name = models.CharField(max_length=250)
     congressperson_bio = models.URLField()
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
@@ -16,6 +17,7 @@ class Politician(models.Model):
     facebook = models.CharField(max_length=250)
 
     class Meta:
+        unique_together = ('congressperson_id', 'area')
         verbose_name_plural = 'politicians'
         indexes = [
             models.Index(fields=['congressperson_id']),
