@@ -5,6 +5,7 @@ from perfil.person.models import Person
 
 
 class Politician(models.Model):
+    # TODO: add information from where the ID is from (deputy/senate)
     congressperson_id = models.CharField(max_length=250, unique=True)
     congressperson_name = models.CharField(max_length=250)
     congressperson_bio = models.URLField()
