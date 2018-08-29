@@ -36,7 +36,7 @@ def parse_date(date):
     if not date or not isinstance(date, str):
         return
 
-    patterns = ('%d/%m/%Y', '%d/%m/%y')
+    patterns = ('%d/%m/%Y', '%d/%m/%y', '%Y-%m-%d')
     for pattern in patterns:
         try:
             return datetime.strptime(date, pattern).date()
@@ -83,3 +83,8 @@ def probably_same_entity(values, threshould=3):
     pairs = combinations(normalized, 2)
     distances = (distance(*pair) for pair in pairs)
     return max(distances) <= threshould
+
+
+def clean_keywords(keywords):
+    keywords = keywords.upper()
+    return [' '.join(unidecode(t).split()) for t in keywords.split(',')]
