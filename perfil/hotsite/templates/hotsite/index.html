@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -19,7 +20,7 @@
       }
 
       html {
-        background: linear-gradient(rgba(0, 0, 0, .5), rgba(0, 0, 0, .5)), url(assets/bg.gif) no-repeat center center fixed;
+        background: linear-gradient(rgba(0, 0, 0, .5), rgba(0, 0, 0, .5)), url({% static 'bg.gif' %}) no-repeat center center fixed;
         -webkit-background-size: cover;
         -moz-background-size: cover;
         -o-background-size: cover;
@@ -73,14 +74,14 @@
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Medidor de Poder | Operação Serenata de Amor" />
     <meta property="og:description" content="Relações de Poder Transparentes" />
-    <meta property="og:image" content="https://medidor.serenata.ai/assets/open_graph.png" />
+    <meta property="og:image" content="{{ request.build_absolute_uri }}{% static 'open_graph.png' %}" />
   </head>
   <body>
     <div id="fb-root"></div>
     <div class="container has-text-centered">
       <div class="column is-three-fifths is-offset-one-fifth">
         <header>
-          <img src="assets/logo.png" alt="Medidor de Poder">
+          <img src="{% static 'logo.png' %}" alt="Medidor de Poder">
           <strong>Relações de Poder Transparentes</strong>
         </header>
 
@@ -100,7 +101,7 @@
 
         <footer>
           <a href="https://serenata.ai/">
-            <img src="assets/logo_serenata.png" alt="Operação Serenata de Amor" class="column is-4 is-offset-4">
+            <img src="{% static 'logo_serenata.png' %}" alt="Operação Serenata de Amor" class="column is-4 is-offset-4">
           </a>
         </footer>
       </div>
