@@ -1,9 +1,12 @@
+from collections import Counter
+
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 from perfil.mandate.choices import POLITIC_AREA
 from perfil.party.models import Party
 from perfil.person.models import Person
+from perfil.utils.text import prepare_string, INVALID_WORDS
 
 
 class Politician(models.Model):
@@ -23,6 +26,29 @@ class Politician(models.Model):
             models.Index(fields=['congressperson_id']),
             models.Index(fields=['congressperson_name']),
         ]
+
+    def get_bills_keywords(self):
+        keywords =[]
+        for bill in self.bill_set.all():
+            keywords.extend(bill.original_keywords)
+        return keywords
+
+    def count_bills_keywords(self):
+        return Counter(self.get_bills_keywords())
+
+    def get_twitter_words(self):
+        values = self.tweets.values_list('text', flat=True)
+        tweets_by_words = [prepare_string(text).split(' ') for text in values]
+
+        words = []
+        for text in tweets_by_words:
+            for word in text:
+                if word and word not in INVALID_WORDS:
+                    words.append(word)
+        return words
+
+    def count_twitter_keywords(self):
+        return Counter(k for k in self.get_twitter_words())
 
 
 class Term(models.Model):
