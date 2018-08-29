@@ -73,7 +73,7 @@ class Tweet(models.Model):
     twitter_id = models.BigIntegerField()
 
 
-class LawProject(models.Model):
+class Bill(models.Model):
     date = models.DateField()
     authors = models.ManyToManyField(Politician)
     text = models.TextField()
