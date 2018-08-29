@@ -25,6 +25,10 @@ class Command(ImportCsvCommand):
         'link',
         'parties_filiated',
         'term'
+        'congressperson_name',
+        'twitter_profile',
+        'secondary_twitter_profile',
+        'facebook_page',
     )
 
     def serialize(self, reader, total, progress_bar):
@@ -37,6 +41,9 @@ class Command(ImportCsvCommand):
                     congressperson_name=row['deputy_name'],
                     congressperson_bio=row['link'],
                     person_id=person_id,
+                    twitter=row['twitter_profile'],
+                    second_twitter=row['secondary_twitter_profile'],
+                    facebook=row['facebook_page'],
                 )
             else:
                 yield None

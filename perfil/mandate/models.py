@@ -5,10 +5,14 @@ from perfil.person.models import Person
 
 
 class Politician(models.Model):
-    congressperson_id = models.CharField(max_length=250)
+    # TODO: add information from where the ID is from (deputy/senate)
+    congressperson_id = models.CharField(max_length=250, unique=True)
     congressperson_name = models.CharField(max_length=250)
     congressperson_bio = models.URLField()
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    twitter = models.CharField(max_length=250)
+    second_twitter = models.CharField(max_length=250)
+    facebook = models.CharField(max_length=250)
 
     class Meta:
         verbose_name_plural = 'politicians'
@@ -53,3 +57,16 @@ class PartyFiliation(models.Model):
     party = models.ForeignKey(Party, on_delete=models.CASCADE)
     person = models.ForeignKey(Person, on_delete=models.CASCADE,
                                related_name='filiations')
+
+
+class Tweet(models.Model):
+    politician = models.ForeignKey(Politician, on_delete=models.CASCADE,
+                                   related_name='tweets')
+    url = models.CharField(max_length=250)
+    num_retweets = models.PositiveIntegerField()
+    num_replys = models.PositiveIntegerField()
+    num_favorites = models.PositiveIntegerField()
+    text = models.TextField()
+    is_reply = models.BooleanField()
+    is_retweet = models.BooleanField()
+    twitter_id = models.BigIntegerField()
