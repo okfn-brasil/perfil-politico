@@ -3,14 +3,14 @@ from unidecode import unidecode
 
 from tqdm import tqdm
 
-from perfil.mandate.models import Politician, LawProject
+from perfil.mandate.models import Bill, Politician
 from perfil.utils.tools import parse_date, clean_keywords
 from perfil.utils.management.commands import ImportCsvCommand
 
 
 class Command(ImportCsvCommand):
 
-    model = LawProject
+    model = Bill
     bulk_size = 2 ** 10
     slice_csv = False
     headers = (
@@ -44,7 +44,7 @@ class Command(ImportCsvCommand):
                         row['palavras_chave_originais']
                     )
 
-                    project = LawProject(
+                    project = Bill(
                         date=parse_date(row['apresentacao']),
                         text=row['ementa'],
                         url_id=row['id_site'],
