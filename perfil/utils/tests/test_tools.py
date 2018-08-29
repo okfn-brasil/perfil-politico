@@ -4,7 +4,6 @@ from decimal import Decimal
 import pytest
 
 from perfil.utils.tools import (
-    normalize,
     parse_date,
     parse_decimal,
     parse_document,
@@ -45,10 +44,6 @@ def test_parse_document(input, expected):
 ])
 def test_parse_decimal(input, expected):
     assert parse_decimal(input) == expected
-
-
-def test_normalize():
-    assert 'aeiouc' == normalize('àéîõùç')
 
 
 @pytest.mark.parametrize('input,expected', [
