@@ -53,7 +53,8 @@ class Command(ImportCsvCommand):
                         keywords=keywords,
                         original_keywords=original_keywords,
                         url=row['url'],
-                    ).save()
+                    )
+                    project.save()
 
                     authors = row['autoria'].upper().split(',')
 
@@ -63,7 +64,7 @@ class Command(ImportCsvCommand):
                                 congressperson_name=unidecode(author)
                             )
                             project.authors.add(politician)
-                        except:
+                        except Exception as e:
                             pass
 
                     progress.update(1)

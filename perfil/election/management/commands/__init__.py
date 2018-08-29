@@ -44,3 +44,9 @@ def politician_keys(politician):
     if isinstance(politician, Politician):
         return politician.congressperson_id,
     return str(politician['congressperson_id']),
+
+
+def politician_name_keys(politician):
+    if isinstance(politician, Politician):
+        return uniddecode(politician.congressperson_name),
+    return unidecode(politician['congressperson_name']),
