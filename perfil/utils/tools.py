@@ -32,14 +32,19 @@ MONTHS = {
 }
 
 
-def parse_date(date):
-    if not date or not isinstance(date, str):
+def parse_date(value):
+    if not value or not isinstance(value, str):
         return
 
-    patterns = ('%d/%m/%Y', '%d/%m/%y', '%Y-%m-%d')
-    for pattern in patterns:
+    patterns_and_lengths = (
+        ('%d/%m/%Y', 10),
+        ('%d/%m/%y', 8),
+        ('%Y-%m-%d', 10)
+    )
+    for pattern, length in patterns_and_lengths:
+        cleaned = value[:length]
         try:
-            return datetime.strptime(date, pattern).date()
+            return datetime.strptime(cleaned, pattern).date()
         except (ValueError, TypeError):
             pass
 
