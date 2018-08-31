@@ -32,6 +32,13 @@ class CsvSlicer(ContextDecorator):
         self.total_slices = ceil(self.total_lines / self.bulk_size)
 
     @property
+    def model_name(self):
+        try:
+            return self.model._meta.verbose_name
+        except AttributeError:
+            return self.model.__name__.lower()
+
+    @property
     def readers(self):
         for slice in self.slices:
             with open(slice) as fobj:
@@ -92,7 +99,7 @@ class ImportCsvCommand(BaseCommand):
 
             # Pre-cache related models
             for model, get_key in getattr(self, 'to_cache', tuple()):
-                desc = f'Caching {model.__name__.lower()} data'
+                desc = f'Caching {self.model_name} data'
                 total = model.objects.count()
                 unit = model._meta.verbose_name_plural
                 with tqdm(total=total, desc=desc, unit=unit) as progress_bar:
@@ -127,7 +134,7 @@ class ImportCsvCommand(BaseCommand):
             fobj.seek(0)
 
             reader = csv.DictReader(fobj, fieldnames=headers)
-            desc = f'Importing {self.model.__name__.lower()} data'
+            desc = f'Importing {self.model_name} data'
             with tqdm(total=total_lines, desc=desc, unit='lines') as progress:
                 objects = self.serialize(reader, total_lines, progress)
                 for bulk in ipartition(objects, self.bulk_size):
@@ -139,7 +146,7 @@ class ImportCsvCommand(BaseCommand):
                 'headers': getattr(self, 'headers', None)
             }
             with CsvSlicer(self.path, **kwargs) as source:
-                desc = f'Importing {self.model.__name__.lower()} data'
+                desc = f'Importing {self.model_name} data'
                 total = source.total_lines
                 with tqdm(total=total, desc=desc, unit='lines') as progress:
                     for reader in source.readers:
