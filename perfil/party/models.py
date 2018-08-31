@@ -6,7 +6,7 @@ class Party(models.Model):
     name = models.CharField(max_length=250)
 
     def __str__(self):
-        return '{} - {}'.format(self.initials, self.name)
+        return "{} - {}".format(self.initials, self.name)
 
     class Meta:
-        verbose_name_plural = 'parties'
+        verbose_name_plural = "parties"

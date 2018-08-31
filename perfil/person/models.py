@@ -11,30 +11,29 @@ class Person(models.Model):
     birthday = models.CharField(max_length=250, blank=True)
     birthdate = models.DateField(max_length=250, null=True)
     birthplace_city = models.CharField(max_length=250, blank=True)
-    birthplace_state = models.CharField(max_length=2, choices=STATES,
-                                        blank=True)
+    birthplace_state = models.CharField(max_length=2, choices=STATES, blank=True)
     occupation = models.CharField(max_length=250, blank=True)
 
     def __str__(self):
         return self.civil_name
 
     class Meta:
-        verbose_name_plural = 'people'
-        ordering = ['civil_name']
+        verbose_name_plural = "people"
+        ordering = ["civil_name"]
         indexes = [
-            models.Index(fields=['cpf']),
-            models.Index(fields=['civil_name', 'birthdate']),
+            models.Index(fields=["cpf"]),
+            models.Index(fields=["civil_name", "birthdate"]),
         ]
 
     @property
     def election_parties(self):
-        initials = 'party__initials'
+        initials = "party__initials"
         parties = (x[0] for x in self.elections.values_list(initials))
         return tuple(set(parties))
 
     @property
     def filiation_parties(self):
-        initials = 'party__initials'
+        initials = "party__initials"
         parties = (x[0] for x in self.filiations.values_list(initials))
         return tuple(set(parties))
 
@@ -42,7 +41,7 @@ class Person(models.Model):
     def asset_evolution(self):
         election_assets = dict()
         for election in self.elections.all():
-            total = sum([x[0] for x in election.assets.values_list('value')])
+            total = sum([x[0] for x in election.assets.values_list("value")])
             election_assets[election.year] = total
         return election_assets
 
@@ -50,8 +49,7 @@ class Person(models.Model):
     def biggest_asset_evolution(self):
         if not self.asset_evolution:
             return 0
-        max_key = max(self.asset_evolution,
-                      key=lambda k: self.asset_evolution[k])
+        max_key = max(self.asset_evolution, key=lambda k: self.asset_evolution[k])
         return self.asset_evolution[max_key]
 
 

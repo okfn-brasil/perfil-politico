@@ -5,15 +5,13 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('person', '0008_personinformation'),
-    ]
+    dependencies = [("person", "0008_personinformation")]
 
     operations = [
         migrations.AddField(
-            model_name='personinformation',
-            name='num_of_elections_won_by_quota',
+            model_name="personinformation",
+            name="num_of_elections_won_by_quota",
             field=models.IntegerField(default=0),
             preserve_default=False,
-        ),
+        )
     ]

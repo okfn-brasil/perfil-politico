@@ -8,4 +8,4 @@ class PartyFactory(factory.DjangoModelFactory):
     class Meta:
         model = Party
 
-    initials = FuzzyChoice(['AA', 'BB', 'CC', 'DD', 'EE', 'FF', 'GG'])
+    initials = FuzzyChoice(["AA", "BB", "CC", "DD", "EE", "FF", "GG"])

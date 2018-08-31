@@ -8,5 +8,5 @@ class PersonFactory(factory.DjangoModelFactory):
     class Meta:
         model = Person
 
-    civil_name = factory.Faker('name')
+    civil_name = factory.Faker("name")
     cpf = FuzzyInteger(0, 99999999999)

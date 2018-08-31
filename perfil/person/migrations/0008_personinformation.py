@@ -6,22 +6,33 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('person', '0007_merge_20180806_1235'),
-    ]
+    dependencies = [("person", "0007_merge_20180806_1235")]
 
     operations = [
         migrations.CreateModel(
-            name='PersonInformation',
+            name="PersonInformation",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('num_of_elections', models.IntegerField()),
-                ('num_of_elections_won', models.IntegerField()),
-                ('biggest_asset_evolutions', models.FloatField()),
-                ('total_parties_changed', models.IntegerField()),
-                ('election_parties', models.CharField(max_length=200)),
-                ('filiation_parties', models.CharField(max_length=200)),
-                ('person', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='person.Person')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("num_of_elections", models.IntegerField()),
+                ("num_of_elections_won", models.IntegerField()),
+                ("biggest_asset_evolutions", models.FloatField()),
+                ("total_parties_changed", models.IntegerField()),
+                ("election_parties", models.CharField(max_length=200)),
+                ("filiation_parties", models.CharField(max_length=200)),
+                (
+                    "person",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="person.Person"
+                    ),
+                ),
             ],
-        ),
+        )
     ]

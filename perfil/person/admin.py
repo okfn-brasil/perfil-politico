@@ -6,10 +6,10 @@ from .models import Person
 
 class ElectionInline(admin.TabularInline):
     model = Election
-    exclude = ['legend_name', 'legend_composition']
+    exclude = ["legend_name", "legend_composition"]
 
 
 @admin.register(Person)
 class PersonAdmin(admin.ModelAdmin):
     inlines = [ElectionInline]
-    ordering = ('civil_name',)
+    ordering = ("civil_name",)

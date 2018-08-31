@@ -14,11 +14,11 @@ class PersonResource(ApiResource):
     preparer = FieldsPreparer(fields=PERSON_PREPARER)
 
     def list(self):
-        '''
+        """
         The request should be like:  /person/?name=first+last
-        '''
-        name = self.request.GET.get('name', '').upper()
-        names = name.split(' ')
+        """
+        name = self.request.GET.get("name", "").upper()
+        names = name.split(" ")
         filters = [Q(civil_name__contains=name) for name in names]
         query = reduce(lambda x, y: x & y, filters)
 

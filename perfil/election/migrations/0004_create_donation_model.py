@@ -6,31 +6,48 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('election', '0003_asset'),
-    ]
+    dependencies = [("election", "0003_asset")]
 
     operations = [
         migrations.CreateModel(
-            name='Donation',
+            name="Donation",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('donator', models.CharField(max_length=250)),
-                ('donator_id', models.CharField(max_length=14, null=True)),
-                ('original_donator', models.CharField(max_length=250, null=True)),
-                ('original_donator_id', models.CharField(max_length=14, null=True)),
-                ('date', models.DateField(null=True)),
-                ('value', models.DecimalField(decimal_places=2, max_digits=15, null=True)),
-                ('description', models.CharField(max_length=250, null=True)),
-                ('election', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='election.Election')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("donator", models.CharField(max_length=250)),
+                ("donator_id", models.CharField(max_length=14, null=True)),
+                ("original_donator", models.CharField(max_length=250, null=True)),
+                ("original_donator_id", models.CharField(max_length=14, null=True)),
+                ("date", models.DateField(null=True)),
+                (
+                    "value",
+                    models.DecimalField(decimal_places=2, max_digits=15, null=True),
+                ),
+                ("description", models.CharField(max_length=250, null=True)),
+                (
+                    "election",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="election.Election",
+                    ),
+                ),
             ],
         ),
         migrations.AddIndex(
-            model_name='donation',
-            index=models.Index(fields=['donator_id'], name='election_do_donator_e81fbd_idx'),
+            model_name="donation",
+            index=models.Index(
+                fields=["donator_id"], name="election_do_donator_e81fbd_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='donation',
-            index=models.Index(fields=['value'], name='election_do_value_7ed8ab_idx'),
+            model_name="donation",
+            index=models.Index(fields=["value"], name="election_do_value_7ed8ab_idx"),
         ),
     ]

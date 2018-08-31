@@ -19,7 +19,7 @@ class DiskCache(ContextDecorator):
 
     def _key(self, keys):
         """Given a sequence of keys, returns a single key as a string"""
-        key = os.sep.join(str(k) or '_' for k in keys)
+        key = os.sep.join(str(k) or "_" for k in keys)
         return os.path.join(self.uuid, key)
 
     def _path(self, keys):
@@ -31,7 +31,7 @@ class DiskCache(ContextDecorator):
 
     def set(self, keys, value):
         """Given a sequence of keys, creates the file"""
-        with open(self._path(keys), 'w') as fobj:
+        with open(self._path(keys), "w") as fobj:
             fobj.write(json.dumps(value))
 
     def get(self, keys):
@@ -57,5 +57,5 @@ class DiskCache(ContextDecorator):
         return self
 
     def __exit__(self, *args):
-        cache.delete_pattern(f'{self.uuid}*')
+        cache.delete_pattern(f"{self.uuid}*")
         self.tmp.cleanup()

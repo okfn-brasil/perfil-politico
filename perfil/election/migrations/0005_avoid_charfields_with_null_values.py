@@ -5,24 +5,22 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('election', '0004_create_donation_model'),
-    ]
+    dependencies = [("election", "0004_create_donation_model")]
 
     operations = [
         migrations.AlterField(
-            model_name='donation',
-            name='donator_id',
-            field=models.CharField(blank=True, default='', max_length=14),
+            model_name="donation",
+            name="donator_id",
+            field=models.CharField(blank=True, default="", max_length=14),
         ),
         migrations.AlterField(
-            model_name='donation',
-            name='original_donator',
-            field=models.CharField(blank=True, default='', max_length=250),
+            model_name="donation",
+            name="original_donator",
+            field=models.CharField(blank=True, default="", max_length=250),
         ),
         migrations.AlterField(
-            model_name='donation',
-            name='original_donator_id',
-            field=models.CharField(blank=True, default='', max_length=14),
+            model_name="donation",
+            name="original_donator_id",
+            field=models.CharField(blank=True, default="", max_length=14),
         ),
     ]

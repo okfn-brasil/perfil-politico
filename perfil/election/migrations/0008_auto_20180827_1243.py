@@ -5,18 +5,28 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('election', '0007_auto_20180813_2140'),
-    ]
+    dependencies = [("election", "0007_auto_20180813_2140")]
 
     operations = [
         migrations.AlterModelOptions(
-            name='election',
-            options={'ordering': ['-year'], 'verbose_name_plural': 'elections'},
+            name="election",
+            options={"ordering": ["-year"], "verbose_name_plural": "elections"},
         ),
         migrations.AlterField(
-            model_name='election',
-            name='result',
-            field=models.CharField(choices=[('0', 'NÃO INFORMADO'), ('1', 'ELEITO'), ('2', 'ELEITO POR QP'), ('3', 'SUPLENTE'), ('4', 'NÃO ELEITO'), ('5', '2o TURNO'), ('6', 'REJEITADO'), ('7', 'SUBSTITUÍDO')], max_length=1),
+            model_name="election",
+            name="result",
+            field=models.CharField(
+                choices=[
+                    ("0", "NÃO INFORMADO"),
+                    ("1", "ELEITO"),
+                    ("2", "ELEITO POR QP"),
+                    ("3", "SUPLENTE"),
+                    ("4", "NÃO ELEITO"),
+                    ("5", "2o TURNO"),
+                    ("6", "REJEITADO"),
+                    ("7", "SUBSTITUÍDO"),
+                ],
+                max_length=1,
+            ),
         ),
     ]

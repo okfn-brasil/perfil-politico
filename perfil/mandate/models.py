@@ -7,7 +7,7 @@ from perfil.person.models import Person
 
 
 class Politician(models.Model):
-    area = models.CharField(max_length=2, choices=POLITIC_AREA, default='1')
+    area = models.CharField(max_length=2, choices=POLITIC_AREA, default="1")
     congressperson_id = models.CharField(max_length=250)
     congressperson_name = models.CharField(max_length=250)
     congressperson_bio = models.URLField()
@@ -17,11 +17,11 @@ class Politician(models.Model):
     facebook = models.CharField(max_length=250)
 
     class Meta:
-        unique_together = ('congressperson_id', 'area')
-        verbose_name_plural = 'politicians'
+        unique_together = ("congressperson_id", "area")
+        verbose_name_plural = "politicians"
         indexes = [
-            models.Index(fields=['congressperson_id']),
-            models.Index(fields=['congressperson_name']),
+            models.Index(fields=["congressperson_id"]),
+            models.Index(fields=["congressperson_name"]),
         ]
 
 
@@ -35,10 +35,8 @@ class Term(models.Model):
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
 
     class Meta:
-        verbose_name_plural = 'terms'
-        indexes = [
-            models.Index(fields=['position']),
-        ]
+        verbose_name_plural = "terms"
+        indexes = [models.Index(fields=["position"])]
 
 
 class Activity(models.Model):
@@ -50,21 +48,21 @@ class Activity(models.Model):
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
 
     class Meta:
-        verbose_name_plural = 'activities'
-        indexes = [
-            models.Index(fields=['position']),
-        ]
+        verbose_name_plural = "activities"
+        indexes = [models.Index(fields=["position"])]
 
 
 class PartyFiliation(models.Model):
     party = models.ForeignKey(Party, on_delete=models.CASCADE)
-    person = models.ForeignKey(Person, on_delete=models.CASCADE,
-                               related_name='filiations')
+    person = models.ForeignKey(
+        Person, on_delete=models.CASCADE, related_name="filiations"
+    )
 
 
 class Tweet(models.Model):
-    politician = models.ForeignKey(Politician, on_delete=models.CASCADE,
-                                   related_name='tweets')
+    politician = models.ForeignKey(
+        Politician, on_delete=models.CASCADE, related_name="tweets"
+    )
     url = models.CharField(max_length=250)
     num_retweets = models.PositiveIntegerField()
     num_replys = models.PositiveIntegerField()
@@ -91,20 +89,20 @@ class ClaimedIndemnification(models.Model):
     cnpj_cpf = models.CharField(max_length=14)
     supplier = models.CharField(max_length=255)
     politician = models.ForeignKey(Politician, on_delete=models.CASCADE)
-    claim_id = models.CharField(max_length=255, blank=True, default='')
+    claim_id = models.CharField(max_length=255, blank=True, default="")
     month = models.IntegerField()
     year = models.IntegerField()
-    category = models.CharField(max_length=255, blank=True, default='')
-    sub_category = models.CharField(max_length=255, blank=True, default='')
+    category = models.CharField(max_length=255, blank=True, default="")
+    sub_category = models.CharField(max_length=255, blank=True, default="")
     date = models.DateField(null=True)
     value = models.DecimalField(max_digits=8, decimal_places=2)
 
     class Meta:
-        verbose_name = 'claimed indemnification'
-        verbose_name_plural = 'claimed indemnifications'
+        verbose_name = "claimed indemnification"
+        verbose_name_plural = "claimed indemnifications"
         indexes = [
-            models.Index(fields=['cnpj_cpf']),
-            models.Index(fields=['month']),
-            models.Index(fields=['year', 'month']),
-            models.Index(fields=['date']),
+            models.Index(fields=["cnpj_cpf"]),
+            models.Index(fields=["month"]),
+            models.Index(fields=["year", "month"]),
+            models.Index(fields=["date"]),
         ]

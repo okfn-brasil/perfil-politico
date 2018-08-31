@@ -2,7 +2,7 @@ import os
 import django
 from django.conf import settings
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'perfil.settings')
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "perfil.settings")
 
 
 def pytest_configure():
