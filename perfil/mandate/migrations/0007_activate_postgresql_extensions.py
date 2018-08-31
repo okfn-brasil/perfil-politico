@@ -6,11 +6,6 @@ from django.contrib.postgres.operations import TrigramExtension, UnaccentExtensi
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('mandate', '0006_create_claimed_indemnification_model'),
-    ]
+    dependencies = [("mandate", "0006_create_claimed_indemnification_model")]
 
-    operations = [
-        TrigramExtension(),
-        UnaccentExtension()
-    ]
+    operations = [TrigramExtension(), UnaccentExtension()]

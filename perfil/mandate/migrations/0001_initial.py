@@ -9,95 +9,175 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('party', '0003_merge_20180806_1235'),
-        ('person', '0013_auto_20180827_1435'),
+        ("party", "0003_merge_20180806_1235"),
+        ("person", "0013_auto_20180827_1435"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Activity',
+            name="Activity",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('area', models.CharField(max_length=250)),
-                ('title', models.CharField(max_length=250)),
-                ('position', models.CharField(max_length=250)),
-                ('begin', models.IntegerField()),
-                ('end', models.IntegerField()),
-                ('person', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='person.Person')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("area", models.CharField(max_length=250)),
+                ("title", models.CharField(max_length=250)),
+                ("position", models.CharField(max_length=250)),
+                ("begin", models.IntegerField()),
+                ("end", models.IntegerField()),
+                (
+                    "person",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="person.Person"
+                    ),
+                ),
             ],
-            options={
-                'verbose_name_plural': 'activities',
-            },
+            options={"verbose_name_plural": "activities"},
         ),
         migrations.CreateModel(
-            name='PartyFiliation',
+            name="PartyFiliation",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('party', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='party.Party')),
-                ('person', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='filiations', to='person.Person')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "party",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="party.Party"
+                    ),
+                ),
+                (
+                    "person",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="filiations",
+                        to="person.Person",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Politician',
+            name="Politician",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('congressperson_id', models.CharField(max_length=250, unique=True)),
-                ('congressperson_name', models.CharField(max_length=250)),
-                ('congressperson_bio', models.URLField()),
-                ('twitter', models.CharField(max_length=250)),
-                ('second_twitter', models.CharField(max_length=250)),
-                ('facebook', models.CharField(max_length=250)),
-                ('person', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='person.Person')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("congressperson_id", models.CharField(max_length=250, unique=True)),
+                ("congressperson_name", models.CharField(max_length=250)),
+                ("congressperson_bio", models.URLField()),
+                ("twitter", models.CharField(max_length=250)),
+                ("second_twitter", models.CharField(max_length=250)),
+                ("facebook", models.CharField(max_length=250)),
+                (
+                    "person",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="person.Person"
+                    ),
+                ),
             ],
-            options={
-                'verbose_name_plural': 'politicians',
-            },
+            options={"verbose_name_plural": "politicians"},
         ),
         migrations.CreateModel(
-            name='Term',
+            name="Term",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('number', models.IntegerField()),
-                ('begin', models.IntegerField(null=True)),
-                ('end', models.IntegerField(null=True)),
-                ('position', models.CharField(max_length=250)),
-                ('region', models.CharField(max_length=250)),
-                ('party', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='party.Party')),
-                ('person', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='person.Person')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("number", models.IntegerField()),
+                ("begin", models.IntegerField(null=True)),
+                ("end", models.IntegerField(null=True)),
+                ("position", models.CharField(max_length=250)),
+                ("region", models.CharField(max_length=250)),
+                (
+                    "party",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="party.Party"
+                    ),
+                ),
+                (
+                    "person",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="person.Person"
+                    ),
+                ),
             ],
-            options={
-                'verbose_name_plural': 'terms',
-            },
+            options={"verbose_name_plural": "terms"},
         ),
         migrations.CreateModel(
-            name='Tweet',
+            name="Tweet",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('url', models.CharField(max_length=250)),
-                ('num_retweets', models.PositiveIntegerField()),
-                ('num_replys', models.PositiveIntegerField()),
-                ('num_favorites', models.PositiveIntegerField()),
-                ('text', models.TextField()),
-                ('is_reply', models.BooleanField()),
-                ('is_retweet', models.BooleanField()),
-                ('twitter_id', models.PositiveIntegerField()),
-                ('politician', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='mandate.Politician')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("url", models.CharField(max_length=250)),
+                ("num_retweets", models.PositiveIntegerField()),
+                ("num_replys", models.PositiveIntegerField()),
+                ("num_favorites", models.PositiveIntegerField()),
+                ("text", models.TextField()),
+                ("is_reply", models.BooleanField()),
+                ("is_retweet", models.BooleanField()),
+                ("twitter_id", models.PositiveIntegerField()),
+                (
+                    "politician",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="mandate.Politician",
+                    ),
+                ),
             ],
         ),
         migrations.AddIndex(
-            model_name='term',
-            index=models.Index(fields=['position'], name='mandate_ter_positio_4453b7_idx'),
+            model_name="term",
+            index=models.Index(
+                fields=["position"], name="mandate_ter_positio_4453b7_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='politician',
-            index=models.Index(fields=['congressperson_id'], name='mandate_pol_congres_195f1e_idx'),
+            model_name="politician",
+            index=models.Index(
+                fields=["congressperson_id"], name="mandate_pol_congres_195f1e_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='politician',
-            index=models.Index(fields=['congressperson_name'], name='mandate_pol_congres_53eefd_idx'),
+            model_name="politician",
+            index=models.Index(
+                fields=["congressperson_name"], name="mandate_pol_congres_53eefd_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='activity',
-            index=models.Index(fields=['position'], name='mandate_act_positio_074715_idx'),
+            model_name="activity",
+            index=models.Index(
+                fields=["position"], name="mandate_act_positio_074715_idx"
+            ),
         ),
     ]

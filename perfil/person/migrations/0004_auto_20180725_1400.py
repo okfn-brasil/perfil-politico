@@ -5,17 +5,18 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('person', '0003_auto_20180724_0105'),
-    ]
+    dependencies = [("person", "0003_auto_20180724_0105")]
 
     operations = [
         migrations.AddIndex(
-            model_name='person',
-            index=models.Index(fields=['cpf'], name='person_pers_cpf_3f4f61_idx'),
+            model_name="person",
+            index=models.Index(fields=["cpf"], name="person_pers_cpf_3f4f61_idx"),
         ),
         migrations.AddIndex(
-            model_name='person',
-            index=models.Index(fields=['civil_name', 'birthdate'], name='person_pers_civil_n_19a6d7_idx'),
+            model_name="person",
+            index=models.Index(
+                fields=["civil_name", "birthdate"],
+                name="person_pers_civil_n_19a6d7_idx",
+            ),
         ),
     ]

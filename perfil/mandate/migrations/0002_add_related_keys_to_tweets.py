@@ -6,14 +6,16 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('mandate', '0001_initial'),
-    ]
+    dependencies = [("mandate", "0001_initial")]
 
     operations = [
         migrations.AlterField(
-            model_name='tweet',
-            name='politician',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tweets', to='mandate.Politician'),
-        ),
+            model_name="tweet",
+            name="politician",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="tweets",
+                to="mandate.Politician",
+            ),
+        )
     ]

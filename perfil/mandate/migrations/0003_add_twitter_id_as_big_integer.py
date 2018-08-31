@@ -5,14 +5,10 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('mandate', '0002_add_related_keys_to_tweets'),
-    ]
+    dependencies = [("mandate", "0002_add_related_keys_to_tweets")]
 
     operations = [
         migrations.AlterField(
-            model_name='tweet',
-            name='twitter_id',
-            field=models.BigIntegerField(),
-        ),
+            model_name="tweet", name="twitter_id", field=models.BigIntegerField()
+        )
     ]

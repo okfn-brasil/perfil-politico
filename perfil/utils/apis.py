@@ -12,7 +12,8 @@ class ApiResource(DjangoResource):
             "per_page": self.paginator.per_page,
             "count": self.paginator.count,
             "num_page": self.paginator.num_pages,
-            "page": self.page}
+            "page": self.page,
+        }
 
     def paginate(self, queryset, per_page=None):
         if per_page is None:
@@ -20,4 +21,4 @@ class ApiResource(DjangoResource):
 
         self.paginator = Paginator(queryset, per_page)
 
-        self.page = int(self.request.GET.get('page', 1))
+        self.page = int(self.request.GET.get("page", 1))

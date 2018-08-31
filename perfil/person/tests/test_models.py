@@ -7,10 +7,10 @@ from perfil.party.tests.factories import PartyFactory
 
 @pytest.fixture
 def person():
-    person = PersonFactory(civil_name='JOHN SNOW')
+    person = PersonFactory(civil_name="JOHN SNOW")
 
-    party_a = PartyFactory(initials='AA')
-    party_b = PartyFactory(initials='BB')
+    party_a = PartyFactory(initials="AA")
+    party_b = PartyFactory(initials="BB")
 
     election_0 = ElectionFactory(party=party_a, candidate=person, year=2010)
     election_1 = ElectionFactory(party=party_b, candidate=person, year=2014)
@@ -26,7 +26,7 @@ def person():
 
 @pytest.mark.django_db
 def test_election_parties(person):
-    assert set(person.election_parties) == set(['AA', 'BB'])
+    assert set(person.election_parties) == set(["AA", "BB"])
 
 
 @pytest.mark.django_db

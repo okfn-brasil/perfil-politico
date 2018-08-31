@@ -12,7 +12,7 @@ class ElectionByPositionResource(ApiResource):
     preparer = FieldsPreparer(fields=ELECTION_PREPARER)
 
     def list(self):
-        '''
+        """
         The request should be like:
             /person/?position=deputado+estadual&year=2014
 
@@ -25,11 +25,11 @@ class ElectionByPositionResource(ApiResource):
             * deputado+distrital
             * senador
             * presidente
-        '''
+        """
 
-        position = self.request.GET.get('position', '')
+        position = self.request.GET.get("position", "")
         positions_ids = POSITIONS_IDS[position.upper()]
-        year = self.request.GET.get('year')
+        year = self.request.GET.get("year")
 
         elections = Election.objects.filter(position__in=positions_ids)
         if year:

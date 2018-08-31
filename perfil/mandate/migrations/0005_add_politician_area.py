@@ -5,23 +5,22 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('mandate', '0004_bill'),
-    ]
+    dependencies = [("mandate", "0004_bill")]
 
     operations = [
         migrations.AddField(
-            model_name='politician',
-            name='area',
-            field=models.CharField(choices=[('1', 'Câmara'), ('2', 'Senado')], default='1', max_length=2),
+            model_name="politician",
+            name="area",
+            field=models.CharField(
+                choices=[("1", "Câmara"), ("2", "Senado")], default="1", max_length=2
+            ),
         ),
         migrations.AlterField(
-            model_name='politician',
-            name='congressperson_id',
+            model_name="politician",
+            name="congressperson_id",
             field=models.CharField(max_length=250),
         ),
         migrations.AlterUniqueTogether(
-            name='politician',
-            unique_together={('congressperson_id', 'area')},
+            name="politician", unique_together={("congressperson_id", "area")}
         ),
     ]

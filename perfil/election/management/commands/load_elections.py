@@ -10,9 +10,11 @@ from perfil.utils.management.commands import ImportCsvCommand
 
 class Command(ImportCsvCommand):
 
-    help = dedent("""
+    help = dedent(
+        """
         Import CSV from https://brasil.io/dataset/eleicoes-brasil/candidatos
-    """)
+    """
+    )
 
     model = Election
     bulk_size = 2 ** 12
@@ -23,18 +25,18 @@ class Command(ImportCsvCommand):
             person_id = self.cache.get(person_keys(line))
             party_id = self.cache.get(party_keys(line))
             if person_id and party_id:
-                result = ELECTION_RESULT.get(line['desc_sit_tot_turno'], '0')
+                result = ELECTION_RESULT.get(line["desc_sit_tot_turno"], "0")
                 yield Election(
                     candidate_id=person_id,
-                    candidate_sequential=line['sequencial_candidato'],
-                    legend_composition=line['composicao_legenda'],
-                    legend_name=line['nome_legenda'],
+                    candidate_sequential=line["sequencial_candidato"],
+                    legend_composition=line["composicao_legenda"],
+                    legend_name=line["nome_legenda"],
                     party_id=party_id,
-                    place=line['descricao_ue'],
-                    position=POSITIONS[line['descricao_cargo']],
+                    place=line["descricao_ue"],
+                    position=POSITIONS[line["descricao_cargo"]],
                     result=result,
-                    state=line['sigla_uf'],
-                    year=line['ano_eleicao'],
+                    state=line["sigla_uf"],
+                    year=line["ano_eleicao"],
                 )
             else:
                 yield None

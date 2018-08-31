@@ -5,21 +5,16 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('election', '0005_avoid_charfields_with_null_values'),
-    ]
+    dependencies = [("election", "0005_avoid_charfields_with_null_values")]
 
     operations = [
         migrations.AlterModelOptions(
-            name='asset',
-            options={'verbose_name_plural': 'assets'},
+            name="asset", options={"verbose_name_plural": "assets"}
         ),
         migrations.AlterModelOptions(
-            name='donation',
-            options={'verbose_name_plural': 'donations'},
+            name="donation", options={"verbose_name_plural": "donations"}
         ),
         migrations.AlterModelOptions(
-            name='election',
-            options={'verbose_name_plural': 'elections'},
+            name="election", options={"verbose_name_plural": "elections"}
         ),
     ]
