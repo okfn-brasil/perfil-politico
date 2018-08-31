@@ -1,5 +1,6 @@
 FROM python:3.7.0-alpine
 
+ENV PYTHONBREAKPOINT=ipdb.set_trace
 ENV SECRET_KEY=temporary-secret-key-to-generate-staticfiles
 WORKDIR /code
 

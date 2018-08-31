@@ -33,7 +33,7 @@ class Command(ImportCsvCommand):
             fobj.seek(0)
 
             reader = csv.DictReader(fobj, fieldnames=headers)
-            desc = f'Importing {self.model.__name__.lower()} data'
+            desc = f'Importing {self.model_name} data'
             with tqdm(total=total_lines, desc=desc, unit='lines') as progress:
                 for row in reader:
                     if row['autoria'] == 'autoria':

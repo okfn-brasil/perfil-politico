@@ -85,3 +85,26 @@ class Bill(models.Model):
     keywords = ArrayField(models.CharField(max_length=250))
     original_keywords = ArrayField(models.CharField(max_length=250))
     url = models.URLField(max_length=500)
+
+
+class ClaimedIndemnification(models.Model):
+    cnpj_cpf = models.CharField(max_length=14)
+    supplier = models.CharField(max_length=255)
+    politician = models.ForeignKey(Politician, on_delete=models.CASCADE)
+    claim_id = models.CharField(max_length=255, blank=True, default='')
+    month = models.IntegerField()
+    year = models.IntegerField()
+    category = models.CharField(max_length=255, blank=True, default='')
+    sub_category = models.CharField(max_length=255, blank=True, default='')
+    date = models.DateField(null=True)
+    value = models.DecimalField(max_digits=8, decimal_places=2)
+
+    class Meta:
+        verbose_name = 'claimed indemnification'
+        verbose_name_plural = 'claimed indemnifications'
+        indexes = [
+            models.Index(fields=['cnpj_cpf']),
+            models.Index(fields=['month']),
+            models.Index(fields=['year', 'month']),
+            models.Index(fields=['date']),
+        ]

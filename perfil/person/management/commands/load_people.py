@@ -19,7 +19,7 @@ class Command(ImportCsvCommand):
 
     def group_names_by_cpf(self, reader, total):
         grouped = {}
-        original_desc = f'Importing {self.model.__name__} data'
+        original_desc = f'Importing {self.model_name} data'
         desc = 'Cleaning data'.ljust(len(original_desc), ' ')
         with tqdm(total=total, desc=desc, unit='lines') as progress_bar:
             for line in reader:
