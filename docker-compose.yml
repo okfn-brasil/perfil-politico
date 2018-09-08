@@ -5,7 +5,7 @@ services:
     build:
       context: .
     depends_on:
-      - db
+      - postgres
       - redis
     env_file:
       - .env
@@ -15,27 +15,27 @@ services:
       - ./perfil:/code/perfil
       - ./data:/mnt/data
 
-  notebooks:
+  jupyter:
     build:
-      context: notebooks
+      context: jupyter
     env_file:
       - .env
     ports:
       - "8888:8888"
     volumes:
-      - ./notebooks:/code
+      - ./jupyter:/code
       - ./data:/mnt/data
 
-  db:
-    image: postgres:10.4-alpine
+  postgres:
+    image: postgres:10.5-alpine
     volumes:
-      - ./perfil/db:/var/lib/postgresql/data
+      - ./postgres:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=mydb
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=perfilpolitico
+      - POSTGRES_USER=perfilpolitico
+      - POSTGRES_PASSWORD=perfilpolitico
     ports:
       - 5432:5432
 
   redis:
-    image: redis:4.0.10-alpine
+    image: redis:4.0.11-alpine

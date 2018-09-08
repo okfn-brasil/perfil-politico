@@ -1,5 +1,0 @@
-SECRET_KEY=a-very-secret-key
-DEBUG=True
-ALLOWED_HOSTS=0.0.0.0,localhost,127.0.0.1
-DATABASE_URL=postgres://postgres:postgres@db/mydb
-REDIS_URL=redis://127.0.0.1:6379/0

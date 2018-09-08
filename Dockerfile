@@ -10,13 +10,14 @@ COPY requirements.txt requirements.txt
 RUN apk update && \
     apk --no-cache add libpq && \
     apk add postgresql-libs && \
-    apk add --virtual .build-deps g++ gcc musl-dev postgresql-dev && \
+    apk add --virtual .build-deps g++ gcc git musl-dev postgresql-dev && \
     python -m pip --no-cache install -U pip && \
     python -m pip --no-cache install -r requirements.txt && \
     apk --purge del .build-deps && \
     rm -rfv /var/cache/apk/*
 
 COPY .coveragerc .coveragerc
+COPY pytest.ini pytest.ini
 COPY perfil/ perfil/
 RUN python manage.py collectstatic --no-input
 

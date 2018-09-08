@@ -2,11 +2,10 @@
 [![Codecov](https://img.shields.io/codecov/c/github/okfn-brasil/perfil.svg)](https://codecov.io/gh/okfn-brasil/perfil)
 [![Code Climate](https://img.shields.io/codeclimate/maintainability/okfn-brasil/perfil.svg)](https://codeclimate.com/github/okfn-brasil/perfil)
 
-# Perfil
+# Perfil Político
 
-A platform for profiling public figures in Brazilian politics,
-searching for weird patterns or figures with inconsistent politics paths
-(changes in parties, unpopular law projects, high expenses on public money).
+A platform for profiling candidates in Brazilian 2018 General Election, based
+entirely on open data.
 
 ## Install
 
@@ -15,7 +14,7 @@ This project requires [Docker](https://docs.docker.com/install/) and
 
 ### Settings
 
-To run the API, you must copy the `env-template` to a `.env` file and
+To run the API, you must copy the `.env.sample` to a `.env` file and
 edit it accordingly.
 
 ### Running
@@ -26,8 +25,9 @@ Starting the application:
 $ docker-compose up
 ```
 
-The API will be available at [`localhost:8000`](http://localhost:8000) and the
-notebooks at [`localhost:8888`](http://localhost:8888).
+The website and [API](#api) will be available at
+[`localhost:8000`](http://localhost:8000) and the Jupyter at
+[`localhost:8888`](http://localhost:8888).
 
 ### Database
 
@@ -39,32 +39,31 @@ You should create your database by applying migrations:
 $ docker-compose run django ./manage.py migrate
 ```
 
-You can also create a super user so you can access your
-[Django admin site](https://docs.djangoproject.com/en/2.0/ref/contrib/admin/)
-in [`localhost:8000/admin/`](http://localhost:8000/admin/):
-
-```sh
-$ docker-compose run django ./manage.py createsuperuser
-```
-
 #### Bringing data in
 
-The database can be populated by Django commands such as `load_people`,
-`load_parties`, `load_elections`, etc. To check the full list try:
-
-```sh
-$ docker-compose run --rm django ./manage.py --help | grep load_
-```
-
 Your local `data/` directory is mapped, inside the container, to `/mnt/data`.
-Each command uses a CSV from a public and available source. Use `--help` for
-more info.
-
-You must pass the path to a CSV file together with the command. For example:
+Each command uses a CSV (compressed as `.xz` or not) from a public and
+available source. Use `--help` for more info. Download the datasets into
+`data/` and then something like:
 
 ```sh
-$ docker-compose run django ./manage.py load_people /mnt/data/candidates.csv
+$ docker-compose run django python manage.py load_affiliations /mnt/data/filiacao.csv
+$ docker-compose run django python manage.py load_candidates /mnt/data/candidatura.csv
+$ docker-compose run django python manage.py load_assets /mnt/data/bemdeclarado.csv
 ```
+
+#### Generating more data
+
+Some extra data can be generated with some extra commands (such as
+`link_affiliations_and_candidates`) and with SQL files inside `contrib/`. We
+could have written these instructions in plain Python, or using Django ORM,
+but from our experiments it would took days to execute.  Thus hardcoded SQL was
+our choice.
+
+### API
+
+* `GET /api/candidate/?search=<name/partial name>` lists candidates
+* `GET /api/candidate/<pk>/` gives the details of a given candidate
 
 ## Tests
 
