@@ -1,6 +1,7 @@
-[![Travis CI](https://img.shields.io/travis/okfn-brasil/perfil.svg)](https://travis-ci.org/okfn-brasil/perfil)
-[![Codecov](https://img.shields.io/codecov/c/github/okfn-brasil/perfil.svg)](https://codecov.io/gh/okfn-brasil/perfil)
-[![Code Climate](https://img.shields.io/codeclimate/maintainability/okfn-brasil/perfil.svg)](https://codeclimate.com/github/okfn-brasil/perfil)
+[![Travis CI](https://img.shields.io/travis/okfn-brasil/perfil-politico.svg)](https://travis-ci.org/okfn-brasil/perfil-politico)
+[![Codecov](https://img.shields.io/codecov/c/github/okfn-brasil/perfil-politico.svg)](https://codecov.io/gh/okfn-brasil/perfil-politico)
+[![Code Climate](https://img.shields.io/codeclimate/maintainability/okfn-brasil/perfil-politico.svg)](https://codeclimate.com/github/okfn-brasil/perfil-politico)
+[![Apoia.se](https://img.shields.io/badge/donate-apoia.se-EB4A3B.svg)](https://apoia.se/serenata)
 
 # Perfil Político
 
