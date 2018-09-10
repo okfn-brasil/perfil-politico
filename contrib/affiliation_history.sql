@@ -1,4 +1,4 @@
-INSERT INTO core_politician_affiliation_history VALUES (
+INSERT INTO core_politician_affiliation_history
 
     SELECT DISTINCT politician_voter.politician_id, party_voter.party_id
 
@@ -16,4 +16,5 @@ INSERT INTO core_politician_affiliation_history VALUES (
         ON core_politician.current_affiliation_id = core_affiliation.id
     ) politician_voter ON politician_voter.voter_id = party_voter.voter_id
 
-)
+    WHERE politician_voter.politician_id IS NOT NULL
+      AND party_voter.party_id IS NOT NULL
