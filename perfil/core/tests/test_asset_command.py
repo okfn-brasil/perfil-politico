@@ -22,3 +22,6 @@ def test_assets_were_created(candidates):
     assert "TERRENO" == asset.category
     assert "" == asset.detail
     assert 4 == asset.order
+
+    candidate = Candidate.objects.get(sequential="70000625538")
+    assert candidate.asset_history() == [{"year": 2018, "value": 400000.0}]

@@ -19,7 +19,7 @@ def test_candidate_repr(candidates):
 
 
 @pytest.mark.django_db
-def test_valid_image_property(candidates):
+def test_valid_image_method(candidates):
     candidate = Candidate.objects.first()
     candidate.state = "SC"
     candidate.sequential = "42"
@@ -32,6 +32,26 @@ def test_valid_image_property(candidates):
 
 
 @pytest.mark.django_db
-def test_invalid_image_property(candidates):
+def test_invalid_image_method(candidates):
     candidate = Candidate.objects.last()
     assert candidate.image() is None
+
+
+@pytest.mark.django_db
+def test_valid_asset_history_method(candidates):
+    candidate = Candidate.objects.last()
+    candidate.politician.asset_history = [
+        {"year": 2014, "value": 21.0},
+        {"year": 2018, "value": 42.0},
+    ]
+    assert candidate.asset_history() == [
+        {"year": 2018, "value": 42.0},
+        {"year": 2014, "value": 21.0},
+    ]
+
+
+@pytest.mark.django_db
+def test_invalid_asset_history_method(candidates):
+    candidate = Candidate.objects.last()
+    candidate.politician = None
+    assert candidate.asset_history() == []

@@ -59,10 +59,18 @@ def parse_datetime(value):
 
 @lru_cache(maxsize=1024)
 def get_candidate(year, state, sequential):
-    try:
-        return Candidate.objects.get(year=year, state=state, sequential=sequential)
-    except (ObjectDoesNotExist, Candidate.MultipleObjectsReturned):
-        return None
+    kwargs = dict(year=year, state=state, sequential=sequential)
+    candidates = tuple(Candidate.objects.filter(**kwargs))
+
+    if len(candidates) == 1:  # yay, there's only match!
+        return candidates[0]
+
+    if len(candidates) == 2:  # probably it's the same person in the 2nd round
+        for candidate in candidates:
+            if candidate.round == 1:
+                return candidate
+
+    return None
 
 
 @lru_cache(maxsize=1024)

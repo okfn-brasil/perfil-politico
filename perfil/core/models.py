@@ -1,6 +1,7 @@
 from decimal import Decimal
 
 from django.db import models
+from django.contrib.postgres.fields import JSONField
 
 from perfil.core.managers import CampaignManager
 
@@ -121,6 +122,7 @@ class Politician(models.Model):
     affiliation_history = models.ManyToManyField(
         Party, related_name="affiliation_history"
     )
+    asset_history = JSONField(default=list)
 
     def __repr__(self):
         return (
@@ -182,6 +184,14 @@ class Candidate(models.Model):
 
     def affiliation_history(self):
         return self.politician.affiliation_history.all() if self.politician else []
+
+    def asset_history(self):
+        if not self.politician:
+            return []
+
+        return sorted(
+            self.politician.asset_history, key=lambda obj: obj["year"], reverse=True
+        )
 
     def image(self):
         if self.year != 2018:

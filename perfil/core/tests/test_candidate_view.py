@@ -32,6 +32,12 @@ def test_candidate_list_without_search(client, candidates):
 @pytest.mark.django_db
 def test_candidate_detail(client, candidates):
     candidate = Candidate.objects.filter(year=2018).first()
+    candidate.politician.asset_history = [
+        {"year": 2014, "value": 21.0},
+        {"year": 2018, "value": 42.0},
+    ]
+    candidate.politician.save()
+
     response = client.get(resolve_url("api_candidate_detail", candidate.pk))
     assert 200 == response.status_code
 
@@ -44,3 +50,7 @@ def test_candidate_detail(client, candidates):
     assert content["party"] == candidate.party.name
     assert content["party_abbreviation"] == candidate.party.abbreviation
     assert content["party_affiliation_history"] == list()
+    assert content["asset_history"] == [
+        {"year": 2018, "value": 42.0},
+        {"year": 2014, "value": 21.0},
+    ]

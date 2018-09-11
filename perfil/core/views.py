@@ -22,6 +22,7 @@ class CandidateResource(DjangoResource):
             "party_affiliation_history": CollectionSubPreparer(
                 "affiliation_history", affiliation_history_preparer
             ),
+            "asset_history": "asset_history",
             "date_of_birth": "date_of_birth",
             "city_of_birth": "place_of_birth.name",
             "state_of_birth": "place_of_birth.state",

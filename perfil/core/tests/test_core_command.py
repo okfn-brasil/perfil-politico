@@ -3,13 +3,16 @@ from datetime import date, datetime
 import pytest
 from django.core.management.base import CommandError
 from django.utils.timezone import utc
+from mixer.backend.django import mixer
 
 from perfil.core.management.commands import (
     BaseCommand,
+    get_candidate,
     parse_integer,
     parse_date,
     parse_datetime,
 )
+from perfil.core.models import Candidate
 
 
 def test_parse_integer():
@@ -49,3 +52,19 @@ def test_command_raises_error_for_method_not_implemented_yet():
 
     with pytest.raises(NotImplementedError):
         command.post_handle()
+
+
+@pytest.mark.django_db
+def test_get_candidate():
+    mixer.blend("core.city", name="Monty Python")
+    mixer.blend("core.party")
+    mixer.blend("core.affiliation", party=mixer.SELECT, city=mixer.SELECT)
+    mixer.cycle(2).blend(
+        "core.candidate",
+        politician=mixer.blend("core.politician", current_affiliation=mixer.SELECT),
+        year=2018,
+        sequential="70000601690",
+        state="DF",
+        round=(round for round in range(1, 3)),
+    )
+    assert Candidate.objects.get(round=1) == get_candidate(2018, "DF", "70000601690")
