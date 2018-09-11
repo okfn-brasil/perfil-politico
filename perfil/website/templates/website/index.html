@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <title>Perfil político</title>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <meta name="keywords" content="eleições;candidatos;política" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <meta name="copyright" content="&copy; 2018" />
+
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Cache-Control" content="no-cache,no-store" />
+        <meta http-equiv="Expires" content="Thu, 01 Jan 1970 00:00:00 GMT" />
+
+        <link href="{% static 'css/style.css?v=1.0.0' %}" rel="stylesheet" type="text/css" />
+    </head>
+
+    <body>
+        <div class="block">
+            <div id="top-bar">
+                <a href="#" class="top-icon">
+                  <img src="{% static 'images/profiles.svg' %}">
+                </a>
+                <div class="top-text"><span>perfil</span> político</div>
+                <a href="#" class="top-menu">
+                  <img src="{% static 'images/menu.svg' %}">
+                </a>
+            </div>
+            <div id="intro">
+                 <h3 class="all-centered">Em breve!</h3>
+            </div>
+        </div>
+
+        <div id="bottom-bar">
+            <div class="column"></div>
+        </div>
+
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+        <script src="{% static 'js/bundle.js' %}"></script>
+    </body>
+</html>

@@ -16,10 +16,10 @@ Including another URLconf
 from django.urls import include, path
 
 from perfil.core.views import CandidateResource
-from perfil.hotsite.views import hotsite
+from perfil.website.views import home
 
 
 urlpatterns = [
-    path("", hotsite),
+    path("", home, name="home"),
     path("api/candidate/", include(CandidateResource.urls())),
 ]

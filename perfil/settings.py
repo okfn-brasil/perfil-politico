@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     "django_extensions",
     # apps
     "perfil.core.apps.CoreConfig",
-    "perfil.hotsite.apps.HotsiteConfig",
+    "perfil.website.apps.WebsiteConfig",
 ]
 
 MIDDLEWARE = [
