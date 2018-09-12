@@ -7,26 +7,26 @@ from perfil.core.models import Candidate
 
 
 @pytest.mark.django_db
-def test_candidate_list_with_search(client, candidates):
+def test_candidate_list(client, candidates):
     candidate = Candidate.objects.filter(year=2018).first()
-    candidate.ballot_name = "foobar"
+    candidate.post = "1O SUPLENTE"
+    candidate.state = "DF"
     candidate.save()
 
-    url = resolve_url("api_candidate_list")
+    url = resolve_url("api_candidate_list", candidate.year, "df", "1o-suplente")
     response = client.get(f"{url}?search=OBA")
     assert 200 == response.status_code
 
     candidates = json.loads(response.content.decode("utf-8"))
     assert 1 == len(candidates["objects"])
-
-
-@pytest.mark.django_db
-def test_candidate_list_without_search(client, candidates):
-    response = client.get(resolve_url("api_candidate_list"))
-    assert 200 == response.status_code
-
-    candidates = json.loads(response.content.decode("utf-8"))
-    assert 0 == len(candidates["objects"])
+    assert "id" in candidates["objects"][0]
+    assert "name" in candidates["objects"][0]
+    assert "party" in candidates["objects"][0]
+    assert "image" in candidates["objects"][0]
+    # TODO assert 'elections' in candidates['objects'][0]
+    # TODO assert 'elections_won' in candidates['objects'][0]
+    assert "gender" in candidates["objects"][0]
+    assert "ethnicity" in candidates["objects"][0]
 
 
 @pytest.mark.django_db

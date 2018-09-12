@@ -146,8 +146,8 @@ class Candidate(models.Model):
     email = models.CharField(max_length=128, blank=True, default="")
     age = models.CharField(max_length=16, blank=True, default="")
 
-    ethinicity = models.CharField(max_length=16, blank=True, default="")
-    ethinicity_code = models.CharField(max_length=2, blank=True, default="")
+    ethnicity = models.CharField(max_length=16, blank=True, default="")
+    ethnicity_code = models.CharField(max_length=2, blank=True, default="")
     marital_status = models.CharField(max_length=32, blank=True, default="")
     marital_status_code = models.CharField(max_length=32, blank=True, default="")
     education = models.CharField(max_length=32, blank=True, default="")
@@ -213,7 +213,7 @@ class Candidate(models.Model):
             models.Index(fields=("politician",)),
             models.Index(fields=("voter_id",)),
             models.Index(fields=("year",)),
-            models.Index(fields=("state",)),
+            models.Index(fields=("state", "post")),
             models.Index(fields=("sequential",)),
         )
 

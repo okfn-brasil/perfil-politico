@@ -53,8 +53,8 @@ def test_candidates_were_created():
     assert "KLLAUDHIA@HOTMAIL.COM" == candidate.email
     assert "50" == candidate.age
 
-    assert "PARDA" == candidate.ethinicity
-    assert "03" == candidate.ethinicity_code
+    assert "PARDA" == candidate.ethnicity
+    assert "03" == candidate.ethnicity_code
     assert "SOLTEIRO(A)" == candidate.marital_status
     assert "1" == candidate.marital_status_code
     assert "SUPERIOR COMPLETO" == candidate.education

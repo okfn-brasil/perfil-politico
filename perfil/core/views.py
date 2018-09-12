@@ -1,10 +1,33 @@
 from restless.dj import DjangoResource
+from restless.exceptions import BadRequest
 from restless.preparers import FieldsPreparer
 
 from perfil.core.models import Candidate
 
 
-class CandidateResource(DjangoResource):
+class CandidateListResource(DjangoResource):
+    preparer = FieldsPreparer(
+        fields={
+            "id": "id",
+            "name": "ballot_name",
+            "party": "party.abbreviation",
+            "state": "state",
+            "post": "post",
+            "image": "image",
+            "gender": "gender",
+            "ethnicity": "ethnicity",
+            # TODO "elections": "elections",
+            # TODO "elections_won": "elections_won",
+        }
+    )
+
+    def list(self, year, state, post):
+        state = state.upper()
+        post = post.upper().replace("-", " ")
+        return Candidate.objects.campaign(year).filter(post=post, state=state)
+
+
+class CandidateDetailResource(DjangoResource):
     preparer = FieldsPreparer(
         fields={
             "id": "id",
@@ -23,7 +46,7 @@ class CandidateResource(DjangoResource):
             "gender": "gender",
             "email": "email",
             "age": "age",
-            "ethinicity": "ethinicity",
+            "ethnicity": "ethnicity",
             "marital_status": "marital_status",
             "education": "education",
             "nationality": "nationality",
@@ -36,14 +59,6 @@ class CandidateResource(DjangoResource):
             "coalition_short_name": "coalition_short_name",
         }
     )
-
-    def list(self):
-        query = self.request.GET.get("search", "")
-        if not query or len(query) < 3:
-            return []
-
-        year = self.request.GET.get("year", 2018)
-        return Candidate.objects.campaign(year).filter(ballot_name__icontains=query)
 
     def detail(self, pk):
         return Candidate.objects.get(pk=pk)

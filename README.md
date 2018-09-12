@@ -60,8 +60,28 @@ Some extra data can be generated with some extra commands (such as
 
 ### API
 
-* `GET /api/candidate/?search=<name/partial name>` lists candidates
-* `GET /api/candidate/<pk>/` gives the details of a given candidate
+#### `GET /api/candidate/<year>/<state>/<post>/`
+
+List all candidates from a certain state to a given post. For example:
+
+`/api/candidate/2018/df/deputado-distrital/`
+
+Post options for 2018 are:
+
+* `1o-suplente`
+* `2o-suplente`
+* `deputado-distrital`
+* `deputado-estadual`
+* `deputado-federal`
+* `governador`
+* `presidente`
+* `senador`
+* `vice-governador`
+* `vice-presidente`
+
+#### `GET /api/candidate/<pk>/`
+
+Returns the details of a given candidate.
 
 ## Tests
 
