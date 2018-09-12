@@ -33,8 +33,12 @@ def test_candidate_list_without_search(client, candidates):
 def test_candidate_detail(client, candidates):
     candidate = Candidate.objects.filter(year=2018).first()
     candidate.politician.asset_history = [
-        {"year": 2014, "value": 21.0},
         {"year": 2018, "value": 42.0},
+        {"year": 2014, "value": 21.0},
+    ]
+    candidate.politician.affiliation_history = [
+        {"party": "PP", "started_in": "2003-10-02"},
+        {"party": "AV", "started_in": "1999-09-30"},
     ]
     candidate.politician.save()
 
@@ -49,8 +53,11 @@ def test_candidate_detail(client, candidates):
     assert content["state"] == candidate.state
     assert content["party"] == candidate.party.name
     assert content["party_abbreviation"] == candidate.party.abbreviation
-    assert content["party_affiliation_history"] == list()
+    assert content["affiliation_history"] == [
+        {"party": "AV", "started_in": "1999-09-30"},
+        {"party": "PP", "started_in": "2003-10-02"},
+    ]
     assert content["asset_history"] == [
-        {"year": 2018, "value": 42.0},
         {"year": 2014, "value": 21.0},
+        {"year": 2018, "value": 42.0},
     ]

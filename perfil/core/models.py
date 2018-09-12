@@ -119,9 +119,7 @@ class Politician(models.Model):
     current_affiliation = models.OneToOneField(
         Affiliation, on_delete=models.CASCADE, related_name="politician"
     )
-    affiliation_history = models.ManyToManyField(
-        Party, related_name="affiliation_history"
-    )
+    affiliation_history = JSONField(default=list)
     asset_history = JSONField(default=list)
 
     def __repr__(self):
@@ -183,15 +181,18 @@ class Candidate(models.Model):
     objects = CampaignManager()
 
     def affiliation_history(self):
-        return self.politician.affiliation_history.all() if self.politician else []
+        if not self.politician:
+            return []
+
+        return sorted(
+            self.politician.affiliation_history, key=lambda obj: obj["started_in"]
+        )
 
     def asset_history(self):
         if not self.politician:
             return []
 
-        return sorted(
-            self.politician.asset_history, key=lambda obj: obj["year"], reverse=True
-        )
+        return sorted(self.politician.asset_history, key=lambda obj: obj["year"])
 
     def image(self):
         if self.year != 2018:

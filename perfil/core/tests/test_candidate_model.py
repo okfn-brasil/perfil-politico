@@ -41,12 +41,12 @@ def test_invalid_image_method(candidates):
 def test_valid_asset_history_method(candidates):
     candidate = Candidate.objects.last()
     candidate.politician.asset_history = [
-        {"year": 2014, "value": 21.0},
         {"year": 2018, "value": 42.0},
+        {"year": 2014, "value": 21.0},
     ]
     assert candidate.asset_history() == [
-        {"year": 2018, "value": 42.0},
         {"year": 2014, "value": 21.0},
+        {"year": 2018, "value": 42.0},
     ]
 
 
@@ -55,3 +55,23 @@ def test_invalid_asset_history_method(candidates):
     candidate = Candidate.objects.last()
     candidate.politician = None
     assert candidate.asset_history() == []
+
+
+@pytest.mark.django_db
+def test_valid_affiliation_history_method(candidates):
+    candidate = Candidate.objects.last()
+    candidate.politician.affiliation_history = [
+        {"party": "AV", "started_in": "2018-01-02"},
+        {"party": "PP", "started_in": "2010-09-07"},
+    ]
+    assert candidate.affiliation_history() == [
+        {"party": "PP", "started_in": "2010-09-07"},
+        {"party": "AV", "started_in": "2018-01-02"},
+    ]
+
+
+@pytest.mark.django_db
+def test_invalid_affiliation_history_method(candidates):
+    candidate = Candidate.objects.last()
+    candidate.politician = None
+    assert candidate.affiliation_history() == []

@@ -71,6 +71,7 @@ def test_politicians_were_created():
 
     assert Party.objects.get(abbreviation="AV") == last.current_affiliation.party
     assert City.objects.get(code=83674) == last.current_affiliation.city
-    # TODO assert 2 == last.current_affiliation.affiliation_history.count()
-    # TODO assert Party.objects.get(abbreviation="AV") in last.current_affiliation.affiliation_history.all()
-    # TODO assert Party.objects.get(abbreviation="PP") in last.current_affiliation.affiliation_history.all()
+    assert last.affiliation_history == [
+        {"party": "PP", "started_in": "2003-10-02"},
+        {"party": "AV", "started_in": "1999-09-30"},
+    ]

@@ -1,14 +1,10 @@
 from restless.dj import DjangoResource
-from restless.preparers import CollectionSubPreparer, FieldsPreparer
+from restless.preparers import FieldsPreparer
 
 from perfil.core.models import Candidate
 
 
 class CandidateResource(DjangoResource):
-    affiliation_history_preparer = FieldsPreparer(
-        fields={"name": "name", "abbreviation": "abbreviation"}
-    )
-
     preparer = FieldsPreparer(
         fields={
             "id": "id",
@@ -19,9 +15,7 @@ class CandidateResource(DjangoResource):
             "state": "state",
             "party": "party.name",
             "party_abbreviation": "party.abbreviation",
-            "party_affiliation_history": CollectionSubPreparer(
-                "affiliation_history", affiliation_history_preparer
-            ),
+            "affiliation_history": "affiliation_history",
             "asset_history": "asset_history",
             "date_of_birth": "date_of_birth",
             "city_of_birth": "place_of_birth.name",

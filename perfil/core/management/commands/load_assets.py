@@ -76,11 +76,7 @@ class Command(BaseCommand):
             for politician in Politician.objects.filter(id__in=ids)
         }
 
-        # erase existing asset history
-        for politician in politicians.values():
-            politician.asset_history = []
-
-        # insert new asset history
+        # create asset history
         for row in bulk:
             year, value = int(row.year), float(row.value)
             politician = politicians.get(row.politician_id)

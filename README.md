@@ -56,10 +56,7 @@ $ docker-compose run django python manage.py load_assets /mnt/data/bemdeclarado.
 #### Generating more data
 
 Some extra data can be generated with some extra commands (such as
-`link_affiliations_and_candidates`) and with SQL files inside `contrib/`. We
-could have written these instructions in plain Python, or using Django ORM,
-but from our experiments it would took days to execute.  Thus hardcoded SQL was
-our choice.
+`link_affiliations_and_candidates`).
 
 ### API
 
