@@ -79,6 +79,9 @@ Post options for 2018 are:
 * `vice-governador`
 * `vice-presidente`
 
+State options are the abbreviation of the 27 Brazilian states, plus `br` for
+national election posts.
+
 #### `GET /api/candidate/<pk>/`
 
 Returns the details of a given candidate.
