@@ -121,6 +121,7 @@ class Politician(models.Model):
     )
     affiliation_history = JSONField(default=list)
     asset_history = JSONField(default=list)
+    election_history = JSONField(default=list)
 
     def __repr__(self):
         return (
@@ -180,19 +181,30 @@ class Candidate(models.Model):
 
     objects = CampaignManager()
 
-    def affiliation_history(self):
+    def _history(self, prefix, sort_by='year'):
         if not self.politician:
             return []
 
-        return sorted(
-            self.politician.affiliation_history, key=lambda obj: obj["started_in"]
-        )
+        data = getattr(self.politician, f'{prefix}_history', [])
+        return sorted(data, key=lambda obj: obj[sort_by])
+
+    def affiliation_history(self):
+        return self._history('affiliation', 'started_in')
 
     def asset_history(self):
-        if not self.politician:
-            return []
+        return self._history('asset')
 
-        return sorted(self.politician.asset_history, key=lambda obj: obj["year"])
+    def election_history(self):
+        return self._history('election')
+
+    def elections(self):
+        return len(self.election_history())
+
+    def elections_won(self):
+        return sum(
+            1 for election in self.election_history()
+            if election['elected']
+        )
 
     def image(self):
         if self.year != 2018:

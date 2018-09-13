@@ -8,7 +8,7 @@ from perfil.core.models import Politician
 
 FIXTURES = (
     Path() / "perfil" / "core" / "tests" / "fixtures" / "affiliation.csv",
-    Path() / "perfil" / "core" / "tests" / "fixtures" / "candidate.csv.xz",
+    Path() / "perfil" / "core" / "tests" / "fixtures" / "candidatura.csv.xz",
 )
 
 

@@ -23,8 +23,8 @@ def test_candidate_list(client, candidates):
     assert "name" in candidates["objects"][0]
     assert "party" in candidates["objects"][0]
     assert "image" in candidates["objects"][0]
-    # TODO assert 'elections' in candidates['objects'][0]
-    # TODO assert 'elections_won' in candidates['objects'][0]
+    assert 'elections' in candidates['objects'][0]
+    assert 'elections_won' in candidates['objects'][0]
     assert "gender" in candidates["objects"][0]
     assert "ethnicity" in candidates["objects"][0]
 
@@ -39,6 +39,20 @@ def test_candidate_detail(client, candidates):
     candidate.politician.affiliation_history = [
         {"party": "PP", "started_in": "2003-10-02"},
         {"party": "AV", "started_in": "1999-09-30"},
+    ]
+    candidate.politician.election_history = [
+        {
+            'post': 'DEPUTADO DISTRITAL',
+            'year': 2018,
+            'result': 'ELEITO',
+            'elected': True
+        },
+        {
+            'post': 'DEPUTADO DISTRITAL',
+            'year': 2016,
+            'result': 'NAO ELEITO',
+            'elected': False
+        }
     ]
     candidate.politician.save()
 
@@ -61,3 +75,18 @@ def test_candidate_detail(client, candidates):
         {"year": 2014, "value": 21.0},
         {"year": 2018, "value": 42.0},
     ]
+    assert content["election_history"] == [
+        {
+            'post': 'DEPUTADO DISTRITAL',
+            'year': 2016,
+            'result': 'NAO ELEITO', 'elected': False
+        },
+        {
+            'post': 'DEPUTADO DISTRITAL',
+            'year': 2018,
+            'result': 'ELEITO',
+            'elected': True
+        }
+    ]
+    assert content['elections'] == 2
+    assert content['elections_won'] == 1

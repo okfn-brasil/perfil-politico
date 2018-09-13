@@ -16,8 +16,8 @@ class CandidateListResource(DjangoResource):
             "image": "image",
             "gender": "gender",
             "ethnicity": "ethnicity",
-            # TODO "elections": "elections",
-            # TODO "elections_won": "elections_won",
+            "elections": "elections",
+            "elections_won": "elections_won",
         }
     )
 
@@ -40,6 +40,9 @@ class CandidateDetailResource(DjangoResource):
             "party_abbreviation": "party.abbreviation",
             "affiliation_history": "affiliation_history",
             "asset_history": "asset_history",
+            "elections": "elections",
+            "elections_won": "elections_won",
+            "election_history": "election_history",
             "date_of_birth": "date_of_birth",
             "city_of_birth": "place_of_birth.name",
             "state_of_birth": "place_of_birth.state",

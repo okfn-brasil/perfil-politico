@@ -3,13 +3,11 @@ from pathlib import Path
 
 import pytest
 from django.core.management import call_command
-from mixer.backend.django import mixer
 
-from perfil.core.management.commands import CsvSlicer, get_city, get_party
-from perfil.core.models import Candidate, City, Party, Politician
+from perfil.core.models import Candidate, City, Party
 
 
-FIXTURE = Path() / "perfil" / "core" / "tests" / "fixtures" / "candidate.csv.xz"
+FIXTURE = Path() / "perfil" / "core" / "tests" / "fixtures" / "candidatura.csv.xz"
 
 
 @pytest.mark.django_db
@@ -80,5 +78,5 @@ def test_candidates_were_created():
     assert "" == candidate.coalition_short_name
     assert "-1" == candidate.max_budget
 
-    assert "" == candidate.round_result
+    assert "ELEITO" == candidate.round_result
     assert -1 == candidate.round_result_code

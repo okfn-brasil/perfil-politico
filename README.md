@@ -44,19 +44,18 @@ $ docker-compose run django ./manage.py migrate
 
 Your local `data/` directory is mapped, inside the container, to `/mnt/data`.
 Each command uses a CSV (compressed as `.xz` or not) from a public and
-available source. Use `--help` for more info. Download the datasets into
-`data/` and then something like:
+available source. Use `--help` for more info. Yet some extra data can be
+generated with some Django custom commands.
+
+Once you have download the datasets to `data/`, the roadmap is:
 
 ```sh
 $ docker-compose run django python manage.py load_affiliations /mnt/data/filiacao.csv
 $ docker-compose run django python manage.py load_candidates /mnt/data/candidatura.csv
+$ docker-compose run django python manage.py link_affiliations_and_candidates
+$ docker-compose run django python manage.py link_politicians_and_election_results
 $ docker-compose run django python manage.py load_assets /mnt/data/bemdeclarado.csv
 ```
-
-#### Generating more data
-
-Some extra data can be generated with some extra commands (such as
-`link_affiliations_and_candidates`).
 
 ### API
 
