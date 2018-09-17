@@ -23,4 +23,4 @@ pytest-mock==1.10.0
 
 # prod
 gunicorn==19.9.0
-whitenoise[brotli]==4.0
+whitenoise[brotli]==4.1
