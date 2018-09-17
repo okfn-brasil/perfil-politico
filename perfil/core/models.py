@@ -1,3 +1,4 @@
+from datetime import date
 from decimal import Decimal
 
 from django.db import models
@@ -35,6 +36,15 @@ STATES = (
     ("SE", "Sergipe"),
     ("TO", "Tocantins"),
 )
+
+
+def age(date_of_birth, election_year):
+    """Calculates the age of the politician when they started in office"""
+    reference = date(election_year + 1, 1, 1)
+    correction_reference = correction = (reference.month, reference.day)
+    correction_date_of_birth = (date_of_birth.month, date_of_birth.day)
+    correction = correction_reference < correction_date_of_birth
+    return reference.year - date_of_birth.year - correction
 
 
 class City(models.Model):
@@ -210,6 +220,16 @@ class Candidate(models.Model):
         # TODO bucket configuration as a setting
         bucket = "https://serenata-de-amor-data.nyc3.digitaloceanspaces.com/"
         return f"{bucket}perfil-politico/{self.state}/{self.sequential}.jpg"
+
+    def get_age(self):
+        """The age column is blank too many times, so let's calculate it"""
+        if self.age:
+            return self.age
+
+        if not self.date_of_birth:
+            return None
+
+        return age(self.date_of_birth, self.year)
 
     def __repr__(self):
         return f"{self.ballot_name} ({self.party.abbreviation}/{self.state})"

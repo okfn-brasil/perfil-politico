@@ -101,12 +101,12 @@ Post options are:
 
 Characteristic options are:
 
+* `age`
 * `education`
 * `ethnicity`
 * `gender`
 * `marital_status`
 * `occupation`
-* `post`
 
 #### `GET /api/stats/<state>/<year>/<post>/<characteristic>/`
 

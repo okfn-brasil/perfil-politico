@@ -1,5 +1,6 @@
-import pytest
+from datetime import date
 
+import pytest
 from django.http import Http404, HttpResponse
 from django.shortcuts import resolve_url
 
@@ -32,6 +33,16 @@ def test_state_stats_instance(mocker):
     assert "SC" == stats.state
 
 
+@pytest.mark.django_db
+def test_age_stats_instance(mocker):
+    mock = mocker.patch.object(Stats, "age_stats")
+    mock.return_value = {}
+    stats = Stats(2018, "deputado-federal", "age")
+    stats()
+    assert stats.characteristic == "date_of_birth"
+    mock.assert_called_once()
+
+
 def test_stats_call(mocker):
     mocker.patch("perfil.core.views.connection")
     response = mocker.patch("perfil.core.views.JsonResponse")
@@ -54,3 +65,25 @@ def test_state_stats_view(client, mocker):
     url = resolve_url("api_state_stats", "sc", 2018, "deputado-federal", "age")
     client.get(url)
     stats.assert_called_once_with(2018, "deputado-federal", "age", "sc")
+
+
+def test_age_stats_method():
+    stats = Stats(2018, "deputado-federal", "age")
+    data = (
+        {"characteristic": date(1940, 1, 1), "total": 1},
+        {"characteristic": date(1950, 1, 1), "total": 1},
+        {"characteristic": date(1970, 1, 1), "total": 2},
+        {"characteristic": date(1970, 1, 1), "total": 2},
+        {"characteristic": date(1980, 1, 1), "total": 1},
+        {"characteristic": date(1994, 1, 1), "total": 1},
+        {"characteristic": date(1999, 1, 1), "total": 2},
+    )
+    expected = (
+        {"characteristic": "less-than-25", "total": 2},
+        {"characteristic": "between-25-and-34", "total": 1},
+        {"characteristic": "between-35-and-44", "total": 1},
+        {"characteristic": "between-45-and-59", "total": 4},
+        {"characteristic": "between-60-and-69", "total": 1},
+        {"characteristic": "70-or-more", "total": 1},
+    )
+    assert expected == stats.age_stats(data)

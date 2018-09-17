@@ -1,9 +1,11 @@
+from collections import defaultdict
+
 from django.db import connection
 from django.http import Http404, JsonResponse
 from restless.dj import DjangoResource
 from restless.preparers import FieldsPreparer
 
-from perfil.core.models import STATES, Candidate
+from perfil.core.models import STATES, Candidate, age
 
 
 class CandidateListResource(DjangoResource):
@@ -49,7 +51,7 @@ class CandidateDetailResource(DjangoResource):
             "state_of_birth": "place_of_birth.state",
             "gender": "gender",
             "email": "email",
-            "age": "age",
+            "age": "get_age",
             "ethnicity": "ethnicity",
             "marital_status": "marital_status",
             "education": "education",
@@ -69,8 +71,9 @@ class CandidateDetailResource(DjangoResource):
 
 
 class Stats:
+    """Class that supports stats views"""
 
-    STATES = set(abbreviation.lower() for abbreviation, _ in STATES)
+    STATES = set(abbreviation.upper() for abbreviation, _ in STATES)
 
     NATIONAL_POSTS = {
         "DEPUTADO DISTRITAL",
@@ -92,7 +95,7 @@ class Stats:
     }
 
     CHARACTERICTICS = {
-        # TODO "age",
+        "age",
         "education",
         "ethnicity",
         "gender",
@@ -110,8 +113,12 @@ class Stats:
 
         self.validate_argument(self.post, self.NATIONAL_POSTS)
         self.validate_argument(self.characteristic, self.CHARACTERICTICS)
+
         if state:
             self.validate_argument(self.state, self.STATES)
+
+        if self.characteristic == "age":
+            self.characteristic = "date_of_birth"
 
     @staticmethod
     def validate_argument(argument, choices):
@@ -134,16 +141,52 @@ class Stats:
             ORDER BY total DESC
         """
 
+    def age_stats(self, data):
+        aggregated = defaultdict(int)
+        ordered = (
+            "less-than-25",
+            "between-25-and-34",
+            "between-35-and-44",
+            "between-45-and-59",
+            "between-60-and-69",
+            "70-or-more",
+        )
+
+        def aggregate(date_of_birth):
+            politician_age = age(date_of_birth, self.year)
+
+            if politician_age < 25:
+                return "less-than-25"
+            if 25 <= politician_age < 35:
+                return "between-25-and-34"
+            if 35 <= politician_age < 45:
+                return "between-35-and-44"
+            if 45 <= politician_age < 60:
+                return "between-45-and-59"
+            if 60 <= politician_age < 70:
+                return "between-60-and-69"
+            return "70-or-more"
+
+        for row in data:
+            date_of_birth, total = row["characteristic"], int(row["total"])
+            aggregated[aggregate(date_of_birth)] += total
+
+        return tuple(
+            {"characteristic": key, "total": aggregated[key]} for key in ordered
+        )
+
     def __call__(self):
         with connection.cursor() as cursor:
             cursor.execute(self.sql)
-            return JsonResponse(
-                [
-                    {"characteristic": name, "total": total}
-                    for name, total in cursor.fetchall()
-                ],
-                safe=False,
+            data = tuple(
+                {"characteristic": name, "total": total}
+                for name, total in cursor.fetchall()
             )
+
+        if self.characteristic == "date_of_birth":
+            data = self.age_stats(data)
+
+        return JsonResponse(data, safe=False)
 
 
 def national_stats(request, year, post, characteristic):

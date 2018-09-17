@@ -1,3 +1,5 @@
+from datetime import date
+
 import pytest
 
 from perfil.core.models import Candidate
@@ -75,3 +77,20 @@ def test_invalid_affiliation_history_method(candidates):
     candidate = Candidate.objects.last()
     candidate.politician = None
     assert candidate.affiliation_history() == []
+
+
+@pytest.mark.django_db
+def test_get_age(candidates):
+    candidate = Candidate.objects.last()
+
+    candidate.age = 42
+    assert 42 == candidate.get_age()
+
+    candidate.age = None
+    candidate.date_of_birth = None
+    assert candidate.get_age() is None
+
+    candidate.year = 1970
+    candidate.age = None
+    candidate.date_of_birth = date(1960, 2, 2)
+    assert 10 == candidate.get_age()
