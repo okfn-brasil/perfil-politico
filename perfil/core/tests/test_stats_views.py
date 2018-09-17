@@ -31,6 +31,7 @@ def test_state_stats_instance(mocker):
     assert "DEPUTADO FEDERAL" == stats.post
     assert "ethnicity" == stats.characteristic
     assert "SC" == stats.state
+    assert "state = 'SC'" in stats.sql
 
 
 @pytest.mark.django_db
@@ -38,9 +39,15 @@ def test_age_stats_instance(mocker):
     mock = mocker.patch.object(Stats, "age_stats")
     mock.return_value = {}
     stats = Stats(2018, "deputado-federal", "age")
+    assert stats.column == "date_of_birth"
     stats()
-    assert stats.characteristic == "date_of_birth"
     mock.assert_called_once()
+
+
+def test_party_stats_instance(mocker):
+    stats = Stats(2018, "deputado-federal", "party")
+    assert stats.column == "core_party.abbreviation"
+    assert "INNER JOIN" in stats.sql
 
 
 def test_stats_call(mocker):

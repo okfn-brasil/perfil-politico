@@ -94,14 +94,14 @@ class Stats:
         "VEREADOR",
     }
 
-    CHARACTERICTICS = {
+    CHARACTERISTICS = {
         "age",
         "education",
         "ethnicity",
         "gender",
         "marital_status",
         "occupation",
-        # TODO "party",
+        "party",
         "post",
     }
 
@@ -110,15 +110,12 @@ class Stats:
         self.year = year
         self.post = post.replace("-", " ").upper()
         self.characteristic = characteristic.lower()
+        self.column = self.get_column_name(self.characteristic)
 
         self.validate_argument(self.post, self.NATIONAL_POSTS)
-        self.validate_argument(self.characteristic, self.CHARACTERICTICS)
-
+        self.validate_argument(self.characteristic, self.CHARACTERISTICS)
         if state:
             self.validate_argument(self.state, self.STATES)
-
-        if self.characteristic == "age":
-            self.characteristic = "date_of_birth"
 
     @staticmethod
     def validate_argument(argument, choices):
@@ -127,17 +124,34 @@ class Stats:
             msg = f"{argument} is invalid. Try one of those: {valid_choices}"
             raise Http404(msg)
 
+    @staticmethod
+    def get_column_name(characteristic):
+        if characteristic == "age":
+            return "date_of_birth"
+        if characteristic == "party":
+            return "core_party.abbreviation"
+
+        return characteristic
+
     @property
     def sql(self):  # TODO use ORM?
-        state = f"AND state = '{self.state}'" if self.state else ""
+        state, party = "", ""
+
+        if self.state:
+            state = f"AND state = '{self.state}'"
+
+        if self.characteristic == "party":
+            party = "INNER JOIN core_party ON core_candidate.party_id = core_party.id"
+
         return f"""
-            SELECT {self.characteristic} AS nome, COUNT(id) AS total
+            SELECT {self.column}, COUNT(core_candidate.id) AS total
             FROM core_candidate
+            {party}
             WHERE year = {self.year}
-            AND post = '{self.post}'
-            AND round_result LIKE 'ELEIT%'
-            {state}
-            GROUP BY {self.characteristic}
+              AND post = '{self.post}'
+              AND round_result LIKE 'ELEIT%'
+              {state}
+            GROUP BY {self.column}
             ORDER BY total DESC
         """
 
@@ -183,7 +197,7 @@ class Stats:
                 for name, total in cursor.fetchall()
             )
 
-        if self.characteristic == "date_of_birth":
+        if self.characteristic == "age":
             data = self.age_stats(data)
 
         return JsonResponse(data, safe=False)

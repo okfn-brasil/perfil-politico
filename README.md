@@ -107,6 +107,7 @@ Characteristic options are:
 * `gender`
 * `marital_status`
 * `occupation`
+* `party`
 
 #### `GET /api/stats/<state>/<year>/<post>/<characteristic>/`
 
