@@ -85,6 +85,33 @@ national election posts.
 
 Returns the details of a given candidate.
 
+#### `GET /api/stats/<year>/<post>/<characteristic>/`
+
+Get national statistics for a given characteristic in a elected post.
+
+Post options are:
+
+* `deputado-distrital`
+* `deputado-estadual`
+* `deputado-federal`
+* `governador`
+* `prefeito`
+* `senador`
+* `vereador`
+
+Characteristic options are:
+
+* `education`
+* `ethnicity`
+* `gender`
+* `marital_status`
+* `occupation`
+* `post`
+
+#### `GET /api/stats/<state>/<year>/<post>/<characteristic>/`
+
+Same as above but aggregated by state.
+
 ## Tests
 
 ```sh

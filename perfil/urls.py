@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.urls import path
 
-from perfil.core.views import CandidateDetailResource, CandidateListResource
+from perfil.core.views import CandidateDetailResource, CandidateListResource, national_stats, state_stats
 from perfil.website.views import home
 
 
@@ -30,5 +30,13 @@ urlpatterns = [
         "api/candidate/<int:pk>/",
         CandidateDetailResource.as_detail(),
         name="api_candidate_detail",
+    ),
+    path(
+        "api/stats/<str:state>/<int:year>/<str:post>/<str:characteristic>/",
+        state_stats, name="api_state_stats"
+    ),
+    path(
+        "api/stats/<int:year>/<str:post>/<str:characteristic>/",
+        national_stats, name="api_national_stats"
     ),
 ]
