@@ -105,7 +105,7 @@ class Stats:
     def __init__(self, year, post, characteristic, state=None):
         self.state = state.upper() if state else None
         self.year = year
-        self.post = post.replace('-', ' ').upper()
+        self.post = post.replace("-", " ").upper()
         self.characteristic = characteristic.lower()
 
         self.validate_argument(self.post, self.NATIONAL_POSTS)
@@ -116,13 +116,13 @@ class Stats:
     @staticmethod
     def validate_argument(argument, choices):
         if argument not in choices:
-            valid_choices = ', '.join(choices)
+            valid_choices = ", ".join(choices)
             msg = f"{argument} is invalid. Try one of those: {valid_choices}"
             raise Http404(msg)
 
     @property
     def sql(self):  # TODO use ORM?
-        state = f"AND state = '{self.state}'" if self.state else ''
+        state = f"AND state = '{self.state}'" if self.state else ""
         return f"""
             SELECT {self.characteristic} AS nome, COUNT(id) AS total
             FROM core_candidate
@@ -137,10 +137,13 @@ class Stats:
     def __call__(self):
         with connection.cursor() as cursor:
             cursor.execute(self.sql)
-            return JsonResponse([
-                {'characteristic': name, 'total': total}
-                for name, total in cursor.fetchall()
-            ], safe=False)
+            return JsonResponse(
+                [
+                    {"characteristic": name, "total": total}
+                    for name, total in cursor.fetchall()
+                ],
+                safe=False,
+            )
 
 
 def national_stats(request, year, post, characteristic):

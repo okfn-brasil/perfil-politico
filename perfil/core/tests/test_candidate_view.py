@@ -23,8 +23,8 @@ def test_candidate_list(client, candidates):
     assert "name" in candidates["objects"][0]
     assert "party" in candidates["objects"][0]
     assert "image" in candidates["objects"][0]
-    assert 'elections' in candidates['objects'][0]
-    assert 'elections_won' in candidates['objects'][0]
+    assert "elections" in candidates["objects"][0]
+    assert "elections_won" in candidates["objects"][0]
     assert "gender" in candidates["objects"][0]
     assert "ethnicity" in candidates["objects"][0]
 
@@ -42,17 +42,17 @@ def test_candidate_detail(client, candidates):
     ]
     candidate.politician.election_history = [
         {
-            'post': 'DEPUTADO DISTRITAL',
-            'year': 2018,
-            'result': 'ELEITO',
-            'elected': True
+            "post": "DEPUTADO DISTRITAL",
+            "year": 2018,
+            "result": "ELEITO",
+            "elected": True,
         },
         {
-            'post': 'DEPUTADO DISTRITAL',
-            'year': 2016,
-            'result': 'NAO ELEITO',
-            'elected': False
-        }
+            "post": "DEPUTADO DISTRITAL",
+            "year": 2016,
+            "result": "NAO ELEITO",
+            "elected": False,
+        },
     ]
     candidate.politician.save()
 
@@ -77,16 +77,17 @@ def test_candidate_detail(client, candidates):
     ]
     assert content["election_history"] == [
         {
-            'post': 'DEPUTADO DISTRITAL',
-            'year': 2016,
-            'result': 'NAO ELEITO', 'elected': False
+            "post": "DEPUTADO DISTRITAL",
+            "year": 2016,
+            "result": "NAO ELEITO",
+            "elected": False,
         },
         {
-            'post': 'DEPUTADO DISTRITAL',
-            'year': 2018,
-            'result': 'ELEITO',
-            'elected': True
-        }
+            "post": "DEPUTADO DISTRITAL",
+            "year": 2018,
+            "result": "ELEITO",
+            "elected": True,
+        },
     ]
-    assert content['elections'] == 2
-    assert content['elections_won'] == 1
+    assert content["elections"] == 2
+    assert content["elections_won"] == 1

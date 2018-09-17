@@ -15,7 +15,12 @@ Including another URLconf
 """
 from django.urls import path
 
-from perfil.core.views import CandidateDetailResource, CandidateListResource, national_stats, state_stats
+from perfil.core.views import (
+    CandidateDetailResource,
+    CandidateListResource,
+    national_stats,
+    state_stats,
+)
 from perfil.website.views import home
 
 
@@ -33,10 +38,12 @@ urlpatterns = [
     ),
     path(
         "api/stats/<str:state>/<int:year>/<str:post>/<str:characteristic>/",
-        state_stats, name="api_state_stats"
+        state_stats,
+        name="api_state_stats",
     ),
     path(
         "api/stats/<int:year>/<str:post>/<str:characteristic>/",
-        national_stats, name="api_national_stats"
+        national_stats,
+        name="api_national_stats",
     ),
 ]

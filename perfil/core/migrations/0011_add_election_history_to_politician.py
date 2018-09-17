@@ -6,14 +6,12 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0010_fix_typo_in_ethnicity_fields'),
-    ]
+    dependencies = [("core", "0010_fix_typo_in_ethnicity_fields")]
 
     operations = [
         migrations.AddField(
-            model_name='politician',
-            name='election_history',
+            model_name="politician",
+            name="election_history",
             field=django.contrib.postgres.fields.jsonb.JSONField(default=list),
-        ),
+        )
     ]

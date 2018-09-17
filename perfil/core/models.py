@@ -181,30 +181,27 @@ class Candidate(models.Model):
 
     objects = CampaignManager()
 
-    def _history(self, prefix, sort_by='year'):
+    def _history(self, prefix, sort_by="year"):
         if not self.politician:
             return []
 
-        data = getattr(self.politician, f'{prefix}_history', [])
+        data = getattr(self.politician, f"{prefix}_history", [])
         return sorted(data, key=lambda obj: obj[sort_by])
 
     def affiliation_history(self):
-        return self._history('affiliation', 'started_in')
+        return self._history("affiliation", "started_in")
 
     def asset_history(self):
-        return self._history('asset')
+        return self._history("asset")
 
     def election_history(self):
-        return self._history('election')
+        return self._history("election")
 
     def elections(self):
         return len(self.election_history())
 
     def elections_won(self):
-        return sum(
-            1 for election in self.election_history()
-            if election['elected']
-        )
+        return sum(1 for election in self.election_history() if election["elected"])
 
     def image(self):
         if self.year != 2018:

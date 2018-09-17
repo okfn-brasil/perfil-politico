@@ -13,7 +13,7 @@ class Command(BaseCommand):
     @staticmethod
     def politicians_and_results():
         print("Worry not: this query takes several minutes to run…")
-        Row = namedtuple('Row', ('id', 'result', 'year', 'post'))
+        Row = namedtuple("Row", ("id", "result", "year", "post"))
         sql = """
             SELECT
                 affiliation_politician.politician_id,
@@ -49,22 +49,20 @@ class Command(BaseCommand):
         # create election history
         for row in bulk:
             politician = politicians.get(row.id)
-            politician.election_history.append({
-                "year": int(row.year),
-                "elected": row.result.startswith('ELEITO '),
-                "result": row.result,
-                "post": row.post
-            })
+            politician.election_history.append(
+                {
+                    "year": int(row.year),
+                    "elected": row.result.startswith("ELEITO "),
+                    "result": row.result,
+                    "post": row.post,
+                }
+            )
 
         yield from politicians.values()
 
     def handle(self, *args, **options):
         results = tuple(self.politicians_and_results())
-        kwargs = {
-            "desc": 'Election results',
-            "total": len(results),
-            "unit": "results",
-        }
+        kwargs = {"desc": "Election results", "total": len(results), "unit": "results"}
         with tqdm(**kwargs) as progress_bar:
             for bulk in ipartition(results, 4096):
                 bulk = tuple(self.serialize_bulk(bulk))

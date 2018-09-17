@@ -25,13 +25,15 @@ def test_election_history_was_created():
     last = Politician.objects.last()
     assert last.election_history == [
         {
-            'post': 'DEPUTADO DISTRITAL',
-            'year': 2018,
-            'result': 'NAO ELEITO', 'elected': False
+            "post": "DEPUTADO DISTRITAL",
+            "year": 2018,
+            "result": "NAO ELEITO",
+            "elected": False,
         },
         {
-            'post': 'DEPUTADO DISTRITAL',
-            'year': 2018,
-            'result': 'ELEITO',
-            'elected': False}
+            "post": "DEPUTADO DISTRITAL",
+            "year": 2018,
+            "result": "ELEITO",
+            "elected": False,
+        },
     ]
