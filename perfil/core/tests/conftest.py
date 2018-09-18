@@ -17,5 +17,6 @@ def candidates(db):
         politician=(politician for politician in politicians),
         year=(year for year in (2018, 2018, 2016)),
         sequential=(n for n in ("70000601690", "70000625538", "42")),
+        ballot_name=(n for n in ("GRAHAM", "JOHN", "TERRY")),
         state="DF",
     )

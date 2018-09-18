@@ -2,7 +2,7 @@ from datetime import date
 from decimal import Decimal
 
 from django.db import models
-from django.contrib.postgres.fields import JSONField
+from django.contrib.postgres.fields import ArrayField, JSONField
 
 from perfil.core.managers import CampaignManager
 
@@ -265,3 +265,21 @@ class Asset(models.Model):
         verbose_name_plural = "assets"
         ordering = ("candidate__ballot_name", "-value")
         indexes = (models.Index(fields=("candidate",)), models.Index(fields=("value",)))
+
+
+class Bill(models.Model):
+    authors = models.ManyToManyField(Politician, related_name="bills")
+    summary = models.TextField(blank=True, default="")
+    name = models.CharField(max_length=16, blank=True, default="")
+    keywords = ArrayField(models.CharField(max_length=255))
+    source_id = models.IntegerField()
+    url = models.URLField(unique=True)
+
+    def __repr__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "bill"
+        verbose_name_plural = "bills"
+        ordering = ("name",)
+        indexes = (models.Index(fields=("keywords",)), models.Index(fields=("url",)))

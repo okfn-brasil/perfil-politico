@@ -173,6 +173,7 @@ class BaseCommand(base.BaseCommand):
 
         self.post_handle()
         get_city.cache_clear()
+        get_candidate.cache_clear()
         get_party.cache_clear()
 
     def serialize(self, line):
