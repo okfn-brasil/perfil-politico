@@ -1,5 +1,6 @@
 from collections import defaultdict
 
+from cached_property import cached_property
 from django.db import connection
 from django.http import Http404, JsonResponse
 from restless.dj import DjangoResource
@@ -24,10 +25,27 @@ class CandidateListResource(DjangoResource):
         }
     )
 
+    @cached_property
+    def api_fields(self):
+        """Define fields to select in the QuerySet based on preparer fields"""
+
+        fields = []
+        for field in self.preparer.fields.values():
+            field = field.replace('.', '__')
+            if field in ('elections_won', 'image'):
+                continue
+            elif field == 'elections':
+                field = 'politician__election_history'
+            fields.append(field)
+        return fields
+
     def list(self, year, state, post):
         state = state.upper()
         post = post.upper().replace("-", " ")
-        return Candidate.objects.campaign(year).filter(post=post, state=state)
+        return Candidate.objects.campaign(year)\
+                                .filter(post=post, state=state)\
+                                .select_related('party', 'politician')\
+                                .only(*self.api_fields)
 
 
 class CandidateDetailResource(DjangoResource):
