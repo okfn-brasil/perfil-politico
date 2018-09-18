@@ -1,7 +1,7 @@
 from collections import defaultdict
 
 from cached_property import cached_property
-from django.db import connection
+from django.db.models import Count
 from django.http import Http404, JsonResponse
 from restless.dj import DjangoResource
 from restless.preparers import FieldsPreparer
@@ -155,28 +155,6 @@ class Stats:
 
         return characteristic
 
-    @property
-    def sql(self):  # TODO use ORM?
-        state, party = "", ""
-
-        if self.state:
-            state = f"AND state = '{self.state}'"
-
-        if self.characteristic == "party":
-            party = "INNER JOIN core_party ON core_candidate.party_id = core_party.id"
-
-        return f"""
-            SELECT {self.column}, COUNT(core_candidate.id) AS total
-            FROM core_candidate
-            {party}
-            WHERE year = {self.year}
-              AND post = '{self.post}'
-              AND round_result LIKE 'ELEIT%'
-              {state}
-            GROUP BY {self.column}
-            ORDER BY total DESC
-        """
-
     def age_stats(self, data):
         aggregated = defaultdict(int)
         ordered = (
@@ -204,7 +182,7 @@ class Stats:
             return "70-or-more"
 
         for row in data:
-            date_of_birth, total = row["characteristic"], int(row["total"])
+            date_of_birth, total = row["characteristic"], row["total"]
             aggregated[aggregate(date_of_birth)] += total
 
         return tuple(
@@ -212,12 +190,14 @@ class Stats:
         )
 
     def __call__(self):
-        with connection.cursor() as cursor:
-            cursor.execute(self.sql)
-            data = tuple(
-                {"characteristic": name, "total": total}
-                for name, total in cursor.fetchall()
-            )
+        column = self.column.replace(".", "__")
+        qs = Candidate.objects.filter(
+            year=self.year, post=self.post, round_result__startswith="ELEIT"
+        )
+        if self.state:
+            qs = qs.filter(state=self.state)
+        qs = qs.values(column).annotate(total=Count("id")).order_by("-total")
+        data = [{"characteristic": row[column], "total": row["total"]} for row in qs]
 
         if self.characteristic == "age":
             data = self.age_stats(data)
