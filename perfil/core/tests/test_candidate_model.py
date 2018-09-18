@@ -80,6 +80,26 @@ def test_invalid_affiliation_history_method(candidates):
 
 
 @pytest.mark.django_db
+def test_valid_bill_keywords_method(candidates):
+    candidate = Candidate.objects.last()
+    candidate.politician.bill_keywords = [
+        {"keyword": "bar", "total": 1},
+        {"keyword": "foo", "total": 2},
+    ]
+    assert candidate.bill_keywords() == [
+        {"keyword": "foo", "total": 2},
+        {"keyword": "bar", "total": 1},
+    ]
+
+
+@pytest.mark.django_db
+def test_invalid_bill_keywords_method(candidates):
+    candidate = Candidate.objects.last()
+    candidate.politician = None
+    assert candidate.bill_keywords() == []
+
+
+@pytest.mark.django_db
 def test_get_age(candidates):
     candidate = Candidate.objects.last()
 

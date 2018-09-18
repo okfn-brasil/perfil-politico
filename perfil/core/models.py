@@ -132,6 +132,7 @@ class Politician(models.Model):
     affiliation_history = JSONField(default=list)
     asset_history = JSONField(default=list)
     election_history = JSONField(default=list)
+    bill_keywords = JSONField(default=list)
 
     def __repr__(self):
         return (
@@ -212,6 +213,13 @@ class Candidate(models.Model):
 
     def elections_won(self):
         return sum(1 for election in self.election_history() if election["elected"])
+
+    def bill_keywords(self):
+        if not self.politician:
+            return []
+
+        data = self.politician.bill_keywords
+        return sorted(data, key=lambda obj: obj["total"], reverse=True)
 
     def image(self):
         if self.year != 2018:

@@ -4,7 +4,7 @@ from cached_property import cached_property
 from django.db.models import Count
 from django.http import Http404, JsonResponse
 from restless.dj import DjangoResource
-from restless.preparers import FieldsPreparer
+from restless.preparers import CollectionSubPreparer, FieldsPreparer
 
 from perfil.core.models import STATES, Candidate, age
 
@@ -54,6 +54,10 @@ class CandidateListResource(DjangoResource):
 
 
 class CandidateDetailResource(DjangoResource):
+    bill_preparer = FieldsPreparer(
+        fields={"name": "name", "keywords": "keywords", "url": "url"}
+    )
+
     preparer = FieldsPreparer(
         fields={
             "id": "id",
@@ -86,6 +90,8 @@ class CandidateDetailResource(DjangoResource):
             "coalition_name": "coalition_name",
             "coalition_description": "coalition_description",
             "coalition_short_name": "coalition_short_name",
+            "bills": CollectionSubPreparer("politician.bills.all", bill_preparer),
+            "bill_keywords": "bill_keywords",
         }
     )
 
@@ -96,7 +102,7 @@ class CandidateDetailResource(DjangoResource):
         methods = {"elections", "elections_won", "image", "get_age"}
 
         for field in self.preparer.fields.values():
-            if field in methods:
+            if field in methods or not isinstance(field, str):
                 continue
 
             if field == "election_history":
@@ -107,6 +113,9 @@ class CandidateDetailResource(DjangoResource):
 
             if field == "asset_history":
                 field = "politician__asset_history"
+
+            if field == "bill_keywords":
+                field = "politician__bill_keywords"
 
             fields.append(field.replace(".", "__"))
 

@@ -1,6 +1,8 @@
+from collections import Counter
 from functools import lru_cache
 
 from django.db.models import Q
+from django_bulk_update.helper import bulk_update
 from tqdm import tqdm
 
 from perfil.core.management.commands import BaseCommand
@@ -80,3 +82,18 @@ class Command(BaseCommand):
             bill.save()
 
         get_politician.cache_clear()
+        self.post_handle_cache = None
+
+        kwargs = {"desc": "Counting keywords", "unit": "politicians"}
+        politicians = tuple(Politician.objects.exclude(bills=None))
+        for politician in tqdm(politicians, **kwargs):
+            counter = Counter()
+            for bill in politician.bills.all():
+                counter.update(bill.keywords)
+
+            politician.bill_keywords = tuple(
+                {"keyword": keyword, "total": total}
+                for keyword, total in counter.most_common()
+            )
+
+        bulk_update(politicians, update_fields=("bill_keywords",))
