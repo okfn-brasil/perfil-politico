@@ -5,21 +5,23 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0011_add_election_history_to_politician'),
-    ]
+    dependencies = [("core", "0011_add_election_history_to_politician")]
 
     operations = [
         migrations.RemoveIndex(
-            model_name='candidate',
-            name='core_candid_state_812cc2_idx',
+            model_name="candidate", name="core_candid_state_812cc2_idx"
         ),
         migrations.AddIndex(
-            model_name='candidate',
-            index=models.Index(fields=['year', 'state', 'post', 'ballot_name'], name='core_candid_year_dea929_idx'),
+            model_name="candidate",
+            index=models.Index(
+                fields=["year", "state", "post", "ballot_name"],
+                name="core_candid_year_dea929_idx",
+            ),
         ),
         migrations.AddIndex(
-            model_name='candidate',
-            index=models.Index(fields=['round_result'], name='core_candid_round_r_a70ef0_idx'),
+            model_name="candidate",
+            index=models.Index(
+                fields=["round_result"], name="core_candid_round_r_a70ef0_idx"
+            ),
         ),
     ]
