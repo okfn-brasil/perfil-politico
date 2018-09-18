@@ -89,8 +89,35 @@ class CandidateDetailResource(DjangoResource):
         }
     )
 
+    @cached_property
+    def api_fields(self):
+        """Define fields to select in the QuerySet based on preparer fields"""
+        fields = ["year", "sequential"]
+        methods = {"elections", "elections_won", "image", "get_age"}
+
+        for field in self.preparer.fields.values():
+            if field in methods:
+                continue
+
+            if field == "election_history":
+                field = "politician__election_history"
+
+            if field == "affiliation_history":
+                field = "politician__affiliation_history"
+
+            if field == "asset_history":
+                field = "politician__asset_history"
+
+            fields.append(field.replace(".", "__"))
+
+        return tuple(fields)
+
     def detail(self, pk):
-        return Candidate.objects.get(pk=pk)
+        return (
+            Candidate.objects.select_related("party", "politician", "place_of_birth")
+            .only(*self.api_fields)
+            .get(pk=pk)
+        )
 
 
 class Stats:
