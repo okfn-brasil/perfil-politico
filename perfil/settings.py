@@ -58,7 +58,7 @@ MIDDLEWARE = [
 ]
 
 if DEBUG:
-    MIDDLEWARE.append("perfil.utils.sqlprint.SqlPrintingMiddleware")
+    MIDDLEWARE.append("perfil.middlewares.sqlprint.SqlPrintingMiddleware")
 
 ROOT_URLCONF = "perfil.urls"
 

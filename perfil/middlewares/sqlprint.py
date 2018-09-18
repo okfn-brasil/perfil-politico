@@ -43,18 +43,20 @@ class SqlPrintingMiddleware:
         response = self.get_response(request)
 
         indentation = 2
-        if len(connection.queries) > 0 and settings.DEBUG:
-            width = terminal_width()
-            total_time = 0.0
-            for query in connection.queries:
-                nice_sql = query["sql"].replace('"', "").replace(",", ", ")
-                sql = "\033[1;31m[{}]\033[0m {}".format(query["time"], nice_sql)
-                total_time = total_time + float(query["time"])
-                while len(sql) > width - indentation:
-                    print("{}{}".format(" " * indentation, sql[: width - indentation]))
-                    sql = sql[width - indentation :]
-                print("{}{}\n".format(" " * indentation, sql))
-            replace_tuple = (" " * indentation, str(total_time))
-            print("{}\033[1;32m[TOTAL TIME: {} seconds]\033[0m".format(*replace_tuple))
+        if not len(connection.queries) or not settings.DEBUG:
+            return response
+
+        width = terminal_width()
+        total_time = 0.0
+        for query in connection.queries:
+            nice_sql = query["sql"].replace('"', "").replace(",", ", ")
+            sql = "\033[1;31m[{}]\033[0m {}".format(query["time"], nice_sql)
+            total_time = total_time + float(query["time"])
+            while len(sql) > width - indentation:
+                print("{}{}".format(" " * indentation, sql[: width - indentation]))
+                sql = sql[width - indentation :]
+            print("{}{}\n".format(" " * indentation, sql))
+        replace_tuple = (" " * indentation, str(total_time))
+        print("{}\033[1;32m[TOTAL TIME: {} seconds]\033[0m".format(*replace_tuple))
 
         return response
