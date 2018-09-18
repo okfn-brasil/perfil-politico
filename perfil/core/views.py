@@ -28,18 +28,19 @@ class CandidateListResource(DjangoResource):
     @cached_property
     def api_fields(self):
         """Define fields to select in the QuerySet based on preparer fields"""
-
         fields = ["year", "sequential"]
+        methods = {"elections_won", "image"}
+
         for field in self.preparer.fields.values():
-            field = field.replace(".", "__")
-            if field in ("elections_won", "image"):
+            if field in methods:
                 continue
-            elif field == "elections":
+
+            if field == "elections":
                 field = "politician__election_history"
-            elif field == "party":
-                fields.extend(["party__name", "party__abbreviation"])
-            fields.append(field)
-        return fields
+
+            fields.append(field.replace(".", "__"))
+
+        return tuple(fields)
 
     def list(self, year, state, post):
         state = state.upper()
@@ -132,7 +133,7 @@ class Stats:
         self.year = year
         self.post = post.replace("-", " ").upper()
         self.characteristic = characteristic.lower()
-        self.column = self.get_column_name(self.characteristic)
+        self.field = self.get_field_name(self.characteristic)
 
         self.validate_argument(self.post, self.NATIONAL_POSTS)
         self.validate_argument(self.characteristic, self.CHARACTERISTICS)
@@ -147,11 +148,12 @@ class Stats:
             raise Http404(msg)
 
     @staticmethod
-    def get_column_name(characteristic):
+    def get_field_name(characteristic):
         if characteristic == "age":
             return "date_of_birth"
+
         if characteristic == "party":
-            return "core_party.abbreviation"
+            return "core_party__abbreviation"
 
         return characteristic
 
@@ -190,14 +192,15 @@ class Stats:
         )
 
     def __call__(self):
-        column = self.column.replace(".", "__")
         qs = Candidate.objects.filter(
             year=self.year, post=self.post, round_result__startswith="ELEIT"
         )
         if self.state:
             qs = qs.filter(state=self.state)
-        qs = qs.values(column).annotate(total=Count("id")).order_by("-total")
-        data = [{"characteristic": row[column], "total": row["total"]} for row in qs]
+        qs = qs.values(self.field).annotate(total=Count("id")).order_by("-total")
+        data = [
+            {"characteristic": row[self.field], "total": row["total"]} for row in qs
+        ]
 
         if self.characteristic == "age":
             data = self.age_stats(data)
