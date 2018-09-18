@@ -29,13 +29,15 @@ class CandidateListResource(DjangoResource):
     def api_fields(self):
         """Define fields to select in the QuerySet based on preparer fields"""
 
-        fields = []
+        fields = ['year', 'sequential']
         for field in self.preparer.fields.values():
             field = field.replace('.', '__')
             if field in ('elections_won', 'image'):
                 continue
             elif field == 'elections':
                 field = 'politician__election_history'
+            elif field == 'party':
+                fields.extend(['party__name', 'party__abbreviation'])
             fields.append(field)
         return fields
 
