@@ -9,8 +9,8 @@ services:
     env_file:
       - .env
     ports:
-      - "8080:8080"
-    command: ["gunicorn", "perfil.wsgi:application", "--reload", "--bind", "0.0.0.0:8080", "--workers", "1", "--log-level", "INFO", "--timeout", "180"]
+      - "8001:8001"
+    command: ["gunicorn", "perfil.wsgi:application", "--reload", "--bind", "0.0.0.0:8001", "--workers", "1", "--log-level", "INFO", "--timeout", "300"]
 
   redis:
     image: redis:4.0.11-alpine
