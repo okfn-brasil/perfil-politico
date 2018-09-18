@@ -57,6 +57,9 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+if DEBUG:
+    MIDDLEWARE.append("perfil.middlewares.sqlprint.SqlPrintingMiddleware")
+
 ROOT_URLCONF = "perfil.urls"
 
 TEMPLATES = [

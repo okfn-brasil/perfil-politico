@@ -242,7 +242,8 @@ class Candidate(models.Model):
             models.Index(fields=("politician",)),
             models.Index(fields=("voter_id",)),
             models.Index(fields=("year",)),
-            models.Index(fields=("state", "post")),
+            models.Index(fields=("year", "state", "post", "ballot_name")),
+            models.Index(fields=("round_result",)),
             models.Index(fields=("sequential",)),
         )
 

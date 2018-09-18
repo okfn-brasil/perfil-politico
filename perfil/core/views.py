@@ -1,6 +1,7 @@
 from collections import defaultdict
 
-from django.db import connection
+from cached_property import cached_property
+from django.db.models import Count
 from django.http import Http404, JsonResponse
 from restless.dj import DjangoResource
 from restless.preparers import FieldsPreparer
@@ -24,10 +25,32 @@ class CandidateListResource(DjangoResource):
         }
     )
 
+    @cached_property
+    def api_fields(self):
+        """Define fields to select in the QuerySet based on preparer fields"""
+        fields = ["year", "sequential"]
+        methods = {"elections_won", "image"}
+
+        for field in self.preparer.fields.values():
+            if field in methods:
+                continue
+
+            if field == "elections":
+                field = "politician__election_history"
+
+            fields.append(field.replace(".", "__"))
+
+        return tuple(fields)
+
     def list(self, year, state, post):
         state = state.upper()
         post = post.upper().replace("-", " ")
-        return Candidate.objects.campaign(year).filter(post=post, state=state)
+        return (
+            Candidate.objects.campaign(year)
+            .filter(post=post, state=state)
+            .select_related("party", "politician")
+            .only(*self.api_fields)
+        )
 
 
 class CandidateDetailResource(DjangoResource):
@@ -66,8 +89,35 @@ class CandidateDetailResource(DjangoResource):
         }
     )
 
+    @cached_property
+    def api_fields(self):
+        """Define fields to select in the QuerySet based on preparer fields"""
+        fields = ["year", "sequential"]
+        methods = {"elections", "elections_won", "image", "get_age"}
+
+        for field in self.preparer.fields.values():
+            if field in methods:
+                continue
+
+            if field == "election_history":
+                field = "politician__election_history"
+
+            if field == "affiliation_history":
+                field = "politician__affiliation_history"
+
+            if field == "asset_history":
+                field = "politician__asset_history"
+
+            fields.append(field.replace(".", "__"))
+
+        return tuple(fields)
+
     def detail(self, pk):
-        return Candidate.objects.get(pk=pk)
+        return (
+            Candidate.objects.select_related("party", "politician", "place_of_birth")
+            .only(*self.api_fields)
+            .get(pk=pk)
+        )
 
 
 class Stats:
@@ -110,7 +160,7 @@ class Stats:
         self.year = year
         self.post = post.replace("-", " ").upper()
         self.characteristic = characteristic.lower()
-        self.column = self.get_column_name(self.characteristic)
+        self.field = self.get_field_name(self.characteristic)
 
         self.validate_argument(self.post, self.NATIONAL_POSTS)
         self.validate_argument(self.characteristic, self.CHARACTERISTICS)
@@ -125,35 +175,14 @@ class Stats:
             raise Http404(msg)
 
     @staticmethod
-    def get_column_name(characteristic):
+    def get_field_name(characteristic):
         if characteristic == "age":
             return "date_of_birth"
+
         if characteristic == "party":
-            return "core_party.abbreviation"
+            return "core_party__abbreviation"
 
         return characteristic
-
-    @property
-    def sql(self):  # TODO use ORM?
-        state, party = "", ""
-
-        if self.state:
-            state = f"AND state = '{self.state}'"
-
-        if self.characteristic == "party":
-            party = "INNER JOIN core_party ON core_candidate.party_id = core_party.id"
-
-        return f"""
-            SELECT {self.column}, COUNT(core_candidate.id) AS total
-            FROM core_candidate
-            {party}
-            WHERE year = {self.year}
-              AND post = '{self.post}'
-              AND round_result LIKE 'ELEIT%'
-              {state}
-            GROUP BY {self.column}
-            ORDER BY total DESC
-        """
 
     def age_stats(self, data):
         aggregated = defaultdict(int)
@@ -182,7 +211,7 @@ class Stats:
             return "70-or-more"
 
         for row in data:
-            date_of_birth, total = row["characteristic"], int(row["total"])
+            date_of_birth, total = row["characteristic"], row["total"]
             aggregated[aggregate(date_of_birth)] += total
 
         return tuple(
@@ -190,12 +219,15 @@ class Stats:
         )
 
     def __call__(self):
-        with connection.cursor() as cursor:
-            cursor.execute(self.sql)
-            data = tuple(
-                {"characteristic": name, "total": total}
-                for name, total in cursor.fetchall()
-            )
+        qs = Candidate.objects.filter(
+            year=self.year, post=self.post, round_result__startswith="ELEIT"
+        )
+        if self.state:
+            qs = qs.filter(state=self.state)
+        qs = qs.values(self.field).annotate(total=Count("id")).order_by("-total")
+        data = [
+            {"characteristic": row[self.field], "total": row["total"]} for row in qs
+        ]
 
         if self.characteristic == "age":
             data = self.age_stats(data)
