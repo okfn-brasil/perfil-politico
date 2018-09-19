@@ -214,6 +214,12 @@ class Candidate(models.Model):
     def elections_won(self):
         return sum(1 for election in self.election_history() if election["elected"])
 
+    def bills(self):
+        if not self.politician:
+            return []
+
+        return self.politician.bills.all()
+
     def bill_keywords(self):
         if not self.politician:
             return []

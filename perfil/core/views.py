@@ -90,7 +90,7 @@ class CandidateDetailResource(DjangoResource):
             "coalition_name": "coalition_name",
             "coalition_description": "coalition_description",
             "coalition_short_name": "coalition_short_name",
-            "bills": CollectionSubPreparer("politician.bills.all", bill_preparer),
+            "bills": CollectionSubPreparer("bills", bill_preparer),
             "bill_keywords": "bill_keywords",
         }
     )
