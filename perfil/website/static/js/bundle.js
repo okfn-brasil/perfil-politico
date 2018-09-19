@@ -24149,7 +24149,7 @@ var IncomingMessage = exports.IncomingMessage = function (xhr, response, mode) {
 		self.url = response.url
 		self.statusCode = response.status
 		self.statusMessage = response.statusText
-
+		
 		response.headers.forEach(function (header, key){
 			self.headers[key.toLowerCase()] = header
 			self.rawHeaders.push(key, header)
@@ -24272,7 +24272,7 @@ IncomingMessage.prototype._onXHRProgress = function () {
 				self.push(new Buffer(response))
 				break
 			}
-			// Falls through in IE8
+			// Falls through in IE8	
 		case 'text':
 			try { // This will fail when readyState = 3 in IE9. Switch mode and wait for readyState = 4
 				response = xhr.responseText
@@ -25572,7 +25572,7 @@ exports.XMLHttpRequest = function() {
   this.responseXML = "";
   this.status = null;
   this.statusText = null;
-
+  
   // Whether cross-site Access-Control requests should be made using
   // credentials such as cookies or authorization headers
   this.withCredentials = false;
@@ -26105,13 +26105,1309 @@ function extend() {
 },{}],71:[function(require,module,exports){
 "use strict";
 
+module.exports = [{
+	"filtro": "estado",
+	"lista": [{
+		"valor": "ac",
+		"nome": "Acre",
+		"preposicao": "no"
+	}, {
+		"valor": "al",
+		"nome": "Alagoas",
+		"preposicao": "em"
+	}, {
+		"valor": "am",
+		"nome": "Amazonas",
+		"preposicao": "no"
+	}, {
+		"valor": "ap",
+		"nome": "Amapá",
+		"preposicao": "no"
+	}, {
+		"valor": "ba",
+		"nome": "Bahia",
+		"preposicao": "na"
+	}, {
+		"valor": "ce",
+		"nome": "Ceará",
+		"preposicao": "no"
+	}, {
+		"valor": "df",
+		"nome": "Distrito Federal",
+		"preposicao": "no"
+	}, {
+		"valor": "es",
+		"nome": "Espírito Santo",
+		"preposicao": "no"
+	}, {
+		"valor": "go",
+		"nome": "Goiás",
+		"preposicao": "em"
+	}, {
+		"valor": "ma",
+		"nome": "Maranhão",
+		"preposicao": "no"
+	}, {
+		"valor": "mg",
+		"nome": "Minas Gerais",
+		"preposicao": "em"
+	}, {
+		"valor": "ms",
+		"nome": "Mato Grosso do Sul",
+		"preposicao": "no"
+	}, {
+		"valor": "mt",
+		"nome": "Mato Grosso",
+		"preposicao": "no"
+	}, {
+		"valor": "pa",
+		"nome": "Pará",
+		"preposicao": "no"
+	}, {
+		"valor": "pb",
+		"nome": "Paraíba",
+		"preposicao": "na"
+	}, {
+		"valor": "pe",
+		"nome": "Pernambuco",
+		"preposicao": "em"
+	}, {
+		"valor": "pi",
+		"nome": "Piauí",
+		"preposicao": "no"
+	}, {
+		"valor": "pr",
+		"nome": "Paraná",
+		"preposicao": "no"
+	}, {
+		"valor": "rj",
+		"nome": "Rio de Janeiro",
+		"preposicao": "no"
+	}, {
+		"valor": "rn",
+		"nome": "Rio Grande do Norte",
+		"preposicao": "no"
+	}, {
+		"valor": "ro",
+		"nome": "Rondônia",
+		"preposicao": "em"
+	}, {
+		"valor": "rr",
+		"nome": "Roraima",
+		"preposicao": "em"
+	}, {
+		"valor": "rs",
+		"nome": "Rio Grande do Sul",
+		"preposicao": "no"
+	}, {
+		"valor": "sc",
+		"nome": "Santa Catarina",
+		"preposicao": "em"
+	}, {
+		"valor": "se",
+		"nome": "Sergipe",
+		"preposicao": "no"
+	}, {
+		"valor": "sp",
+		"nome": "São Paulo",
+		"preposicao": "em"
+	}, {
+		"valor": "to",
+		"nome": "Tocantins",
+		"preposicao": "no"
+	}]
+}, {
+	"filtro": "cargo",
+	"lista": [{
+		"valor": "deputado-federal",
+		"nome": "Deputado Federal",
+		"feminino": "Deputada Federal"
+	}, {
+		"valor": "deputado-estadual",
+		"nome": "Deputado Estadual",
+		"feminino": "Deputada Estadual"
+	}, {
+		"valor": "senador",
+		"nome": "Senador",
+		"feminino": "Senadora"
+	}, {
+		"valor": "governador",
+		"nome": "Governador",
+		"feminino": "Governadora"
+	}, {
+		"valor": "presidente",
+		"nome": "Presidente",
+		"feminino": "Presidente"
+	}]
+}];
+
+},{}],72:[function(require,module,exports){
+"use strict";
+
 // detect mobile browser
 var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
+// globals
 window.d3 = require("d3");
+//window.data = require("./data/data");// temporary fake list
+window.filters = require("./data/filters"); // to populate the selects
+var populateFilters = require("./modules/mod-filters");
+var customSelects = require("./modules/mod-select");
+var viz = require("./modules/mod-viz");
+var chart2 = require("./modules/mod-chart2");
 
-/*window.filterData = require("./data/filters");
-let populateFilters = require("./modules/mod-filters");
-let chart = require("./modules/mod-chart");*/
+window.currentFilters = {
+	"estado": "sp",
+	"estado_nome": "São Paulo",
+	"estado_prep": "no",
+	"cargo": "deputado-federal"
+};
 
-},{"d3":37}]},{},[71]);
+populateFilters(window.filters);
+customSelects();
+viz();
+chart2();
+
+},{"./data/filters":71,"./modules/mod-chart2":73,"./modules/mod-filters":74,"./modules/mod-select":75,"./modules/mod-viz":76,"d3":37}],73:[function(require,module,exports){
+"use strict";
+
+// builds the chart using d3
+module.exports = function () {
+	var d3 = window.d3;
+	var breakPoint = 580; // screen width
+	var margin = void 0,
+	    wHeight = void 0,
+	    wWidth = void 0,
+	    svgWidth = void 0,
+	    svgHeight = void 0,
+	    colWidth = void 0,
+	    colHeight = void 0;
+	var x = void 0,
+	    y = void 0,
+	    assetsLine = void 0,
+	    svg = void 0,
+	    xAxis = void 0,
+	    yAxis = void 0;
+	var parent = void 0;
+	var parseYear = d3.timeParse("%Y");
+	var formatMoney = d3.format(",.2f");
+	var formatNumber = d3.format(".1f");
+	var max = void 0,
+	    maxDate = void 0,
+	    minDate = void 0;
+	var chartData = void 0;
+	var infoTimeout = void 0,
+	    msgTimeout = void 0;
+	//window.parseDate = d3.timeParse("%Y-%m-%d");
+
+	var init = function init() {
+		//
+		d3.select("#chart2").classed("hidden", true);
+		window.resizeChart2();
+	};
+
+	window.buildChart2 = function (data) {
+		var affiliations = void 0,
+		    assets = void 0;
+
+		if (data) {
+			chartData = data;
+			affiliations = chartData.affiliation_history;
+			assets = chartData.asset_history;
+		}
+
+		if (!chartData || affiliations.length <= 1 && assets.length <= 1) {
+			d3.select("#chart2").classed("hidden", true);
+			d3.select("#chart2-title").classed("hidden", true);
+			chartData = null;
+			return;
+		} else {
+			d3.select("#chart2").classed("hidden", false);
+			d3.select("#chart2-title").classed("hidden", false);
+		}
+
+		// add svg wrapper with initial size
+		if (svg) {
+			svg.remove();svg = null;
+		};
+
+		svg = d3.select("#chart2").append("svg") //d3.select(".block").append("svg")
+		.attr("class", "chart2-svg").attr("viewBox", "0 0 " + colWidth + " " + colHeight).attr("width", colWidth).attr("height", colHeight);
+
+		max = d3.max(assets, function (d) {
+			return +d.value;
+		});
+
+		if (max < 100000) {
+			max = 100000;
+		} else if (max < 1000000) {
+			max = 1000000;
+		} else {
+			max = Math.ceil(max / 10000000) * 10000000;
+		}
+
+		maxDate = new Date(2018, 11, 31);
+		/*maxDate = new Date(d3.max(affiliations, function(d) {
+  	let date = window.parseDate(d.started_in);
+  	return +date;
+  }));*/
+
+		minDate = new Date(d3.min(affiliations, function (d) {
+			var date = window.parseDate(d.started_in);
+
+			return +date;
+		}));
+
+		if (minDate.getTime() == maxDate.getTime()) {
+			minDate = new Date(maxDate.getFullYear() - 1, 1, 1);
+		}
+
+		// set the ranges
+		x = d3.scaleTime().range([margin.left, svgWidth]);
+		y = d3.scaleLinear().range([svgHeight + margin.top - margin.bottom, margin.top]);
+
+		xAxis = d3.axisBottom(x).tickFormat(d3.timeFormat("%Y")).ticks(4).tickSize(-svgHeight + margin.top).ticks(d3.timeYear);
+
+		yAxis = d3.axisRight(y).tickSize(svgWidth - margin.right).ticks(4).tickFormat(function (d) {
+			var s = void 0;
+			var text = " mil";
+
+			if (max <= 900000) {
+				s = formatNumber(d / 1000);
+				text = " mil";
+			} else {
+				s = formatNumber(d / 1000000);
+				text = " milhões";
+			}
+
+			//console.log(1e6);
+			return this.parentNode.nextSibling ? "\xa0" + s : "R$" + s + text;
+		});
+
+		// define the line
+		assetsLine = d3.line().x(function (d) {
+			return x(new Date(d.year, 0, 1));
+		}).y(function (d) {
+			return y(d.value);
+		});
+
+		// format the data
+		/*
+  assets.forEach(function(d) {
+  	d.year = window.parseDate(d.year);
+  	console.log(d.year);
+  	d.value = +d.value;
+  });
+  */
+
+		// Scale the range of the data
+		//d3.extent(assets, function(d) { return d.year; })
+		x.domain([minDate, maxDate]);
+		y.domain([0, d3.max(assets, function (d) {
+			return d.value;
+		})]);
+
+		// Add the X Axis
+		svg.append("g").attr("transform", "translate(0," + (svgHeight - margin.top) + ")").call(customXAxis);
+
+		// Add the Y Axis
+		svg.append("g").attr("transform", "translate(" + margin.left + ",0)").call(customYAxis);
+
+		// Add the valueline path.
+		svg.append("path").data([assets]).attr("class", "asset-line").attr("d", assetsLine);
+
+		svg.selectAll("circle").data(assets).enter().append("circle").attr("class", "asset-point").attr("r", 5).attr("cx", function (d, i) {
+			return x(new Date(d.year, 0, 1));
+		}).attr("cy", function (d, i) {
+			return y(d.value);
+		}).on("mouseover", function (d) {
+			d3.select("#info-box").html(function () {
+				return "R$" + formatMoney(d.value);
+			});
+			d3.select("#info-box").classed("hidden", false);
+			d3.select("#info-box").classed("smaller", true);
+
+			clearTimeout(infoTimeout);
+		}).on("mouseout", function (d) {
+			clearTimeout(infoTimeout);
+			infoTimeout = setTimeout(function () {
+				d3.select("#info-box").classed("hidden", true);
+				d3.select("#info-box").classed("smaller", false);
+			}, 500);
+		}).on("mousemove", function (d) {
+			var coordinates = d3.mouse(d3.select('body').node());
+			var height = d3.select("#info-box").node().offsetHeight;
+			var width = d3.select("#info-box").node().offsetWidth;
+
+			if (coordinates[0] > colWidth - width) {
+				coordinates[0] -= width;
+			}
+
+			if (colWidth < 480) {
+				coordinates[0] = colWidth / 2 - width / 2 + 20;
+			}
+
+			d3.select("#info-box").attr("style", "margin-left: " + coordinates[0] + "px; margin-top: " + (coordinates[1] - height - 15) + "px");
+
+			clearTimeout(infoTimeout);
+		});
+
+		if (affiliations.length <= 1) {
+			return;
+		}
+
+		var affiliation_points = svg.selectAll(".affil-point").data(affiliations).enter().append("rect").attr("class", "affil-point").attr("width", 12).attr("height", 12).attr("x", function (d, i) {
+			return x(window.parseDate(d.started_in)) - 6;
+		}).attr("y", svgHeight - margin.bottom + 25).on("click", function (d, i) {
+			console.log(d.started_in);
+			console.log(x(window.parseDate(d.started_in)));
+		}).on("mouseover", function (d) {
+			d3.select("#info-box").html(d.started_in.replaceAll("-", "/"));
+			d3.select("#info-box").classed("hidden", false);
+			d3.select("#info-box").classed("smaller", true);
+
+			clearTimeout(infoTimeout);
+		}).on("mouseout", function (d) {
+			clearTimeout(infoTimeout);
+			infoTimeout = setTimeout(function () {
+				d3.select("#info-box").classed("hidden", true);
+				d3.select("#info-box").classed("smaller", false);
+			}, 500);
+		}).on("mousemove", function (d) {
+			var coordinates = d3.mouse(d3.select('body').node());
+			var height = d3.select("#info-box").node().offsetHeight;
+			var width = d3.select("#info-box").node().offsetWidth;
+
+			if (coordinates[0] > colWidth - width) {
+				coordinates[0] -= width;
+			}
+
+			if (colWidth < 480) {
+				coordinates[0] = colWidth / 2 - width / 2 + 20;
+			}
+
+			d3.select("#info-box").attr("style", "margin-left: " + coordinates[0] + "px; margin-top: " + (coordinates[1] - height - 15) + "px");
+
+			clearTimeout(infoTimeout);
+		});
+		/*
+  .attr("y", function(d, i){
+  	return svgHeight + 5;
+  });*/
+
+		var affil_texts = svg.selectAll(".affil-text").data(affiliations).enter().append("text").attr("class", "affil-text").attr("text-anchor", "middle").attr("font-family", "sans-serif").attr("x", function (d, i) {
+			return x(window.parseDate(d.started_in));
+		}).attr("y", svgHeight - margin.bottom + 55).text(function (d, i) {
+			return d.party;
+		});
+
+		/*affil_texts.select('text')
+  	.attr('x', function(d, i){
+  		let w = d3.select(this).node().getBoundingClientRect().width;
+  		
+  		return x(window.parseDate(d.started_in));// - (w/2);
+  	});*/
+	};
+
+	var customXAxis = function customXAxis(g) {
+		g.call(xAxis);
+		g.select(".domain").remove();
+		g.selectAll(".tick line").attr("y", -200);
+		g.selectAll(".tick text").attr("dy", -svgHeight + margin.top);
+		g.selectAll(".tick").each(function (d, i) {
+			if (d.getFullYear() == "1982" || d.getFullYear() == "1986" || d.getFullYear() == "1990" || d.getFullYear() == "1994" || d.getFullYear() == "1998" || d.getFullYear() == "2002" || d.getFullYear() == "2006" || d.getFullYear() == "2010" || d.getFullYear() == "2014" || d.getFullYear() == "2018") {
+				d3.select(this).classed("hidden", false);
+			} else {
+				d3.select(this).classed("hidden", true);
+			}
+		});
+	};
+
+	var customYAxis = function customYAxis(g) {
+		g.call(yAxis);
+		g.select(".domain").remove();
+		g.selectAll(".tick text").attr("x", -margin.left).attr("dy", -4);
+	};
+
+	window.resizeChart2 = function () {
+		colWidth = parseInt(d3.select('.column').style('width'));
+
+		if (colWidth > breakPoint) {
+			colHeight = colWidth * 0.4; //Math.round(colWidth*0.4);
+			margin = { top: 20, right: 10, bottom: 60, left: 40 };
+		} else {
+			colHeight = colWidth * 0.8;
+			margin = { top: 20, right: 10, bottom: 60, left: 40 };
+		}
+		if (colHeight < 400) {
+			colHeight = 400;
+		}
+
+		svgHeight = colHeight;
+		svgWidth = colWidth - margin.left - margin.right;
+
+		if (chartData) {
+			window.buildChart2();
+			console.log("resize");
+		}
+	};
+
+	init();
+};
+
+},{}],74:[function(require,module,exports){
+"use strict";
+
+// Populate the select boxes
+// with all available filters
+module.exports = function (filters) {
+	var d3 = window.d3;
+	var selects = d3.select("#intro").selectAll("select");
+	var Break = {};
+
+	window.repopulateFilters = function () {
+		filters.forEach(function (item, i) {
+			var select = d3.select("#filtro-" + item.filtro);
+			select.html("");
+
+			item.lista.forEach(function (obj, ia) {
+				var opt = void 0;
+				var dep = void 0;
+
+				if (obj.dependencia) {
+					/*
+     obj.dependencia.forEach(function(item, id){
+     	dep = item.split("-");
+     		// if the combo box option depends on 
+     	// other previous
+     	if( dep &&
+     		dep.indexOf(window.currentFilters[dep[0]]) > -1 ){
+     			opt = select.append("option");
+     		opt.text(obj.value).attr("value", obj.code);
+     			//console.log(window.currentFilters[filter.name].toLowerCase());
+     		if(window.currentFilters[filter.name].toLowerCase() 
+     			== obj.code.toLowerCase() ){
+     			opt.attr("selected", true);
+     		}else{
+     			opt.attr("selected", null);
+     		}
+     	}
+     })
+     */
+
+				} else {
+					opt = select.append("option");
+					opt.text(obj.nome);
+					opt.attr("value", obj.valor.toLowerCase());
+
+					if (window.currentFilters[item.filtro].toLowerCase() == obj.valor.toLowerCase()) {
+						opt.attr("selected", true);
+					} else {
+						opt.attr("selected", null);
+					}
+				}
+
+				if (item.filtro == "estado") {
+					opt.text(obj.valor.toUpperCase());
+					opt.attr("data-name", obj.nome);
+					opt.attr("data-preposition", obj.preposicao);
+				}
+			});
+		});
+
+		/*
+  filters.forEach(function(filter, i){
+  	let optSelected = d3.select("select[data-name="+filter.name+"] option[selected=true]");
+  		if(optSelected.size() == 0){
+  		optSelected = d3.select("select[data-name="+filter.name+"] option:first-child");
+  		optSelected.attr("selected", true);
+  			if(optSelected.size() == 1){
+  			window.currentFilters[filter.name] = optSelected.attr("value");
+  				if(filter.name != "ano" && filter.name != "turno"){
+  				window.setParamId(filter.name, window.params[filter.name].data);
+  			}else{
+  				window.params[filter.name].value = window.currentFilters[filter.name];
+  			}
+  		}
+  	}
+  });*/
+	};
+
+	window.repopulateFilters();
+
+	selects.on("change", function (d) {
+		var filterType = d3.select(this).attr("data-name");
+		var selected = d3.select(this).property('value');
+
+		d3.select(this).selectAll("option").attr("selected", function (d) {
+			if (d3.select(this).attr("value") == selected) {
+				return true;
+			} else {
+				return null;
+			}
+		});
+
+		window.currentFilters[filterType] = selected;
+
+		if (window.currentFilters.cargo == "presidente") {
+			window.currentFilters.estado = "br";
+		} else {
+			window.currentFilters.estado = d3.select("#filtro-estado").property('value');
+		}
+
+		if (filterType == "estado") {
+			window.currentFilters.estado_nome = d3.select(this).attr("data-name");
+			window.currentFilters.estado_prep = d3.select(this).attr("data-preposition");
+		}
+		//window.repopulateFilters();
+		//window.updateTitle();
+		window.init();
+	});
+};
+
+},{}],75:[function(require,module,exports){
+"use strict";
+
+// Custom select boxes
+module.exports = function () {
+	var x = void 0,
+	    i = void 0,
+	    j = void 0,
+	    selElmnt = void 0,
+	    a = void 0,
+	    b = void 0,
+	    c = void 0;
+	/*look for any elements with the class "custom-select":*/
+	x = document.getElementsByClassName("custom-select");
+	for (i = 0; i < x.length; i++) {
+		selElmnt = x[i].getElementsByTagName("select")[0];
+		/*for each element, create a new DIV that will act as the selected item:*/
+		a = document.createElement("DIV");
+		a.setAttribute("class", "select-selected");
+		a.innerHTML = selElmnt.options[selElmnt.selectedIndex].innerHTML;
+		x[i].appendChild(a);
+		/*for each element, create a new DIV that will contain the option list:*/
+		b = document.createElement("DIV");
+		b.setAttribute("class", "select-items select-hide");
+		for (j = 1; j < selElmnt.length; j++) {
+			/*for each option in the original select element,
+   create a new DIV that will act as an option item:*/
+			c = document.createElement("DIV");
+			c.innerHTML = selElmnt.options[j].innerHTML;
+			c.addEventListener("click", function (e) {
+				/*when an item is clicked, update the original select box,
+    and the selected item:*/
+
+				/*if(window.contextFilters.indexOf(this.value) > -1){
+    return false;
+    }else{
+    	    }*/
+				if (this.classList.contains("disabled")) {
+					return false;
+				}
+
+				var y = void 0,
+				    i = void 0,
+				    k = void 0,
+				    s = void 0,
+				    h = void 0;
+				s = this.parentNode.parentNode.getElementsByTagName("select")[0];
+				h = this.parentNode.previousSibling;
+				for (i = 0; i < s.length; i++) {
+					if (s.options[i].innerHTML == this.innerHTML) {
+						s.selectedIndex = i;
+						h.innerHTML = this.innerHTML;
+						y = this.parentNode.getElementsByClassName("same-as-selected");
+						for (k = 0; k < y.length; k++) {
+							y[k].classList.remove("same-as-selected");
+							//y[k].removeAttribute("class");
+						}
+						this.setAttribute("class", "same-as-selected disabled");
+						s.options[i].setAttribute("disabled", true);
+
+						break;
+					}
+				}
+				s.dispatchEvent(new Event('change'));
+				h.click();
+			});
+			b.appendChild(c);
+		}
+		x[i].appendChild(b);
+		a.addEventListener("click", function (e) {
+			/*when the select box is clicked, close any other select boxes,
+   and open/close the current select box:*/
+			e.stopPropagation();
+
+			closeAllSelect(this);
+			this.nextSibling.classList.toggle("select-hide");
+			this.classList.toggle("select-arrow-active");
+		});
+	}
+	function closeAllSelect(elmnt) {
+		/* closes all select boxes in the document,
+  except the current one */
+
+		// if clicking on a disabled item, do nothing
+		if (elmnt.target && elmnt.target.classList.contains("disabled")) {
+			return false;
+		}
+
+		var x = void 0,
+		    y = void 0,
+		    i = void 0,
+		    arrNo = [];
+		x = document.getElementsByClassName("select-items");
+		y = document.getElementsByClassName("select-selected");
+		for (i = 0; i < y.length; i++) {
+			if (elmnt == y[i]) {
+				arrNo.push(i);
+			} else {
+				y[i].classList.remove("select-arrow-active");
+			}
+		}
+		for (i = 0; i < x.length; i++) {
+			if (arrNo.indexOf(i)) {
+				x[i].classList.add("select-hide");
+			}
+		}
+	}
+	/*if the user clicks anywhere outside the select box,
+ then close all select boxes:*/
+	document.addEventListener("click", closeAllSelect);
+};
+
+},{}],76:[function(require,module,exports){
+"use strict";
+
+// builds the chart using d3
+module.exports = function () {
+	var d3 = window.d3;
+	var selectedParty = "";
+	var url = "http://perfilpolitico.serenata.ai/api/candidate/2018/";
+	var candURL = "http://perfilpolitico.serenata.ai/api/candidate/";
+	var breakPoint = 580; // screen width
+	var margin = void 0,
+	    wHeight = void 0,
+	    wWidth = void 0,
+	    svgWidth = void 0,
+	    svgHeight = void 0,
+	    colWidth = void 0,
+	    colHeight = void 0;
+	var x = void 0,
+	    y = void 0,
+	    linePath = void 0,
+	    svg = void 0;
+	var blockData = [],
+	    blocks = [];
+	var scrollTimeout = void 0;
+	var infoTimeout = void 0,
+	    msgTimeout = void 0;
+	var currGender = void 0;
+	window.parseDate = d3.timeParse("%Y-%m-%d");
+
+	var setup = function setup() {
+		window.contextFilters = [];
+		var searchBox = document.querySelector("#name-search");
+		searchBox.addEventListener("click", function () {
+			this.focus();
+			this.setSelectionRange(0, this.value.length);
+		});
+		searchBox.addEventListener("input", function (event) {
+			var val = this.value.toLowerCase().split(" - ")[0];
+			var opts = document.getElementById('candidate-list').childNodes;
+			var id;
+
+			for (var i = 0; i < opts.length; i++) {
+				//
+				if (opts[i] != "#text" && opts[i].value != undefined) {
+					var optVal = opts[i].value.toLowerCase().split(" - ")[0];
+
+					if (optVal === val) {
+						id = d3.select(opts[i]).attr("data-id");
+						loadCandidateData(id);
+						break;
+					}
+				}
+			}
+		});
+
+		var questions = document.querySelector("#filtro-perguntas");
+		questions.addEventListener("change", function (event) {
+			//console.log(blockData);
+			var selected = questions.value.toLowerCase();
+
+			addBlock(selected);
+		});
+
+		d3.select("#full-info").classed("hidden", true);
+		window.resize();
+		d3.select(window).on('resize', window.resize);
+
+		window.init();
+	};
+
+	window.init = function () {
+		var filters = window.currentFilters;
+		var listURL = url + filters.estado + "/" + filters.cargo;
+
+		console.log("build first viz");
+
+		d3.select("#full-info").classed("hidden", true);
+
+		// reset control arrays
+		blockData = [];
+		blocks = [];
+		window.contextFilters = [];
+		currGender = "m";
+
+		// add svg wrapper with initial size
+		if (svg) {
+			svg.remove();svg = null;
+		};
+		d3.selectAll(".box-content:not(.first)").remove();
+		d3.selectAll(".d-height:not(.first)").remove();
+		svg = d3.select("body").insert("svg", ".first") //d3.select(".block").append("svg")
+		.attr("class", "viz").attr("viewBox", "0 0 " + svgWidth + " " + svgHeight).attr("width", svgWidth).attr("height", svgHeight);
+
+		svg.append("defs").append("filter").attr("id", "grayscale");
+
+		svg.select("filter").append("feColorMatrix").attr("type", "matrix").attr("values", "0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0");
+
+		d3.select("#box1").select(".description").html("");
+
+		d3.json(listURL, function (loadedData) {
+			window.data = loadedData.objects;
+			//window.data = window.data.objects;
+
+			// corrects errors with data...
+			window.data.forEach(function (obj, i) {
+				obj.party = obj.party.replace("SOLIDARIEDADE", "SD");
+				obj.party = obj.party.replace("PC DO B", "PDdoB");
+				obj.party = obj.party.replace("PT DO B", "PTdoB");
+			});
+
+			window.data = window.data.sort(function (a, b) {
+				return d3.descending(a.party, b.party);
+			});
+
+			addBlock("");
+		});
+	};
+
+	var addBlock = function addBlock(filterType) {
+		var filters = window.currentFilters;
+		var newBlock = void 0,
+		    newBox = void 0,
+		    newSpacer = void 0;
+		var filteredData = void 0;
+		var text = void 0;
+		var selectedOption = document.querySelector("option[value='" + filterType + "']");
+		var h2Title = "";
+		var prevCandidates = void 0,
+		    removed = void 0,
+		    prevBlock = void 0,
+		    temp = void 0;
+
+		window.contextFilters.push(filterType);
+
+		//console.log(blockData);
+
+
+		if (blockData.length == 0) {
+			filteredData = window.data;
+		} else {
+			filteredData = blockData[blockData.length - 1]; //blockData.length-1 
+			prevBlock = blocks[blocks.length - 1]; //blocks.length-1
+			prevCandidates = prevBlock.selectAll(".c");
+		}
+
+		if (filterType == "nunca eleitos") {
+			filteredData = filteredData.filter(function (c) {
+				return c.elections_won == 0;
+			});
+			removed = prevCandidates.filter(function (d, i) {
+				return d.elections_won == 0;
+			});
+		} else if (filterType == "nunca concorreram") {
+			filteredData = filteredData.filter(function (c) {
+				return c.elections == 0;
+			});
+			removed = prevCandidates.filter(function (d, i) {
+				return d.elections == 0;
+			});
+		} else if (filterType == "mulheres") {
+			filteredData = filteredData.filter(function (c) {
+				return c.gender.toLowerCase() == "feminino";
+			});
+			removed = prevCandidates.filter(function (d, i) {
+				return d.gender.toLowerCase() == "feminino";
+			});
+		} else if (filterType == "negros ou pardos") {
+			filteredData = filteredData.filter(function (c) {
+				return c.ethnicity.toLowerCase() == "preta" || c.ethnicity.toLowerCase() == "parda" || c.ethnicity.toLowerCase() == "indigena";
+			});
+			removed = prevCandidates.filter(function (d, i) {
+				return d.ethnicity.toLowerCase() == "preta" || d.ethnicity.toLowerCase() == "parda" || d.ethnicity.toLowerCase() == "indigena";
+			});
+		} else {
+			text = "São <b>" + filteredData.length + "</b> candidatos a <b>" + filters.cargo.replace("-", " ") + "</b> " + filters.estado_prep + " <b>" + filters.estado_nome + "</b>";
+		}
+		if (filterType != "") {
+			animateRemoved(prevBlock, removed);
+			h2Title = selectedOption.innerHTML;
+			text = getDescription(filterType, filteredData.length);
+		}
+
+		if (filteredData.length == 0) {
+			d3.select("#msg-box").html("Nenhum candidato corresponde a este filtro");
+			d3.select("#msg-box").classed("hidden", false);
+			clearTimeout(msgTimeout);
+
+			msgTimeout = setTimeout(function () {
+				d3.select("#msg-box").classed("hidden", true);
+			}, 4500);
+
+			return;
+		} else {
+			console.log(filteredData.length);
+		}
+
+		/*filteredData = filteredData.sort(function(a, b){
+     return d3.ascending(a.party, b.party);
+  });*/
+
+		blockData.push(filteredData);
+
+		svgHeight = wHeight * blockData.length;
+
+		svg.attr("viewBox", "0 0 " + svgWidth + " " + svgHeight).attr("width", svgWidth).attr("height", svgHeight);
+
+		if (blockData.length > 1) {
+			newBox = d3.select("body").insert("div", "#bottom-bar");
+			newBox.attr("class", "box-content").attr("id", "box" + blockData.length).append("h2").append("div").attr("class", "column").text(h2Title);
+			newBox.append("div").attr("class", "column description").html(text);
+			newSpacer = d3.select("body").insert("div", "#bottom-bar").attr("class", "d-height");
+		} else {
+			d3.select(".box-content").select(".description").html(text);
+		}
+
+		var pBox = document.querySelectorAll(".box-content")[blockData.length - 1];
+		var newBlockY = pBox.offsetHeight + 50 + wHeight * (blockData.length - 1);
+		//let newBlockY = previousBoxd3.select
+		newBlock = svg.append("g").attr("id", "viz_" + blockData.length).attr("class", "viz").attr("transform", "translate(0," + newBlockY + ")");
+
+		blocks.push(newBlock);
+
+		var sortedByName = filteredData.sort(function (a, b) {
+			return d3.ascending(a.name, b.name);
+		});
+
+		sortedByName.forEach(function (obj, i) {
+			var party = obj.party;
+			var value = obj.name + " - " + party;
+			var nameList = d3.select("#candidate-list");
+			var occurrences = nameList.selectAll("option[value='" + value + "']");
+
+			//console.log(value);
+			if (occurrences.size() < 1) {
+				d3.select("#candidate-list").append("option").attr("value", value).attr("data-id", obj.id);
+			}
+		});
+
+		blockData[blockData.length - 1] = filteredData.sort(function (a, b) {
+			return d3.ascending(a.party, b.party);
+		});
+		console.log(blockData[blockData.length - 1]);
+
+		rebuildViz(blockData.length - 1);
+	};
+
+	var rebuildViz = function rebuildViz(index) {
+		var block = blocks[index];
+		var list = blockData[index];
+		var area = colHeight * colWidth;
+		var cellWidth = Math.floor(Math.sqrt(area / list.length) * 10) / 10; //Math.sqrt( 2 * (testA/list.length) );
+		var cellHeight = cellWidth;
+		var lin = void 0,
+		    col = void 0;
+		var dotRadius = Math.floor(cellHeight / 7 * 5) / 2;
+		var blockWidth = void 0;
+		var initRadius = 0.5;
+
+		if (index > 0) {
+			initRadius = blocks[index - 1].select(".c").attr("r");
+			//console.log(initRadius);
+		}
+
+		lin = Math.ceil(colHeight / cellWidth);
+		col = Math.ceil(list.length / lin);
+
+		//console.log(col*cellWidth, colWidth);
+		if (list.length <= 10 && colWidth >= breakPoint) {
+			cellWidth = (colWidth - 10) / list.length;
+
+			if (cellWidth > 120) {
+				cellWidth = 120;
+			}
+			if (cellHeight > 120) {
+				cellHeight = 120;
+			}
+			if (cellWidth < cellHeight) {
+				cellWidth = cellHeight;
+			}
+			col = Math.ceil(colWidth / cellWidth);
+			lin = 1;
+		} else if (col * cellWidth < colWidth - 2) {
+			cellWidth = Math.floor((colWidth - 10) * 10 / col) / 10;
+
+			col = Math.ceil(colWidth / cellWidth);
+			lin = Math.ceil(list.length / col);
+		}
+		dotRadius = Math.floor(cellHeight / 7 * 5) / 2;
+		block.selectAll(".c").remove();
+
+		var candidates = block.selectAll("circle").data(list).enter().append("circle");
+
+		candidates.attr("r", initRadius).attr("id", function (d, i) {
+			return "c_" + index + "_" + d.id;
+		}).on("click", function (d, i) {
+			loadCandidateData(d.id);
+		}).attr("class", function (d) {
+			var selected = "";
+
+			if (d.party === selectedParty) {
+				selected = " selected";
+			}
+
+			if (list.length <= 20) {
+				return "c candB" + selected;
+			} else {
+				return "c cand" + selected;
+			}
+		}).attr("cx", function (d, i) {
+			var startX = cellWidth / 2;
+			var currCol = Math.floor(i / lin);
+			var currLin = i - currCol * lin;
+
+			return startX + currCol * cellWidth;
+		}).attr("cy", function (d, i) {
+			var startY = cellHeight / 2;
+			var pastCols = Math.floor(i / lin);
+			var currLin = i - pastCols * lin;
+
+			return startY + currLin * cellHeight;
+		}).attr("fill", function (d, i) {
+			if (list.length <= 20) {
+				svg.select("defs").append("pattern").attr("id", function (dd, ii) {
+					return "img_" + index + "_" + d.id;
+				}).attr("patternUnits", "objectBoundingBox").attr("x", 0).attr("y", 4).attr("width", 1.1) // dotRadius*2
+				.attr("height", 1.4) // (dotRadius*2)*1.3
+				.append("image").attr("xlink:href", function (dd, ii) {
+					return d.image;
+				}).attr("width", dotRadius * 2) // dotRadius*2
+				.attr("height", dotRadius * 2.8); // (dotRadius*2)*1.3
+				//
+
+				return "url(#img_" + index + "_" + d.id;+")";
+			} else {
+				return false;
+			}
+		}).attr("style", function () {
+			if (list.length <= 20) {
+				return "filter: url(#grayscale)";
+			} else {
+				return "";
+			}
+		}).on("mouseover", function (d) {
+
+			d3.select("#info-box").html(capitalizeName(d.name) + " (" + d.party + ")");
+			d3.select("#info-box").classed("hidden", false);
+
+			clearTimeout(infoTimeout);
+		}).on("mouseout", function (d) {
+			clearTimeout(infoTimeout);
+			infoTimeout = setTimeout(function () {
+				d3.select("#info-box").classed("hidden", true);
+			}, 500);
+		}).on("mousemove", function (d) {
+			var coordinates = d3.mouse(d3.select('body').node());
+			var height = d3.select("#info-box").node().offsetHeight;
+			var width = d3.select("#info-box").node().offsetWidth;
+
+			if (coordinates[0] > colWidth - width) {
+				coordinates[0] -= width;
+			}
+
+			if (colWidth < 480) {
+				coordinates[0] = colWidth / 2 - width / 2 + 20;
+			}
+
+			d3.select("#info-box").attr("style", "margin-left: " + (coordinates[0] - 40) + "px; margin-top: " + (coordinates[1] - height - 15) + "px");
+
+			clearTimeout(infoTimeout);
+		}).transition().attr("r", dotRadius).ease(d3.easeElastic).delay(function (d, i) {
+			var random = Math.random() * 20;
+			return random * 50;
+		}).duration(function (d, i) {
+			var random = Math.random() * 20;
+			return 500 + 10 * random;
+		});
+
+		var pBox = document.querySelectorAll(".box-content")[index];
+		var newBlockY = pBox.offsetHeight + wHeight * index + 40;
+
+		blockWidth = block.node().getBBox().width + cellWidth;
+		block.attr("transform", "translate(" + (colWidth - blockWidth) / 2 + "," + newBlockY + ")");
+
+		if (list.length <= 20) {
+			var candidateStrokes = block.selectAll("circle");
+			candidateStrokes = block.selectAll(".cand-stroke").data(list).enter().append("circle").attr("r", dotRadius).attr("class", function (d, i) {
+				var selected = "";
+				if (d.party === selectedParty) {
+					selected = " selected";
+				}
+				return "cand-stroke" + selected;
+			}).attr("id", function (d, i) {
+				return "cs_" + index + "_" + d.id;
+			}).attr("cx", function (d, i) {
+				var startX = cellWidth / 2;
+				var currCol = Math.floor(i / lin);
+				var currLin = i - currCol * lin;
+
+				return startX + currCol * cellWidth;
+			}).attr("cy", function (d, i) {
+				var startY = cellHeight / 2;
+				var pastCols = Math.floor(i / lin);
+				var currLin = i - pastCols * lin;
+
+				return startY + currLin * cellHeight;
+			}).attr("opacity", 0).transition().attr("opacity", 1).delay(800);
+		}
+	};
+
+	var animateRemoved = function animateRemoved(prevBlock, removed) {
+		var temp = void 0;
+
+		if (removed.length == 0) {
+			return;
+		}
+
+		temp = prevBlock.append("g");
+		removed.each(function (d, i) {
+			var cand = d3.select(this);
+			var cloned = cand.node().cloneNode(true);
+
+			temp.node().appendChild(cloned);
+		});
+		temp.selectAll(".c").attr("fill-opacity", 1).attr("stroke-opacity", 1).transition().attr("cy", function (dd, ii) {
+			var candY = d3.select(this).attr("cy");
+			return parseInt(candY) + 500;
+		}).attr("fill-opacity", 0).attr("stroke-opacity", 0).duration(700).delay(function (d, i) {
+			return Math.random() * 10 * 100;
+		}).on("end", function (d, i) {
+			d3.select(this).remove();
+		});
+
+		removed.classed("removed", true);
+
+		clearTimeout(scrollTimeout);
+		scrollTimeout = setTimeout(function () {
+			var lastBlock = document.querySelector("#box" + blockData.length);
+			smoothScroll(lastBlock.offsetTop, 10);
+		}, 800);
+	};
+
+	var smoothScroll = function smoothScroll(pos, time) {
+		/*Time is only for scrolling upwards*/
+		/*pos is the y-position to scroll to (in pixels)*/
+		if (isNaN(pos)) {
+			throw "Position must be a number";
+		}
+		if (pos < 0) {
+			throw "Position can not be negative";
+		}
+		var currentPos = window.scrollY || window.screenTop;
+		if (currentPos < pos) {
+			if (time) {
+				var x;
+				var i = currentPos;
+				x = setInterval(function () {
+					window.scrollTo(0, i);
+					i += 10;
+					if (i >= pos) {
+						clearInterval(x);
+					}
+				}, time);
+			} else {
+				var t = 10;
+
+				var _loop = function _loop(_i) {
+					t += 10;
+					setTimeout(function () {
+						window.scrollTo(0, _i);
+					}, t / 2);
+				};
+
+				for (var _i = currentPos; _i <= pos; _i += 10) {
+					_loop(_i);
+				}
+			}
+		} else {
+			time = time || 2;
+			var i = currentPos;
+			var x;
+			x = setInterval(function () {
+				window.scrollTo(0, i);
+				i -= 10;
+				if (i <= pos) {
+					clearInterval(x);
+				}
+			}, time);
+		}
+	};
+
+	var loadCandidateData = function loadCandidateData(id) {
+		var infoBlock = d3.select("#full-info").node();
+
+		d3.json(candURL + id + "/", function (error, cData) {
+
+			if (error) {
+				console.log(error);
+				d3.select("#msg-box").html("Erro ao carregar dados do candidato (id " + id + ")");
+				d3.select("#msg-box").classed("hidden", false);
+				clearTimeout(msgTimeout);
+
+				msgTimeout = setTimeout(function () {
+					d3.select("#msg-box").classed("hidden", true);
+				}, 3500);
+
+				return false;
+			} else if (cData) {
+				var prop = cData.party_abbreviation;
+				var prop2 = cData.coalition_description;
+				//console.log(cData.party_abbreviation)
+				cData.party_abbreviation = prop.replace("SOLIDARIEDADE", "SD");
+				cData.party_abbreviation = prop.replace("PC DO B", "PCdoB");
+				cData.party_abbreviation = prop.replace("PT DO B", "PTdoB");
+				cData.coalition_description = prop2.replace("SOLIDARIEDADE", "SD");
+				cData.coalition_description = prop2.replace("PC DO B", "PCdoB");
+				cData.coalition_description = prop2.replace("PT DO B", "PTdoB");
+
+				fillCandidateInfo(cData);
+				window.buildChart2(cData);
+				d3.select("#full-info").classed("hidden", false);
+
+				smoothScroll(infoBlock.offsetTop, 6);
+			} else {}
+		});
+	};
+
+	var fillCandidateInfo = function fillCandidateInfo(cData) {
+		d3.select("#profile-pic").select("img").attr("src", "");
+
+		d3.select("#profile-pic").select("img").attr("src", cData.image);
+
+		d3.select("#profile-name").text(capitalizeName(cData.ballot_name));
+
+		d3.select("#info-partido").text(cData.party_abbreviation);
+
+		d3.select("#info-profissao").text(cData.occupation.toLowerCase());
+
+		d3.select("#info-idade").text(cData.age);
+
+		d3.select("#info-estudo").text(cData.education.toLowerCase());
+
+		d3.select("#info-raca").text(cData.ethnicity.toLowerCase());
+
+		d3.select("#info-coliga").text(cData.coalition_description.toUpperCase());
+		//d3.select("#info-partido").text();
+	};
+
+	var buildContextChart = function buildContextChart() {};
+
+	window.resize = function () {
+		wHeight = parseInt(window.innerHeight);
+		colWidth = parseInt(d3.select('.column').style('width'));
+
+		if (colWidth > breakPoint) {
+			colHeight = wHeight - 580; //Math.round(colWidth*0.4);
+			margin = { top: 0, right: 0, bottom: 0, left: 0 };
+		} else {
+			colHeight = wHeight - 580;
+			margin = { top: 0, right: 0, bottom: 0, left: 0 };
+		}
+		if (colHeight < 140) {
+			colHeight = 140;
+		}
+		if (wHeight < 500) {
+			wHeight = 500;
+		}
+
+		svgHeight = wHeight * blockData.length;
+		svgWidth = colWidth;
+
+		if (svg) {
+			svg.attr("viewBox", "0 0 " + svgWidth + " " + svgHeight).attr("width", svgWidth).attr("height", svgHeight);
+		}
+
+		blocks.forEach(function (item, i) {
+			//let vizdata = blockData[i];
+			rebuildViz(i);
+		});
+
+		if (window.resizeChart2) {
+			window.resizeChart2();
+		}
+	};
+
+	var printData = function printData(data) {
+		console.log(data);
+	};
+
+	var getDescription = function getDescription(filterType, amount) {
+		var phrase = "";
+		var prep = { m: "Destes", f: "Destas" };
+		var color = { m: "negros, pardos ou indígenas", f: "negras, pardas ou indígenas" };
+
+		if (filterType == "mulheres") {
+			phrase = prep[currGender] + ", <b>" + amount + "</b> são mulheres";
+			currGender = "f";
+		} else if (filterType == "nunca concorreram") {
+			phrase = prep[currGender] + ", <b>" + amount + "</b> nunca concorreram numa eleição";
+		} else if (filterType == "nunca eleitos") {
+			phrase = prep[currGender] + ", <b>" + amount + "</b> nunca foram eleitos";
+		} else if (filterType == "negros ou pardos") {
+			phrase = prep[currGender] + ", <b>" + amount + "</b> são " + color[currGender];
+		}
+
+		return phrase;
+	};
+
+	setup();
+};
+
+// utilitary functions
+var exceptions = ["Do", "Da", "Dos", "Das", "De", "Des", "Van", "Von", "E"];
+var capitalizeName = function capitalizeName(name) {
+	var lastCharWasNotALetter = true;
+	return name.toLowerCase().split('').map(function (char) {
+		if (lastCharWasNotALetter) {
+			char = char.toUpperCase();
+		}
+		lastCharWasNotALetter = char.search(/[a-zA-Záãàéêíóôõúü]/) == -1;
+		return char;
+	}).join('').split(' ').map(function (word) {
+		if (exceptions.indexOf(word) != -1) {
+			return word.toLowerCase();
+		}
+		return word;
+	}).join(' ');
+};
+
+String.prototype.replaceAll = function (search, replacement) {
+	var target = this;
+	return target.replace(new RegExp(search, 'g'), replacement);
+};
+
+},{}]},{},[72]);
