@@ -52,7 +52,7 @@ class Command(BaseCommand):
             politician.election_history.append(
                 {
                     "year": int(row.year),
-                    "elected": row.result.startswith("ELEITO "),
+                    "elected": row.result.startswith("ELEIT"),
                     "result": row.result,
                     "post": row.post,
                 }
