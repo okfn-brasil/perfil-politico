@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     "django_extensions",
     # apps
     "perfil.core.apps.CoreConfig",
-    "perfil.website.apps.WebsiteConfig",
 ]
 
 MIDDLEWARE = [
@@ -111,15 +110,6 @@ USE_TZ = True
 
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATIC_URL = "/static/"
-
-
-# WhiteNoise
-# http://whitenoise.evans.io/en/stable/django.html
-
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
-if not DEBUG:
-    MIDDLEWARE.insert(2, "whitenoise.middleware.WhiteNoiseMiddleware")
 
 
 # Cache

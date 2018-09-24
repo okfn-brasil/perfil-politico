@@ -18,10 +18,10 @@ from django.urls import path
 from perfil.core.views import (
     CandidateDetailResource,
     CandidateListResource,
+    home,
     national_stats,
     state_stats,
 )
-from perfil.website.views import home
 
 
 urlpatterns = [

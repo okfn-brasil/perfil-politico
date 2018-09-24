@@ -3,10 +3,15 @@ from collections import defaultdict
 from cached_property import cached_property
 from django.db.models import Count
 from django.http import Http404, JsonResponse
+from django.shortcuts import redirect
 from restless.dj import DjangoResource
 from restless.preparers import CollectionSubPreparer, FieldsPreparer
 
 from perfil.core.models import STATES, Candidate, age
+
+
+def home(request):
+    return redirect("https://perfilpolitico.serenata.ai/")
 
 
 class CandidateListResource(DjangoResource):
