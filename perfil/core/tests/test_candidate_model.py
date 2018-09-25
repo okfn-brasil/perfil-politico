@@ -100,6 +100,13 @@ def test_invalid_bill_keywords_method(candidates):
 
 
 @pytest.mark.django_db
+def test_invalid_bills(candidates):
+    candidate = Candidate.objects.last()
+    candidate.politician = None
+    assert candidate.bills() == []
+
+
+@pytest.mark.django_db
 def test_get_age(candidates):
     candidate = Candidate.objects.last()
 
