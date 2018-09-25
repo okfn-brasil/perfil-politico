@@ -194,7 +194,7 @@ class Stats:
             return "date_of_birth"
 
         if characteristic == "party":
-            return "core_party__abbreviation"
+            return "party__abbreviation"
 
         return characteristic
 
