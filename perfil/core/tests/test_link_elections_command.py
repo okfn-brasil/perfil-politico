@@ -34,6 +34,6 @@ def test_election_history_was_created():
             "post": "DEPUTADO DISTRITAL",
             "year": 2018,
             "result": "ELEITO",
-            "elected": False,
+            "elected": True,
         },
     ]
