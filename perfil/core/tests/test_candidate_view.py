@@ -63,6 +63,7 @@ def test_candidate_detail(client, candidates):
     assert content["name"] == candidate.name
     assert content["image"] == candidate.image()
     assert content["ballot_name"] == candidate.ballot_name
+    assert content["ballot_number"] == candidate.number
     assert content["city"] == candidate.politician.current_affiliation.city.name
     assert content["state"] == candidate.state
     assert content["party"] == candidate.party.name

@@ -69,6 +69,7 @@ class CandidateDetailResource(DjangoResource):
             "name": "name",
             "image": "image",
             "ballot_name": "ballot_name",
+            "ballot_number": "number",
             "city": "politician.current_affiliation.city.name",
             "state": "state",
             "party": "party.name",

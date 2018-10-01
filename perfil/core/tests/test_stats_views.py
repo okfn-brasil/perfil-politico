@@ -45,7 +45,7 @@ def test_age_stats_instance(mocker):
 
 def test_party_stats_instance(mocker):
     stats = Stats(2018, "deputado-federal", "party")
-    assert stats.field == "core_party__abbreviation"
+    assert stats.field == "party__abbreviation"
 
 
 @pytest.mark.django_db
