@@ -1,49 +1,10 @@
 from collections import Counter
-from functools import lru_cache
 
-from django.db.models import Q
 from django_bulk_update.helper import bulk_update
 from tqdm import tqdm
 
-from perfil.core.management.commands import BaseCommand
-from perfil.core.models import Bill, Candidate, Politician
-
-
-@lru_cache(maxsize=1024)
-def get_politician(name, post=None):
-    name = name.upper()
-
-    def get_match(qs, post=None):
-        if post:
-            qs = qs.filter(post=post)
-
-        qs = (
-            qs.exclude(politician_id=None)
-            .values("politician_id")
-            .order_by("-politician_id")
-            .distinct()
-        )
-        matches = tuple(qs)
-
-        if len(matches) != 1:  # cannot find a single match
-            return None
-
-        match, *_ = matches
-        return Politician.objects.get(pk=match["politician_id"])
-
-    qs = Candidate.objects.filter(Q(ballot_name=name) | Q(name=name))
-    match = get_match(qs, post=post)
-
-    if not match:
-        qs = Candidate.objects.all()
-        for word in name.split():
-            if len(word) <= 3:
-                continue
-            qs = qs.filter(Q(ballot_name__contains=word) | Q(name__contains=word))
-
-        match = get_match(qs, post=post)
-
-    return match
+from perfil.core.management.commands import BaseCommand, get_politician
+from perfil.core.models import Bill, Politician
 
 
 class Command(BaseCommand):

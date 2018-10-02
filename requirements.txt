@@ -1,3 +1,4 @@
+aiohttp==3.4.4
 cached-property==1.5.1
 dj-database-url==0.5.0
 Django==2.1.1
@@ -8,12 +9,14 @@ git+git://github.com/Mikhail517/mixer.git@develop#egg=mixer  # unitl mixer adds 
 psycopg2-binary==2.7.5
 python-decouple==3.1
 pytz==2018.5
+requests==2.19.1
 restless==2.1.1
 rows==0.3.1
 tqdm==4.25.0
 Unidecode==1.0.22
 
 # dev
+aioresponses==0.4.2
 codecov==2.0.15
 django-extensions==2.1.2
 ipdb==0.11

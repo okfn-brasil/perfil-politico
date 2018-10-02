@@ -133,6 +133,7 @@ class Politician(models.Model):
     asset_history = JSONField(default=list)
     election_history = JSONField(default=list)
     bill_keywords = JSONField(default=list)
+    rosies_suspicions = JSONField(default=list)
 
     def __repr__(self):
         return (
