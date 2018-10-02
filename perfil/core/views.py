@@ -98,6 +98,7 @@ class CandidateDetailResource(DjangoResource):
             "coalition_short_name": "coalition_short_name",
             "bills": CollectionSubPreparer("bills", bill_preparer),
             "bill_keywords": "bill_keywords",
+            "rosies_suspicions": "rosies_suspicions",
         }
     )
 
@@ -105,7 +106,13 @@ class CandidateDetailResource(DjangoResource):
     def api_fields(self):
         """Define fields to select in the QuerySet based on preparer fields"""
         fields = ["year", "sequential"]
-        methods = {"elections", "elections_won", "image", "get_age"}
+        methods = {
+            "elections",
+            "elections_won",
+            "image",
+            "get_age",
+            "rosies_suspicions",
+        }
 
         for field in self.preparer.fields.values():
             if field in methods or not isinstance(field, str):

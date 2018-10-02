@@ -133,6 +133,7 @@ class Politician(models.Model):
     asset_history = JSONField(default=list)
     election_history = JSONField(default=list)
     bill_keywords = JSONField(default=list)
+    rosies_suspicions = JSONField(default=list)
 
     def __repr__(self):
         return (
@@ -226,6 +227,9 @@ class Candidate(models.Model):
 
         data = self.politician.bill_keywords
         return sorted(data, key=lambda obj: obj["total"], reverse=True)
+
+    def rosies_suspicions(self):
+        return self.politician.rosies_suspicions if self.politician else []
 
     def image(self):
         if self.year != 2018:
