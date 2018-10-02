@@ -228,6 +228,9 @@ class Candidate(models.Model):
         data = self.politician.bill_keywords
         return sorted(data, key=lambda obj: obj["total"], reverse=True)
 
+    def rosies_suspicions(self):
+        return self.politician.rosies_suspicions if self.politician else []
+
     def image(self):
         if self.year != 2018:
             return None

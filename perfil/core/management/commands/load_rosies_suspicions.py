@@ -81,9 +81,6 @@ class Command(BaseCommand):
 
     @property
     def suspicions(self):
-        if hasattr(self, "_suspicions"):
-            return self._suspicions
-
         self._suspicions = []
         loop = asyncio.get_event_loop()
         loop.run_until_complete(self.fetch_all())

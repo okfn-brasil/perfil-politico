@@ -34,7 +34,9 @@ def wrap_fixture(json_path):
 
 @pytest.mark.django_db
 def test_suspicions_were_created(candidates, mocker):
-    requests = mocker.patch("perfil.core.management.commands.load_rosies_suspicions.requests")
+    requests = mocker.patch(
+        "perfil.core.management.commands.load_rosies_suspicions.requests"
+    )
     requests.get.return_value.json.return_value = wrap_fixture(FIXTURES[0])
 
     names = ("DANIEL COELHO", "CLAUDIO CAJADO", "HERCULANO PASSOS")
