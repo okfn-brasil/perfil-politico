@@ -9,10 +9,10 @@ git+git://github.com/Mikhail517/mixer.git@develop#egg=mixer  # unitl mixer adds 
 psycopg2-binary==2.7.5
 python-decouple==3.1
 pytz==2018.5
-requests==2.19.1
+requests==2.20.0
 restless==2.1.1
 rows==0.3.1
-tqdm==4.27.0
+tqdm==4.28.1
 Unidecode==1.0.22
 
 # dev
@@ -20,7 +20,7 @@ aioresponses==0.4.2
 codecov==2.0.15
 django-extensions==2.1.3
 ipdb==0.11
-pytest==3.8.2
+pytest==3.9.1
 pytest-cov==2.6.0
 pytest-django==3.4.3
 pytest-mock==1.10.0
