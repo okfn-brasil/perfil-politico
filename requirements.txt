@@ -8,7 +8,7 @@ django-redis==4.9.0
 git+git://github.com/Mikhail517/mixer.git@develop#egg=mixer  # unitl mixer adds suport to Django 2.1
 psycopg2-binary==2.7.5
 python-decouple==3.1
-pytz==2018.5
+pytz==2018.7
 requests==2.20.0
 restless==2.1.1
 rows==0.3.1
