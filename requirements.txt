@@ -9,7 +9,7 @@ git+git://github.com/Mikhail517/mixer.git@develop#egg=mixer  # unitl mixer adds 
 psycopg2-binary==2.7.6.1
 python-decouple==3.1
 pytz==2018.7
-requests==2.20.0
+requests==2.20.1
 restless==2.1.1
 rows==0.3.1
 tqdm==4.28.1
