@@ -11,7 +11,7 @@ pytz==2018.9
 requests==2.21.0
 restless==2.1.1
 rows==0.3.1
-tqdm==4.29.0
+tqdm==4.29.1
 Unidecode==1.0.23
 
 # dev
