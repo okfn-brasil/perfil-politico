@@ -12,7 +12,7 @@ requests==2.22.0
 restless==2.1.1
 rows==0.4.1
 tqdm==4.32.2
-Unidecode==1.0.23
+Unidecode==1.1.1
 
 # dev
 aioresponses==0.6.0
