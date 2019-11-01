@@ -23,7 +23,7 @@ mixer==6.1.3
 pytest==5.2.2
 pytest-cov==2.8.1
 pytest-django==3.6.0
-pytest-mock==1.10.4
+pytest-mock==1.11.2
 
 # prod
 gunicorn==19.9.0
