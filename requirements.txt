@@ -8,7 +8,7 @@ django-redis==4.11.0
 psycopg2-binary==2.8.4
 python-decouple==3.3
 pytz==2019.3
-requests==2.22.0
+requests==2.23.0
 restless==2.1.1
 rows==0.4.1
 tqdm==4.32.2
