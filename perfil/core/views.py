@@ -11,7 +11,7 @@ from perfil.core.models import STATES, Candidate, age
 
 
 def home(request):
-    return redirect("https://perfilpolitico.serenata.ai/")
+    return JsonResponse({'data':"API do Perfil Politico está online."}, safe=False)
 
 
 class CandidateListResource(DjangoResource):
