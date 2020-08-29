@@ -1,7 +1,7 @@
 jupyter==1.0.0
-matplotlib==3.1.0
-nltk==3.4.3
-numpy==1.16.4
-pandas==0.24.2
+matplotlib==3.2.2
+nltk==3.5
+numpy==1.19.0
+pandas==1.0.5
 git+https://github.com/aboSamoor/polyglot.git  # until they have a release newer than 2016
-python-decouple==3.1
+python-decouple==3.3
