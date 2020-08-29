@@ -24,6 +24,7 @@ pytest==5.0.0
 pytest-cov==2.7.1
 pytest-django==3.5.1
 pytest-mock==1.10.4
+black==20.8b1
 
 # prod
 gunicorn==19.9.0
