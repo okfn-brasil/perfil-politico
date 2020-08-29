@@ -15,7 +15,8 @@ This project requires [Docker](https://docs.docker.com/install/) and
 
 ### Settings
 
-To run the API, you must copy the `.env.sample` to a `.env` file. You can edit it accordingly if you want run in a production env. 
+To run the API, you must copy the `.env.sample` to a `.env` file. You can edit
+it accordingly if you want run in a production env.
 
 #### Creating the container
 
