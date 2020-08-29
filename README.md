@@ -18,9 +18,25 @@ This project requires [Docker](https://docs.docker.com/install/) and
 To run the API, you must copy the `.env.sample` to a `.env` file and
 edit it accordingly.
 
+#### Creating the container
+
+You need to create the docker container:
+
+```sh
+$ docker-compose up -d
+```
+
+#### Database initial setup
+
+You should create your database by applying migrations:
+
+```sh
+$ docker-compose run django ./manage.py migrate
+```
+
 ### Running
 
-Starting the application:
+To run the project locally, you can simply use this command:
 
 ```sh
 $ docker-compose up
@@ -30,17 +46,7 @@ The website and [API](#api) will be available at
 [`localhost:8000`](http://localhost:8000) and the Jupyter at
 [`localhost:8888`](http://localhost:8888).
 
-### Database
-
-#### Initial setup
-
-You should create your database by applying migrations:
-
-```sh
-$ docker-compose run django ./manage.py migrate
-```
-
-#### Bringing data in
+### Bringing data in your database
 
 Your local `data/` directory is mapped, inside the container, to `/mnt/data`.
 Each command uses a CSV (compressed as `.xz` or not) from a public and
