@@ -63,16 +63,16 @@ O website e a [API](#api) estarão disponíveis em
 
 #### Inserindo dados
 
-Para ter dados para usar localmente no seu projeto, você precisa baixar-los 
-manualmente no seu diretório local `data/` (criado automaticamente no setup do 
-projeto).  
+Para ter dados e conseguir usar no seu projeto, você precisa baixá-los 
+manualmente dentro do diretório local data/ (criado durante inicialização do 
+projeto). Dentro do container docker, a pasta é /mnt/data.
 
-Your local `data/` directory is mapped, inside the container, to `/mnt/data`.
-Each command uses a CSV (compressed as `.xz` or not) from a public and
-available source. Use `--help` for more info. Yet some extra data can be
-generated with some Django custom commands.
+Utilize um arquivo CSV para inserir os dados no banco de dados. 
 
-Once you have download the datasets to `data/`, the roadmap is:
+Utilize --help para mais informações. 
+
+Uma vez que os dados foram baixados e estão armazenados dentro do diretório 
+data/, execute os seguintes comandos:
 
 ```sh
 $ docker-compose run django python manage.py load_affiliations /mnt/data/filiacao.csv
