@@ -16,7 +16,7 @@ e do [Docker Compose](https://docs.docker.com/compose/install/).
 
 ### Configuração
 
-Para rodar a API, você precisa copiar o `.env.sample` para uma arquivo chamado 
+Para rodar a API, você precisa copiar o `.env.sample` para um arquivo chamado 
 `.env`. Se for utilizar esse projeto em produção, você deve editá-lo de acordo 
 com sua necessidade.
 
@@ -121,7 +121,7 @@ Retorna informações detalhadas de um candidato.
 
 Retorna as estatísticas a níveis nacional do candidado a eleição.
 
-Opções para o <post>:
+Opções para o parâmetro *post*:
 
 * `deputado-distrital`
 * `deputado-estadual`
@@ -131,7 +131,7 @@ Opções para o <post>:
 * `senador`
 * `vereador`
 
-Opções para o <characteristic>:
+Opções para o parâmetro *characteristic*:
 
 * `age`
 * `education`
