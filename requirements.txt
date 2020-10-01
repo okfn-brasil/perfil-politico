@@ -16,7 +16,7 @@ Unidecode==1.1.1
 
 # dev
 aioresponses==0.6.4
-codecov==2.1.7
+codecov==2.1.9
 django-extensions==3.0.1
 ipdb==0.13.3
 mixer==6.1.3
