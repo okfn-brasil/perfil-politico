@@ -7,7 +7,7 @@ django-cors-headers==3.7.0
 django-redis==4.12.1
 psycopg2-binary==2.8.6
 python-decouple==3.4
-pytz==2020.1
+pytz==2021.1
 requests==2.24.0
 restless==2.1.1
 rows==0.4.1
