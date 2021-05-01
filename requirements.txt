@@ -24,6 +24,6 @@ pytest==6.2.3
 pytest-cov==2.11.1
 pytest-django==4.2.0
 pytest-mock==3.6.0
-black==20.8b1
+black==21.4b2
 # prod
 gunicorn==20.0.4
