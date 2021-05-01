@@ -22,7 +22,7 @@ ipdb==0.13.7
 mixer==7.1.2
 pytest==6.2.3
 pytest-cov==2.11.1
-pytest-django==3.9.0
+pytest-django==4.2.0
 pytest-mock==3.1.1
 black==20.8b1
 # prod
