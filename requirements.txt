@@ -26,4 +26,4 @@ pytest-django==4.2.0
 pytest-mock==3.6.0
 black==21.4b2
 # prod
-gunicorn==20.0.4
+gunicorn==20.1.0
