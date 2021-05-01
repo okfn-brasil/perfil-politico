@@ -15,7 +15,7 @@ tqdm==4.60.0
 Unidecode==1.2.0
 
 # dev
-aioresponses==0.6.4
+aioresponses==0.7.2
 codecov==2.1.7
 django-extensions==3.0.1
 ipdb==0.13.3
