@@ -1,4 +1,4 @@
-aiohttp==3.6.2
+aiohttp==3.7.4
 cached-property==1.5.1
 dj-database-url==0.5.0
 Django==3.0.8
