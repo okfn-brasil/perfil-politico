@@ -1,5 +1,5 @@
 aiohttp==3.7.4.post0
-cached-property==1.5.1
+cached-property==1.5.2
 dj-database-url==0.5.0
 Django==3.2.5
 django-bulk-update==2.2.0
