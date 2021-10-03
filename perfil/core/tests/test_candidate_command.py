@@ -7,7 +7,7 @@ from django.core.management import call_command
 from perfil.core.models import Candidate, City, Party
 
 
-FIXTURE = Path() / "perfil" / "core" / "tests" / "fixtures" / "candidatura.csv.xz"
+FIXTURE = Path() / "perfil" / "core" / "tests" / "fixtures" / "candidatura.csv"
 
 
 @pytest.mark.django_db

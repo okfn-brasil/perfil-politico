@@ -19,9 +19,9 @@ class Command(BaseCommand):
     statuses = {value.upper(): key for key, value in Affiliation.STATUSES}
 
     def serialize(self, line):
-        city = get_city(line["codigo_municipio"], line["nome_municipio"], line["uf"])
-        party = get_party(line["sigla_partido"], line["nome_partido"])
-        status = self.statuses.get(line["situacao_registro"])
+        city = get_city(line["codigo_municipio"], line["municipio"], line["uf"])
+        party = get_party(line["sigla_partido"], line["partido"])
+        status = self.statuses.get(line["situacao"])
 
         return Affiliation(
             cancel_reason=line["motivo_cancelamento"],

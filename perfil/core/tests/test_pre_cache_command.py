@@ -8,7 +8,7 @@ from perfil.core.management.commands.pre_cache import Command, distinct
 
 FIXTURES = (
     Path() / "perfil" / "core" / "tests" / "fixtures" / "affiliation.csv",
-    Path() / "perfil" / "core" / "tests" / "fixtures" / "candidate.csv.xz",
+    Path() / "perfil" / "core" / "tests" / "fixtures" / "candidate.csv",
 )
 
 
