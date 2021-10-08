@@ -280,7 +280,7 @@ class Asset(models.Model):
     value = models.DecimalField(max_digits=16, decimal_places=2, null=True)
     category = models.CharField(max_length=128, blank=True, default="")
     category_code = models.IntegerField(null=True)
-    detail = models.CharField(max_length=255, blank=True, default="")
+    detail = models.CharField(max_length=400, blank=True, default="")
     order = models.IntegerField(null=True)
     last_update = models.DateTimeField(null=True)
 
