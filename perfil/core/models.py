@@ -94,7 +94,7 @@ class Affiliation(models.Model):
     name = models.CharField(max_length=127, default="", blank=True)
     voter_id = models.CharField(max_length=12, default="", blank=True)
     started_in = models.DateField()
-    electoral_section = models.IntegerField()
+    electoral_section = models.IntegerField(null=True)
     electoral_zone = models.IntegerField()
     party = models.ForeignKey(
         Party, on_delete=models.CASCADE, related_name="affiliated"
