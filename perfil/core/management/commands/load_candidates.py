@@ -17,10 +17,15 @@ class Command(BaseCommand):
     model = Candidate
 
     def serialize(self, line):
+        code_state_of_birth = (
+            line["sigla_unidade_federativa_nascimento"]
+            if line["sigla_unidade_federativa_nascimento"] and line["sigla_unidade_federativa_nascimento"] != 'NAO DIVULGAVEL'
+            else 'ND'
+        )
         city = get_city(
             line["codigo_municipio_nascimento"],
             line["municipio_nascimento"],
-            line["sigla_unidade_federativa_nascimento"],
+            code_state_of_birth,
         )
         party = get_party(line["sigla_partido"], line["partido"])
         return Candidate(

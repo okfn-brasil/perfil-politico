@@ -38,6 +38,12 @@ STATES = (
     ("TO", "Tocantins"),
 )
 
+OTHER_STATE_STATUS = (
+    ("ND", "Não Divulgável"),
+    ("BR", "Nacional"),
+    ("VT", "Voto em trânsito"),
+    ("ZZ", "Exterior"),
+)
 
 def age(date_of_birth, election_year):
     """Calculates the age of the politician when they started in office"""
@@ -51,7 +57,7 @@ def age(date_of_birth, election_year):
 class City(models.Model):
     code = models.IntegerField()
     name = models.CharField(max_length=63, default="", blank=True)
-    state = models.CharField(max_length=2, choices=STATES)
+    state = models.CharField(max_length=2, choices=STATES + OTHER_STATE_STATUS)
 
     def __repr__(self):
         return f"{self.name} - {self.state}"
@@ -175,7 +181,7 @@ class Candidate(models.Model):
 
     election = models.CharField(max_length=64, blank=True, default="")
     year = models.IntegerField()
-    state = models.CharField(max_length=2, choices=STATES)
+    state = models.CharField(max_length=2, choices=STATES + OTHER_STATE_STATUS)
     round = models.IntegerField()
     post = models.CharField(max_length=128, blank=True, default="")
     post_code = models.IntegerField()
