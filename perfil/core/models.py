@@ -45,6 +45,7 @@ OTHER_STATE_STATUS = (
     ("ZZ", "Exterior"),
 )
 
+
 def age(date_of_birth, election_year):
     """Calculates the age of the politician when they started in office"""
     reference = date(election_year + 1, 1, 1)

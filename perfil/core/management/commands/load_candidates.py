@@ -19,8 +19,9 @@ class Command(BaseCommand):
     def serialize(self, line):
         code_state_of_birth = (
             line["sigla_unidade_federativa_nascimento"]
-            if line["sigla_unidade_federativa_nascimento"] and line["sigla_unidade_federativa_nascimento"] != 'NAO DIVULGAVEL'
-            else 'ND'
+            if line["sigla_unidade_federativa_nascimento"]
+            and line["sigla_unidade_federativa_nascimento"] != "NAO DIVULGAVEL"
+            else "ND"
         )
         city = get_city(
             line["codigo_municipio_nascimento"],
