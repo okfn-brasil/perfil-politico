@@ -16,7 +16,7 @@ class Command(BaseCommand):
         "https://brasil.io/dataset/eleicoes-brasil/filiados"
     )
     model = Affiliation
-    statuses = {value.upper(): key for key, value in Affiliation.STATUSES}
+    statuses = {value.upper().replace(' ', '_'): key for key, value in Affiliation.STATUSES}
 
     def serialize(self, line):
         city = get_city(line["codigo_municipio"], line["municipio"], line["uf"])

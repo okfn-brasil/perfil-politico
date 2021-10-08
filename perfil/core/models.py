@@ -84,11 +84,13 @@ class Affiliation(models.Model):
     CANCELED = "C"
     EXCLUDED = "D"
     SUB_JUDICE = "S"
+    TRANSFERIDO = "T"
     STATUSES = (
         (REGULAR, "Regular"),
         (CANCELED, "Cancelado"),
         (EXCLUDED, "Desfiliado"),
         (SUB_JUDICE, "Sub judice"),
+        (TRANSFERIDO, "Transferido"),
     )
 
     name = models.CharField(max_length=127, default="", blank=True)
