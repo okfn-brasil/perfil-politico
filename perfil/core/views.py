@@ -1,9 +1,10 @@
+import statistics
 from collections import defaultdict
 
 from cached_property import cached_property
 from django.db.models import Count
 from django.http import Http404, JsonResponse
-from django.shortcuts import redirect
+from django.db import connection
 from restless.dj import DjangoResource
 from restless.preparers import CollectionSubPreparer, FieldsPreparer
 
@@ -175,6 +176,58 @@ class Stats:
             msg = f"{argument} is invalid. Try one of those: {valid_choices}"
             raise Http404(msg)
 
+    @staticmethod
+    def validate_arguments(arguments: list, choices):
+        for argument in arguments:
+            Stats.validate_argument(argument, choices)
+
+
+class AssetStats(Stats):
+    """Class that supports the candidates assets stats views"""
+
+    def __init__(self, states=None, posts=None):
+        self.states = [state.upper() for state in (states or [])]
+        self.posts = [post.replace("-", " ").upper() for post in (posts or [])]
+
+        self.validate_arguments(self.posts, self.NATIONAL_POSTS)
+        self.validate_arguments(self.states, self.STATES)
+
+    def _build_states_filter(self):
+        if len(self.states) == 1:
+            return f"core_candidate.state='{self.states[0]}'"
+        return f"core_candidate.state IN {tuple(self.states)}"
+
+    def _build_posts_filter(self):
+        if len(self.posts) == 1:
+            return f"core_candidate.posts='{self.posts[0]}'"
+        return f"core_candidate.posts IN {tuple(self.posts)}"
+
+    def __call__(self):
+        query_filter = "core_candidate.round_result LIKE 'ELEIT%'"
+        if self.states:
+            states_filter = self._build_states_filter()
+            query_filter = f"{query_filter} AND {states_filter}"
+        if self.posts:
+            posts_filter = self._build_posts_filter()
+            query_filter = f"{query_filter} AND {posts_filter}"
+
+        sql = f"""
+            SELECT
+                core_candidate.year,
+                array_agg(core_asset.value) as asset_values
+            FROM core_asset
+            INNER JOIN core_candidate
+            ON core_candidate.id = core_asset.candidate_id
+            WHERE {query_filter}
+            GROUP BY core_candidate.year;
+        """
+        with connection.cursor() as cursor:
+            cursor.execute(sql)
+            return JsonResponse({
+                year: statistics.median(asset_values)
+                for year, asset_values in cursor.fetchall()
+            })
+
 
 class CandidateCharacteristicsStats(Stats):
     """Class that supports the candidates characteristics stats views"""
@@ -260,3 +313,12 @@ def national_stats(request, year, post, characteristic):
 def state_stats(request, state, year, post, characteristic):
     stats = CandidateCharacteristicsStats(year, post, characteristic, state)
     return stats()
+
+
+def asset_stats(request):
+    states = request.GET.getlist('state', [])
+    posts = request.GET.getlist('candidate_post', [])
+
+    stats = AssetStats(states=states, posts=posts)
+    return stats()
+

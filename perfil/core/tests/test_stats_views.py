@@ -4,13 +4,20 @@ import pytest
 from django.http import Http404, HttpResponse
 from django.shortcuts import resolve_url
 
-from perfil.core.views import CandidateCharacteristicsStats
+from perfil.core.views import Stats, AssetStats, CandidateCharacteristicsStats
 
 
 def test_validate_argument():
-    assert CandidateCharacteristicsStats.validate_argument("foo", {"foo", "bar"}) is None
+    assert Stats.validate_argument("foo", {"foo", "bar"}) is None
     with pytest.raises(Http404):
-        assert CandidateCharacteristicsStats.validate_argument("foobar", {"foo", "bar"})
+        assert Stats.validate_argument("foobar", {"foo", "bar"})
+
+
+def test_validate_arguments():
+    assert Stats.validate_arguments([], {"foo", "bar"}) is None
+    assert Stats.validate_arguments(["foo", "bar"], {"foo", "bar"}) is None
+    with pytest.raises(Http404):
+        assert Stats.validate_arguments(["foo", "foobar"], {"foo", "bar"})
 
 
 def test_national_stats_instance(mocker):
@@ -70,6 +77,20 @@ def test_state_stats_view(client, mocker):
     url = resolve_url("api_state_stats", "sc", 2018, "deputado-federal", "age")
     client.get(url)
     stats.assert_called_once_with(2018, "deputado-federal", "age", "sc")
+
+
+def test_assets_stats_view_without_filters(client, mocker):
+    stats = mocker.patch("perfil.core.views.AssetStats")
+    stats.return_value = HttpResponse
+    client.get(resolve_url("api_asset_stats"))
+    stats.assert_called_once_with(states=[], posts=[])
+
+
+def test_assets_stats_view_with_filters(client, mocker):
+    stats = mocker.patch("perfil.core.views.AssetStats")
+    stats.return_value = HttpResponse
+    client.get(f"{resolve_url('api_asset_stats')}?state=MG&state=SP&candidate_post=vereador")
+    stats.assert_called_once_with(states=["MG", "SP"], posts=["vereador"])
 
 
 def test_age_stats_method():
