@@ -157,15 +157,6 @@ class Stats:
         "VEREADOR",
     }
 
-    STATE_POSTS = {
-        "DEPUTADO DISTRITAL",
-        "DEPUTADO ESTADUAL",
-        "DEPUTADO FEDERAL",
-        "PREFEITO",
-        "SENADOR",
-        "VEREADOR",
-    }
-
     CHARACTERISTICS = {
         "age",
         "education",
