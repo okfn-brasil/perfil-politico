@@ -121,6 +121,17 @@ Characteristic options are:
 
 Same as above but aggregated by state.
 
+#### `GET /api/asset-stats/`
+
+Returns the median of elected people's assets value aggregated by year.
+
+`optionally` you can add query parameters to filter the results by `state` or by
+the `candidate post` (the valid posts are the same ones that are in the list above).
+
+These parameters can support multiple values if you wish to filter by more than one thing.
+
+Ex: `/api/asset-stats?state=MG&state=RJ&candidate_post=governador&candidate_post=prefeito`
+
 ## Tests
 
 ```sh
