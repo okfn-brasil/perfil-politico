@@ -1,3 +1,4 @@
+import time
 import statistics
 from collections import defaultdict
 
@@ -211,22 +212,42 @@ class AssetStats(Stats):
             posts_filter = self._build_posts_filter()
             query_filter = f"{query_filter} AND {posts_filter}"
 
+        start = time.time()
         sql = f"""
-            SELECT
-                core_candidate.year,
-                array_agg(core_asset.value) as asset_values
-            FROM core_asset
-            INNER JOIN core_candidate
-            ON core_candidate.id = core_asset.candidate_id
-            WHERE {query_filter}
-            GROUP BY core_candidate.year;
-        """
+                SELECT
+                    core_candidate.year,
+                    PERCENTILE_CONT(0.5) WITHIN GROUP(ORDER BY core_asset.value) as median
+                FROM core_asset
+                INNER JOIN core_candidate
+                ON core_candidate.id = core_asset.candidate_id
+                WHERE {query_filter}
+                GROUP BY core_candidate.year;
+            """
         with connection.cursor() as cursor:
             cursor.execute(sql)
-            return JsonResponse({
-                year: statistics.median(asset_values)
-                for year, asset_values in cursor.fetchall()
-            })
+            resp2 = {year: median for year, median in cursor.fetchall()}
+
+        end = time.time()
+        resp2['time'] = end - start
+
+        start = time.time()
+        sql = f"""
+                SELECT
+                    core_candidate.year,
+                    array_agg(core_asset.value) as assets_values
+                FROM core_asset
+                INNER JOIN core_candidate
+                ON core_candidate.id = core_asset.candidate_id
+                WHERE {query_filter}
+                GROUP BY core_candidate.year;
+            """
+        with connection.cursor() as cursor:
+            cursor.execute(sql)
+            resp1 = {year: statistics.median(values) for year, values in cursor.fetchall()}
+        end = time.time()
+        resp1['time'] = end - start
+
+        return JsonResponse({'result_python_median': resp1, 'result_psql_percentile': resp2})
 
 
 class CandidateCharacteristicsStats(Stats):
@@ -321,4 +342,3 @@ def asset_stats(request):
 
     stats = AssetStats(states=states, posts=posts)
     return stats()
-
