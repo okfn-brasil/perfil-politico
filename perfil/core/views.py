@@ -143,7 +143,7 @@ class CandidateDetailResource(DjangoResource):
 
 
 class Stats:
-    """Class that supports stats views"""
+    """Base class that supports stats views"""
 
     STATES = set(abbreviation.upper() for abbreviation, _ in STATES)
 
@@ -177,6 +177,17 @@ class Stats:
         "post",
     }
 
+    @staticmethod
+    def validate_argument(argument, choices):
+        if argument not in choices:
+            valid_choices = ", ".join(choices)
+            msg = f"{argument} is invalid. Try one of those: {valid_choices}"
+            raise Http404(msg)
+
+
+class CandidateCharacteristicsStats(Stats):
+    """Class that supports the candidates characteristics stats views"""
+
     def __init__(self, year, post, characteristic, state=None):
         self.state = state.upper() if state else None
         self.year = year
@@ -188,13 +199,6 @@ class Stats:
         self.validate_argument(self.characteristic, self.CHARACTERISTICS)
         if state:
             self.validate_argument(self.state, self.STATES)
-
-    @staticmethod
-    def validate_argument(argument, choices):
-        if argument not in choices:
-            valid_choices = ", ".join(choices)
-            msg = f"{argument} is invalid. Try one of those: {valid_choices}"
-            raise Http404(msg)
 
     @staticmethod
     def get_field_name(characteristic):
@@ -258,10 +262,10 @@ class Stats:
 
 
 def national_stats(request, year, post, characteristic):
-    stats = Stats(year, post, characteristic)
+    stats = CandidateCharacteristicsStats(year, post, characteristic)
     return stats()
 
 
 def state_stats(request, state, year, post, characteristic):
-    stats = Stats(year, post, characteristic, state)
+    stats = CandidateCharacteristicsStats(year, post, characteristic, state)
     return stats()

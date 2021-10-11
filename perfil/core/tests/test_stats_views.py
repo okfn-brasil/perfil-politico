@@ -4,18 +4,18 @@ import pytest
 from django.http import Http404, HttpResponse
 from django.shortcuts import resolve_url
 
-from perfil.core.views import Stats
+from perfil.core.views import CandidateCharacteristicsStats
 
 
 def test_validate_argument():
-    assert Stats.validate_argument("foo", {"foo", "bar"}) is None
+    assert CandidateCharacteristicsStats.validate_argument("foo", {"foo", "bar"}) is None
     with pytest.raises(Http404):
-        assert Stats.validate_argument("foobar", {"foo", "bar"})
+        assert CandidateCharacteristicsStats.validate_argument("foobar", {"foo", "bar"})
 
 
 def test_national_stats_instance(mocker):
-    mock = mocker.patch.object(Stats, "validate_argument")
-    stats = Stats(2018, "deputado-federal", "Ethnicity")
+    mock = mocker.patch.object(CandidateCharacteristicsStats, "validate_argument")
+    stats = CandidateCharacteristicsStats(2018, "deputado-federal", "Ethnicity")
     assert 2 == mock.call_count
     assert 2018 == stats.year
     assert "DEPUTADO FEDERAL" == stats.post
@@ -24,8 +24,8 @@ def test_national_stats_instance(mocker):
 
 
 def test_state_stats_instance(mocker):
-    mock = mocker.patch.object(Stats, "validate_argument")
-    stats = Stats(2018, "deputado-federal", "Ethnicity", "sc")
+    mock = mocker.patch.object(CandidateCharacteristicsStats, "validate_argument")
+    stats = CandidateCharacteristicsStats(2018, "deputado-federal", "Ethnicity", "sc")
     assert 3 == mock.call_count
     assert 2018 == stats.year
     assert "DEPUTADO FEDERAL" == stats.post
@@ -35,29 +35,29 @@ def test_state_stats_instance(mocker):
 
 @pytest.mark.django_db
 def test_age_stats_instance(mocker):
-    mock = mocker.patch.object(Stats, "age_stats")
+    mock = mocker.patch.object(CandidateCharacteristicsStats, "age_stats")
     mock.return_value = {}
-    stats = Stats(2018, "deputado-federal", "age")
+    stats = CandidateCharacteristicsStats(2018, "deputado-federal", "age")
     assert stats.field == "date_of_birth"
     stats()
     mock.assert_called_once()
 
 
 def test_party_stats_instance(mocker):
-    stats = Stats(2018, "deputado-federal", "party")
+    stats = CandidateCharacteristicsStats(2018, "deputado-federal", "party")
     assert stats.field == "party__abbreviation"
 
 
 @pytest.mark.django_db
 def test_stats_call(mocker):
     response = mocker.patch("perfil.core.views.JsonResponse")
-    stats = Stats(2018, "deputado-federal", "Ethnicity", "sc")
+    stats = CandidateCharacteristicsStats(2018, "deputado-federal", "Ethnicity", "sc")
     stats()
     response.assert_called_once()
 
 
 def test_national_stats_view(client, mocker):
-    stats = mocker.patch("perfil.core.views.Stats")
+    stats = mocker.patch("perfil.core.views.CandidateCharacteristicsStats")
     stats.return_value = HttpResponse
     url = resolve_url("api_national_stats", 2018, "deputado-federal", "age")
     client.get(url)
@@ -65,7 +65,7 @@ def test_national_stats_view(client, mocker):
 
 
 def test_state_stats_view(client, mocker):
-    stats = mocker.patch("perfil.core.views.Stats")
+    stats = mocker.patch("perfil.core.views.CandidateCharacteristicsStats")
     stats.return_value = HttpResponse
     url = resolve_url("api_state_stats", "sc", 2018, "deputado-federal", "age")
     client.get(url)
@@ -73,7 +73,7 @@ def test_state_stats_view(client, mocker):
 
 
 def test_age_stats_method():
-    stats = Stats(2018, "deputado-federal", "age")
+    stats = CandidateCharacteristicsStats(2018, "deputado-federal", "age")
     data = (
         {"characteristic": date(1940, 1, 1), "total": 1},
         {"characteristic": date(1950, 1, 1), "total": 1},
