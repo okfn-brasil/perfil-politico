@@ -22,7 +22,7 @@ class Command(BaseCommand):
             affiliation_filter['voter_id'] = voter_id
 
         try:
-            return Affiliation.objects.filter(**affiliation_filter)
+            return Affiliation.objects.filter(**affiliation_filter).get()
         except Affiliation.DoesNotExist:
             pass
 
@@ -31,22 +31,22 @@ class Command(BaseCommand):
         updated_fields = []
         if affiliation.status != status:
             affiliation.status = status
-            updated_fields.append(["status"])
+            updated_fields.append("status")
         if affiliation.canceled_in != canceled_in:
             affiliation.canceled_in = canceled_in
-            updated_fields.append(["canceled_in"])
+            updated_fields.append("canceled_in")
         if affiliation.cancel_reason != cancel_reason:
             affiliation.cancel_reason = cancel_reason
-            updated_fields.append(["cancel_reason"])
+            updated_fields.append("cancel_reason")
         if affiliation.ended_in != ended_in:
             affiliation.ended_in = ended_in
-            updated_fields.append(["ended_in"])
+            updated_fields.append("ended_in")
         if affiliation.regularized_in != regularized_in:
             affiliation.regularized_in = regularized_in
-            updated_fields.append(["regularized_in"])
+            updated_fields.append("regularized_in")
         if affiliation.processed_in != processed_in:
             affiliation.processed_in = processed_in
-            updated_fields.append(["processed_in"])
+            updated_fields.append("processed_in")
         affiliation.save(update_fields=updated_fields)
 
     def serialize(self, line):
@@ -92,3 +92,6 @@ class Command(BaseCommand):
             regularized_in,
             processed_in,
         )
+
+    def post_handle(self):
+        pass
