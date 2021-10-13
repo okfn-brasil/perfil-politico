@@ -58,7 +58,7 @@ running:
 
 ```sh
 $ docker-compose run django python manage.py load_affiliations /mnt/data/filiacao.csv
-$ docker-compose run django python manage.py update_politicians
+$ docker-compose run django python manage.py update_politicians --ignore_existing_politicians
 $ docker-compose run django python manage.py load_candidates /mnt/data/candidatura.csv
 $ docker-compose run django python manage.py link_affiliations_and_candidates
 $ docker-compose run django python manage.py link_politicians_and_election_results

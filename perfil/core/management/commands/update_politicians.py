@@ -10,28 +10,32 @@ from perfil.core.models import Politician, Affiliation
 
 
 class Command(BaseCommand):
+    ignore_existing_politicians = False
 
-    @staticmethod
-    def politicians_from_affiliation():
-        # TODO use the ORM (get most recent affiliation for each `voter_id`)
-        sql = """
-            SELECT core_affiliation.*
-            FROM core_affiliation
-            INNER JOIN (
-                SELECT voter_id, MAX(started_in) AS started_in
-                FROM core_affiliation
-                GROUP BY voter_id
-            ) AS most_recent
-            ON most_recent.voter_id = core_affiliation.voter_id
-            WHERE status = 'R';
-        """
+    def add_arguments(self, parser):
+        parser.add_argument("--ignore_existing_politicians",
+                            help=("Creates politicians for all affiliations "
+                                  "regardless if the politician exists or not."),
+                            )
+
+    def _could_update_politician(self, affiliation: Affiliation) -> bool:
+        if self.ignore_existing_politicians:
+            return False
+
+        rows = (Politician.objects
+                .filter(current_affiliation__voter_id=affiliation.voter_id)
+                .update(current_affiliation=affiliation))
+        return rows > 0
+
+    def _politicians_from_affiliation(self):
         yield from (
-            Politician(current_affiliation=affiliation)
-            for affiliation in Affiliation.objects.raw(sql).iterator()
+            Politician(current_affiliation=affiliation) if not self._could_update_politician(affiliation) else None
+            for affiliation
+            in Affiliation.objects.filter(status='R').order_by("voter_id", 'started_in').distinct('voter_id').iterator()
         )
 
     @staticmethod
-    def affiliations_per_politician():
+    def _affiliations_per_politician():
         Row = namedtuple("Row", ("id", "started_in", "party"))
         print("Worry not: this query takes several minutes to run…")
         sql = """
@@ -78,6 +82,8 @@ class Command(BaseCommand):
         yield from politicians.values()
 
     def handle(self, *args, **options):
+        self.ignore_existing_politicians = options["ignore_existing_politicians"]
+
         # get most recent affiliation to create `Politician` instances
         total = (
             Affiliation.objects.filter(status=Affiliation.REGULAR)
@@ -91,12 +97,12 @@ class Command(BaseCommand):
             "unit": "politicians",
         }
         with tqdm(**kwargs) as progress_bar:
-            for bulk in ipartition(self.politicians_from_affiliation(), 8192):
-                Politician.objects.bulk_create(bulk)
+            for bulk in ipartition(self._politicians_from_affiliation(), 8192):
+                Politician.objects.bulk_create(obj for obj in bulk if obj)
                 progress_bar.update(len(bulk))
 
         # get affiliafill in the `Politician.affiliation_history` field
-        assets = tuple(self.affiliations_per_politician())
+        assets = tuple(self._affiliations_per_politician())
         kwargs = {
             "desc": f"Creating affiliation history per politician",
             "total": len(assets),
