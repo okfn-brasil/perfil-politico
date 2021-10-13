@@ -33,3 +33,6 @@ class Command(BaseCommand):
             status=status,
             voter_id=line["titulo_eleitoral"],
         )
+
+    def post_handle(self):
+        pass
