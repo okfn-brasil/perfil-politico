@@ -15,14 +15,15 @@ class Command(BaseCommand):
 
     @staticmethod
     def get_affiliation_if_exists(name, voter_id, party, started_in):
-        affiliation_filter = {"party": party, "started_in": started_in}
+        affiliation_filter = {"party": party, "started_in": started_in, "voter_id": voter_id}
         if len(str(voter_id)) > 10:
             affiliation_filter["name"] = name
-        else:
-            affiliation_filter["voter_id"] = voter_id
 
         try:
             return Affiliation.objects.filter(**affiliation_filter).get()
+        except Affiliation.MultipleObjectsReturned:
+            print(f"Multiple objects returned for query: {affiliation_filter}. Changing only the first.")
+            return Affiliation.objects.filter(**affiliation_filter).first()
         except Affiliation.DoesNotExist:
             pass
 
