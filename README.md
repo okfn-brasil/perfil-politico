@@ -75,10 +75,10 @@ Or you can **update the data from your database** using the commands:
 ```sh
 $ docker-compose run django python manage.py insert_or_update_affiliations /mnt/data/filiacao.csv
 $ docker-compose run django python manage.py update_politicians
-$ docker-compose run django python manage.py insert_or_update_candidates /mnt/data/candidatura.csv --clean-previous-data
+$ docker-compose run django python manage.py load_candidates /mnt/data/candidatura.csv --clean-previous-data
 $ docker-compose run django python manage.py link_affiliations_and_candidates
 $ docker-compose run django python manage.py link_politicians_and_election_results
-$ docker-compose run django python manage.py insert_or_update_assets /mnt/data/bemdeclarado.csv --clean-previous-data
+$ docker-compose run django python manage.py load_assets /mnt/data/bemdeclarado.csv --clean-previous-data
 ```
 
 > PS: The code only updates data coming from the csv's to the database.
