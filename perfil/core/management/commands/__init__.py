@@ -9,7 +9,6 @@ from math import ceil
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from django.core.exceptions import ObjectDoesNotExist
 from django.core.management import base
 from django.db.models import Q
 from django.utils.timezone import get_default_timezone
@@ -189,12 +188,28 @@ class BaseCommand(base.BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument("csv", help="Path to CSV file")
+        parser.add_argument(
+            "clean-previous-data",
+            default=False,
+            nargs="?",
+            help=(
+                "Creates politicians for all affiliations "
+                "regardless if the politician exists or not."
+            ),
+        )
 
     def handle(self, *args, **options):
         self.log = getLogger(__name__)
         self.path = Path(options["csv"])
         if not self.path.exists():
             raise base.CommandError(f"{self.path} does not exist")
+
+        if options["clean-previous-data"]:
+            total = self.model.objects.all().count()
+            print(f"Removing {self.model._meta.verbose_name} data.")
+            print(f"{total} rows found - This may take a while...")
+            self.model.objects.all().delete()
+            print(f"Done removing {self.model._meta.verbose_name} data.")
 
         with CsvSlicer(self.path) as source:
             kwargs = {
