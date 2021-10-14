@@ -14,8 +14,8 @@ class Command(BaseCommand):
     }
 
     @staticmethod
-    def get_affiliation_if_exists(name, voter_id, party, started_in):
-        affiliation_filter = {"party": party, "started_in": started_in, "voter_id": voter_id}
+    def get_affiliation_if_exists(name, voter_id, party, city, started_in):
+        affiliation_filter = {"party": party, "started_in": started_in, "voter_id": voter_id, "city": city}
         if len(str(voter_id)) > 10:
             affiliation_filter["name"] = name
 
@@ -62,9 +62,10 @@ class Command(BaseCommand):
         name = line["nome"]
         voter_id = line["titulo_eleitoral"]
         party = get_party(line["sigla_partido"], line["partido"])
+        city = get_city(line["codigo_municipio"], line["municipio"], line["uf"])
         started_in = line["data_filiacao"]
 
-        affiliation = self.get_affiliation_if_exists(name, voter_id, party, started_in)
+        affiliation = self.get_affiliation_if_exists(name, voter_id, party, city, started_in)
 
         status = self.statuses.get(line["situacao"])
         canceled_in = parse_date(line["data_cancelamento"])
@@ -72,15 +73,14 @@ class Command(BaseCommand):
         ended_in = parse_date(line["data_desfiliacao"])
         regularized_in = parse_date(line["data_regularizacao"])
         processed_in = parse_date(line["data_processamento"])
+        electoral_section = line["secao_eleitoral"] if line["secao_eleitoral"] != "" else None
 
         if not affiliation:
-            city = get_city(line["codigo_municipio"], line["municipio"], line["uf"])
-
             return Affiliation(
                 cancel_reason=cancel_reason,
                 canceled_in=canceled_in,
                 city=city,
-                electoral_section=line["secao_eleitoral"],
+                electoral_section=electoral_section,
                 electoral_zone=line["zona_eleitoral"],
                 ended_in=ended_in,
                 name=name,
