@@ -13,25 +13,36 @@ class Command(BaseCommand):
     ignore_existing_politicians = False
 
     def add_arguments(self, parser):
-        parser.add_argument("--ignore_existing_politicians",
-                            help=("Creates politicians for all affiliations "
-                                  "regardless if the politician exists or not."),
-                            )
+        parser.add_argument(
+            "ignore_existing_politicians",
+            default=False,
+            nargs="?",
+            help=(
+                "Creates politicians for all affiliations "
+                "regardless if the politician exists or not."
+            ),
+        )
 
     def _could_update_politician(self, affiliation: Affiliation) -> bool:
         if self.ignore_existing_politicians:
             return False
 
-        rows = (Politician.objects
-                .filter(current_affiliation__voter_id=affiliation.voter_id)
-                .update(current_affiliation=affiliation))
+        rows = Politician.objects.filter(
+            current_affiliation__voter_id=affiliation.voter_id
+        ).update(current_affiliation=affiliation)
         return rows > 0
 
     def _politicians_from_affiliation(self):
         yield from (
-            Politician(current_affiliation=affiliation) if not self._could_update_politician(affiliation) else None
-            for affiliation
-            in Affiliation.objects.filter(status='R').order_by("voter_id", 'started_in').distinct('voter_id').iterator()
+            Politician(current_affiliation=affiliation)
+            if not self._could_update_politician(affiliation)
+            else None
+            for affiliation in (
+                Affiliation.objects.filter(status="R")
+                .order_by("voter_id", "started_in")
+                .distinct("voter_id")
+                .iterator()
+            )
         )
 
     @staticmethod
