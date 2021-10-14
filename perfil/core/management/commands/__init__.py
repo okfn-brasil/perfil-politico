@@ -189,7 +189,7 @@ class BaseCommand(base.BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("csv", help="Path to CSV file")
         parser.add_argument(
-            "--clean-previous-data",
+            "clean-previous-data",
             default=False,
             nargs="?",
             help=(
@@ -204,7 +204,7 @@ class BaseCommand(base.BaseCommand):
         if not self.path.exists():
             raise base.CommandError(f"{self.path} does not exist")
 
-        if options["--clean-previous-data"]:
+        if options["clean-previous-data"]:
             total = self.model.objects.all().count()
             kwargs = {
                 "desc": f"Removing {self.model._meta.verbose_name} data",
