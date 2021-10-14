@@ -85,14 +85,18 @@ def test_existing_affiliation_is_updated():
     assert 3 == Affiliation.objects.count()
 
     # existing row is updated properly
-    updated_affiliation = Affiliation.objects.filter(voter_id="014403110906", started_in="2003-10-02").get()
+    updated_affiliation = Affiliation.objects.filter(
+        voter_id="014403110906", started_in="2003-10-02"
+    ).get()
     assert "MARCOS ANTONIO ROSA SILVA" == updated_affiliation.name
     assert "Motivo" == updated_affiliation.cancel_reason
     assert date(2017, 2, 8) == updated_affiliation.ended_in
     assert Affiliation.EXCLUDED == updated_affiliation.status
 
     # non existing row is added properly
-    new_affiliation = Affiliation.objects.filter(voter_id="014403110906", started_in="1999-09-30").get()
+    new_affiliation = Affiliation.objects.filter(
+        voter_id="014403110906", started_in="1999-09-30"
+    ).get()
     assert "MARCOS ANTONIO ROSA SILVA" == new_affiliation.name
     assert Party.objects.get(abbreviation="AV") == new_affiliation.party
     assert Affiliation.REGULAR == new_affiliation.status

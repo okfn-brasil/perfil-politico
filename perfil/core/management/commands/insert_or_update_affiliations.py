@@ -17,9 +17,9 @@ class Command(BaseCommand):
     def get_affiliation_if_exists(name, voter_id, party, started_in):
         affiliation_filter = {"party": party, "started_in": started_in}
         if len(str(voter_id)) > 10:
-            affiliation_filter['name'] = name
+            affiliation_filter["name"] = name
         else:
-            affiliation_filter['voter_id'] = voter_id
+            affiliation_filter["voter_id"] = voter_id
 
         try:
             return Affiliation.objects.filter(**affiliation_filter).get()
@@ -27,7 +27,15 @@ class Command(BaseCommand):
             pass
 
     @staticmethod
-    def update_affiliation(affiliation, status, canceled_in, cancel_reason, ended_in, regularized_in, processed_in):
+    def update_affiliation(
+        affiliation,
+        status,
+        canceled_in,
+        cancel_reason,
+        ended_in,
+        regularized_in,
+        processed_in,
+    ):
         updated_fields = []
         if affiliation.status != status:
             affiliation.status = status

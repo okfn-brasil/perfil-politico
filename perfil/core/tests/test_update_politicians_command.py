@@ -42,7 +42,9 @@ def test_politicians_were_created():
 def test_existing_politicians_are_not_updated_if_set_to_ignore_existing_politicians():
     # Given
     call_command("load_affiliations", str(FIXTURE))
-    old_affiliation = Affiliation.objects.filter(voter_id="014403110906", status="D").get()
+    old_affiliation = Affiliation.objects.filter(
+        voter_id="014403110906", status="D"
+    ).get()
     Politician(current_affiliation=old_affiliation).save()
 
     # When
@@ -57,7 +59,9 @@ def test_existing_politicians_were_updated():
     # Given
     call_command("load_affiliations", str(FIXTURE))
     politician_voter_id = "014403110906"
-    old_affiliation = Affiliation.objects.filter(voter_id=politician_voter_id, status="D").get()
+    old_affiliation = Affiliation.objects.filter(
+        voter_id=politician_voter_id, status="D"
+    ).get()
     Politician(current_affiliation=old_affiliation).save()
     # When
     call_command("update_politicians")
@@ -65,8 +69,12 @@ def test_existing_politicians_were_updated():
     # Then
     assert 2 == Politician.objects.count()
 
-    new_affiliation = Affiliation.objects.filter(voter_id=politician_voter_id, status="R").get()
-    politician = Politician.objects.filter(current_affiliation__voter_id=politician_voter_id).get()
+    new_affiliation = Affiliation.objects.filter(
+        voter_id=politician_voter_id, status="R"
+    ).get()
+    politician = Politician.objects.filter(
+        current_affiliation__voter_id=politician_voter_id
+    ).get()
     assert politician.current_affiliation == new_affiliation
 
     affiliations = (
