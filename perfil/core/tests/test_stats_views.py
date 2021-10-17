@@ -4,7 +4,7 @@ import pytest
 from django.http import Http404, HttpResponse
 from django.shortcuts import resolve_url
 
-from perfil.core.views import Stats, AssetStats, CandidateCharacteristicsStats
+from perfil.core.views import Stats, CandidateCharacteristicsStats
 
 
 def test_validate_argument():
@@ -89,7 +89,9 @@ def test_assets_stats_view_without_filters(client, mocker):
 def test_assets_stats_view_with_filters(client, mocker):
     stats = mocker.patch("perfil.core.views.AssetStats")
     stats.return_value = HttpResponse
-    client.get(f"{resolve_url('api_asset_stats')}?state=MG&state=SP&candidate_post=vereador")
+    client.get(
+        f"{resolve_url('api_asset_stats')}?state=MG&state=SP&candidate_post=vereador"
+    )
     stats.assert_called_once_with(states=["MG", "SP"], posts=["vereador"])
 
 

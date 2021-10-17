@@ -61,6 +61,7 @@ $ docker-compose run django python manage.py load_candidates /mnt/data/candidatu
 $ docker-compose run django python manage.py link_affiliations_and_candidates
 $ docker-compose run django python manage.py link_politicians_and_election_results
 $ docker-compose run django python manage.py load_assets /mnt/data/bemdeclarado.csv
+$ docker-compose run django python manage.py pre_calculate_stats
 $ docker-compose run django python manage.py load_bills /mnt/data/senado.csv
 $ docker-compose run django python manage.py load_bills /mnt/data/camara.csv
 ```

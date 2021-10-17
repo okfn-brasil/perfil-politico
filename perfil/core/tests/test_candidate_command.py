@@ -41,9 +41,9 @@ def test_parties_were_created():
 @pytest.mark.django_db
 def test_candidates_were_created():
     call_command("load_candidates", str(FIXTURE))
-    assert 3 == Candidate.objects.count()
+    assert 4 == Candidate.objects.count()
 
-    candidate = Candidate.objects.get(taxpayer_id="10693471832")
+    candidate = Candidate.objects.get(taxpayer_id="10693471832", year=2018)
     assert 2018 == candidate.year
     assert date(1968, 4, 2) == candidate.date_of_birth
     assert City.objects.get(name="COLINAS") == candidate.place_of_birth

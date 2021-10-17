@@ -337,8 +337,8 @@ def state_stats(request, state, year, post, characteristic):
 
 
 def asset_stats(request):
-    states = request.GET.getlist('state', [])
-    posts = request.GET.getlist('candidate_post', [])
+    states = request.GET.getlist("state", [])
+    posts = request.GET.getlist("candidate_post", [])
 
     stats = AssetStats(states=states, posts=posts)
     return stats()
