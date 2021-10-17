@@ -1,4 +1,3 @@
-import time
 import statistics
 from collections import defaultdict
 
@@ -9,7 +8,7 @@ from django.db import connection
 from restless.dj import DjangoResource
 from restless.preparers import CollectionSubPreparer, FieldsPreparer
 
-from perfil.core.models import STATES, Candidate, age
+from perfil.core.models import STATES, Candidate, age, PreCalculatedStats
 
 
 def home(request):
@@ -203,7 +202,7 @@ class AssetStats(Stats):
             return f"core_candidate.posts='{self.posts[0]}'"
         return f"core_candidate.posts IN {tuple(self.posts)}"
 
-    def __call__(self):
+    def _calculate_assets_median_for_specific_group(self) -> list:
         query_filter = "core_candidate.round_result LIKE 'ELEIT%'"
         if self.states:
             states_filter = self._build_states_filter()
@@ -212,42 +211,38 @@ class AssetStats(Stats):
             posts_filter = self._build_posts_filter()
             query_filter = f"{query_filter} AND {posts_filter}"
 
-        start = time.time()
         sql = f"""
-                SELECT
-                    core_candidate.year,
-                    PERCENTILE_CONT(0.5) WITHIN GROUP(ORDER BY core_asset.value) as median
-                FROM core_asset
-                INNER JOIN core_candidate
-                ON core_candidate.id = core_asset.candidate_id
-                WHERE {query_filter}
-                GROUP BY core_candidate.year;
-            """
+            SELECT
+                core_candidate.year,
+                array_agg(core_asset.value) as assets_values
+            FROM core_asset
+            INNER JOIN core_candidate
+            ON core_candidate.id = core_asset.candidate_id
+            WHERE {query_filter}
+            GROUP BY core_candidate.year;
+        """
         with connection.cursor() as cursor:
             cursor.execute(sql)
-            resp2 = {year: median for year, median in cursor.fetchall()}
+            return [
+                {"year": year, "value": statistics.median(values)}
+                for year, values in cursor.fetchall()
+            ]
 
-        end = time.time()
-        resp2['time'] = end - start
+    @staticmethod
+    def _get_pre_calculated_assets_median() -> list:
+        stats = PreCalculatedStats.objects.filter(
+            type=PreCalculatedStats.ASSETS_MEDIAN
+        ).order_by("year")
+        return [{"year": item.year, "value": float(item.value)} for item in stats]
 
-        start = time.time()
-        sql = f"""
-                SELECT
-                    core_candidate.year,
-                    array_agg(core_asset.value) as assets_values
-                FROM core_asset
-                INNER JOIN core_candidate
-                ON core_candidate.id = core_asset.candidate_id
-                WHERE {query_filter}
-                GROUP BY core_candidate.year;
-            """
-        with connection.cursor() as cursor:
-            cursor.execute(sql)
-            resp1 = {year: statistics.median(values) for year, values in cursor.fetchall()}
-        end = time.time()
-        resp1['time'] = end - start
+    def __call__(self):
+        assets_median = (
+            self._get_pre_calculated_assets_median()
+            if not (self.states or self.posts)
+            else self._calculate_assets_median_for_specific_group()
+        )
 
-        return JsonResponse({'result_python_median': resp1, 'result_psql_percentile': resp2})
+        return JsonResponse({"mediana_patrimonios": assets_median})
 
 
 class CandidateCharacteristicsStats(Stats):

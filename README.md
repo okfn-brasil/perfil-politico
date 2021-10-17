@@ -124,7 +124,8 @@ Same as above but aggregated by state.
 
 #### `GET /api/asset-stats/`
 
-Returns the median of elected people's assets value aggregated by year.
+Returns an object with a key called `mediana_patrimonios` that is a list with
+the median of elected people's asset value aggregated by year.
 
 `optionally` you can add query parameters to filter the results by `state` or by
 the `candidate post` (the valid posts are the same ones that are in the list above).
