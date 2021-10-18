@@ -8,6 +8,7 @@ from rows.plugins.utils import ipartition
 from perfil.core.management.commands import BaseCommand, get_city, get_party, parse_date
 from perfil.core.models import Affiliation, Politician
 
+
 class Command(BaseCommand):
 
     help = (
@@ -108,9 +109,9 @@ class Command(BaseCommand):
         # get most recent affiliation to create `Politician` instances
         total = (
             Affiliation.objects.filter(status=Affiliation.REGULAR)
-                .values("voter_id")
-                .distinct()
-                .count()
+            .values("voter_id")
+            .distinct()
+            .count()
         )
         kwargs = {
             "desc": f"Importing {Politician._meta.verbose_name} data",

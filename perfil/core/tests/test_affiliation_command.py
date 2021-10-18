@@ -56,6 +56,7 @@ def test_affiliations_were_created():
     assert City.objects.get(code=83674) == first.city
     assert Affiliation.REGULAR == first.status
 
+
 @pytest.mark.django_db
 def test_politicians_were_created():
     call_command("load_affiliations", str(FIXTURE))
