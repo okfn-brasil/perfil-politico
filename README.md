@@ -58,7 +58,6 @@ running:
 
 ```sh
 $ docker-compose run django python manage.py load_affiliations /mnt/data/filiacao.csv
-$ docker-compose run django python manage.py update_politicians --ignore_existing_politicians
 $ docker-compose run django python manage.py load_candidates /mnt/data/candidatura.csv
 $ docker-compose run django python manage.py link_affiliations_and_candidates
 $ docker-compose run django python manage.py link_politicians_and_election_results
@@ -66,16 +65,16 @@ $ docker-compose run django python manage.py load_assets /mnt/data/bemdeclarado.
 $ docker-compose run django python manage.py load_bills /mnt/data/senado.csv
 $ docker-compose run django python manage.py load_bills /mnt/data/camara.csv
 ```
-> :warning: Note that it will change the primary keys for all politicians in de database!
+> :warning: Note that it will change the primary keys for all candidates in the database!
 > So be careful on running it for production environment because some endpoints as
 > ` /api/candidate/<pk>/` depends on this primary key to retrieve the correct data.
 
 Or you can **update the data from your database** using the commands:
 
 ```sh
-$ docker-compose run django python manage.py insert_or_update_affiliations /mnt/data/filiacao.csv
-$ docker-compose run django python manage.py update_politicians
-$ docker-compose run django python manage.py load_candidates /mnt/data/candidatura.csv clean-previous-data
+$ docker-compose run django python manage.py unlink_and_delete_politician_references
+$ docker-compose run django python manage.py load_affiliations /mnt/data/filiacao.csv clean-previous-data
+$ docker-compose run django python manage.py update_or_create_candidates /mnt/data/candidatura.csv
 $ docker-compose run django python manage.py link_affiliations_and_candidates
 $ docker-compose run django python manage.py link_politicians_and_election_results
 $ docker-compose run django python manage.py load_assets /mnt/data/bemdeclarado.csv clean-previous-data

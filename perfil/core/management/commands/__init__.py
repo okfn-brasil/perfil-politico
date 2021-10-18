@@ -206,15 +206,9 @@ class BaseCommand(base.BaseCommand):
 
         if options["clean-previous-data"]:
             total = self.model.objects.all().count()
-            kwargs = {
-                "desc": f"Removing {self.model._meta.verbose_name} data",
-                "total": total,
-                "unit": "rows",
-            }
-            with tqdm(**kwargs) as progress_bar:
-                for bulk in ipartition(self.model.objects.all().iterator(), 100):
-                    self.model.objects.delete(bulk)
-                    progress_bar.update(len(bulk))
+            print(f"-> Removing {self.model._meta.verbose_name} data")
+            print(f"-> {total} rows found. This may take a while...")
+            self.model.objects.all().delete()
             print(f"Done removing {self.model._meta.verbose_name} data.")
 
         with CsvSlicer(self.path) as source:
