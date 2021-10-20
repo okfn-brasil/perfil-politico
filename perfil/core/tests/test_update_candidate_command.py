@@ -25,6 +25,7 @@ def test_existing_candidates_are_updated():
         round=1,
         post_code=8,
         name="CLAUDIA SOUSA COSTA",
+        sequential=70000601690,
     )
     # When
     call_command("update_or_create_candidates", str(FIXTURE))

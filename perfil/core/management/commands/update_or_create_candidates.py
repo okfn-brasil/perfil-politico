@@ -31,9 +31,21 @@ class Command(BaseCommand):
     def update_candidate_if_necessary(self, candidate, all_attrs):
         old_values = model_to_dict(candidate)
         fields_to_update = {}
+
+        old_values.pop("place_of_birth")
+        new_place_of_birth_code = (
+            all_attrs["place_of_birth"].code if all_attrs["place_of_birth"] else None
+        )
+        old_place_of_birth_code = (
+            candidate.place_of_birth.code if candidate.place_of_birth else None
+        )
+        if new_place_of_birth_code != old_place_of_birth_code:
+            fields_to_update["place_of_birth"] = all_attrs["place_of_birth"]
+
         for attribute_name, new_value in all_attrs.items():
             if old_values.get(attribute_name) != new_value:
                 fields_to_update[attribute_name] = new_value
+
         if fields_to_update:
             self.model.objects.filter(pk=candidate.pk).update(**fields_to_update)
 
@@ -57,11 +69,11 @@ class Command(BaseCommand):
             "party": party,
             "state": line["sigla_unidade_federativa"],
             "voter_id": line["titulo_eleitoral"],
+            "sequential": line["numero_sequencial"],
             "round": parse_integer(line["turno"]),
             "post_code": parse_integer(line["codigo_cargo"]),
         }
         all_attrs = {
-            **queryable_attrs,
             "taxpayer_id": line["cpf"],
             "date_of_birth": parse_date(line["data_nascimento"]),
             "place_of_birth": city,
@@ -80,12 +92,10 @@ class Command(BaseCommand):
             "occupation_code": line["codigo_ocupacao"],
             "election": line["eleicao"],
             "post": line["cargo"],
-            "post_code": parse_integer(line["codigo_cargo"]),
             "status": line["situacao_candidatura"],
             "name": line["nome"],
             "ballot_name": line["nome_urna"],
             "number": parse_integer(line["numero_urna"]),
-            "sequential": line["numero_sequencial"],
             "coalition_name": line["legenda"],
             "coalition_description": line["composicao_legenda"],
             "coalition_short_name": line["sigla_legenda"],
@@ -102,7 +112,7 @@ class Command(BaseCommand):
         candidate = self.get_candidate_if_exists(queryable_attrs)
 
         if not candidate:
-            return self.model(**all_attrs)
+            return self.model(**queryable_attrs, **all_attrs)
 
         self.update_candidate_if_necessary(candidate, all_attrs)
 
