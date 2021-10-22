@@ -48,7 +48,7 @@ class Command(BaseCommand):
         kwargs = {
             "desc": "Deleting politicians from database",
             "total": major_pk - minor_pk + 1,
-            "unit": "models",
+            "unit": "objects",
         }
         offset = minor_pk
         bulk_size = 100

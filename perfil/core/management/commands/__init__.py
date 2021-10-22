@@ -10,7 +10,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from django.core.management import base
-from django.db.models import Q
+from django.db.models import Q, Max, Min
 from django.utils.timezone import get_default_timezone
 from rows.plugins.utils import ipartition
 from tqdm import tqdm
@@ -198,6 +198,30 @@ class BaseCommand(base.BaseCommand):
             ),
         )
 
+    def delete_all_objects(self):
+        all_objs = self.model.objects.all()
+        minor_pk = all_objs.aggregate(Min("pk")).get("pk__min")
+        major_pk = all_objs.aggregate(Max("pk")).get("pk__max")
+
+        if not minor_pk or not major_pk:
+            print(f"There are no data to delete in {self.model._meta.verbose_name}")
+            return
+
+        kwargs = {
+            "desc": f"Deleting data from {self.model._meta.verbose_name}...",
+            "total": major_pk - minor_pk + 1,
+            "unit": "objetcs",
+        }
+        offset = minor_pk
+        bulk_size = 100
+        with tqdm(**kwargs) as progress_bar:
+            while offset <= major_pk:
+                self.model.objects.filter(
+                    pk__gte=offset, pk__lt=offset + bulk_size
+                ).delete()
+                offset += bulk_size
+                progress_bar.update(bulk_size)
+
     def handle(self, *args, **options):
         self.log = getLogger(__name__)
         self.path = Path(options["csv"])
@@ -205,11 +229,7 @@ class BaseCommand(base.BaseCommand):
             raise base.CommandError(f"{self.path} does not exist")
 
         if options["clean-previous-data"]:
-            total = self.model.objects.all().count()
-            print(f"-> Removing {self.model._meta.verbose_name} data")
-            print(f"-> {total} rows found. This may take a while...")
-            self.model.objects.all().delete()
-            print(f"Done removing {self.model._meta.verbose_name} data.")
+            self.delete_all_objects()
 
         with CsvSlicer(self.path) as source:
             kwargs = {
