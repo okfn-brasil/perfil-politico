@@ -38,6 +38,13 @@ STATES = (
     ("TO", "Tocantins"),
 )
 
+OTHER_STATE_STATUS = (
+    ("ND", "Não Divulgável"),
+    ("BR", "Nacional"),
+    ("VT", "Voto em trânsito"),
+    ("ZZ", "Exterior"),
+)
+
 
 def age(date_of_birth, election_year):
     """Calculates the age of the politician when they started in office"""
@@ -51,7 +58,7 @@ def age(date_of_birth, election_year):
 class City(models.Model):
     code = models.IntegerField()
     name = models.CharField(max_length=63, default="", blank=True)
-    state = models.CharField(max_length=2, choices=STATES)
+    state = models.CharField(max_length=2, choices=STATES + OTHER_STATE_STATUS)
 
     def __repr__(self):
         return f"{self.name} - {self.state}"
@@ -84,17 +91,19 @@ class Affiliation(models.Model):
     CANCELED = "C"
     EXCLUDED = "D"
     SUB_JUDICE = "S"
+    TRANSFERIDO = "T"
     STATUSES = (
         (REGULAR, "Regular"),
         (CANCELED, "Cancelado"),
         (EXCLUDED, "Desfiliado"),
         (SUB_JUDICE, "Sub judice"),
+        (TRANSFERIDO, "Transferido"),
     )
 
     name = models.CharField(max_length=127, default="", blank=True)
     voter_id = models.CharField(max_length=12, default="", blank=True)
     started_in = models.DateField()
-    electoral_section = models.IntegerField()
+    electoral_section = models.IntegerField(null=True)
     electoral_zone = models.IntegerField()
     party = models.ForeignKey(
         Party, on_delete=models.CASCADE, related_name="affiliated"
@@ -173,7 +182,7 @@ class Candidate(models.Model):
 
     election = models.CharField(max_length=64, blank=True, default="")
     year = models.IntegerField()
-    state = models.CharField(max_length=2, choices=STATES)
+    state = models.CharField(max_length=2, choices=STATES + OTHER_STATE_STATUS)
     round = models.IntegerField()
     post = models.CharField(max_length=128, blank=True, default="")
     post_code = models.IntegerField()
@@ -272,7 +281,7 @@ class Asset(models.Model):
     value = models.DecimalField(max_digits=16, decimal_places=2, null=True)
     category = models.CharField(max_length=128, blank=True, default="")
     category_code = models.IntegerField(null=True)
-    detail = models.CharField(max_length=255, blank=True, default="")
+    detail = models.CharField(max_length=400, blank=True, default="")
     order = models.IntegerField(null=True)
     last_update = models.DateTimeField(null=True)
 

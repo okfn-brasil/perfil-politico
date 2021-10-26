@@ -24,13 +24,13 @@ class Command(BaseCommand):
 
     def serialize(self, line):
         candidate = get_candidate(
-            line["ano_eleicao"], line["sigla_uf"], line["numero_sequencial"]
+            line["ano"], line["sigla_unidade_federativa"], line["numero_sequencial"]
         )
 
         if not candidate:
             self.log.warning(
-                f"No candidate for year {line['ano_eleicao']}, state "
-                f"{line['sigla_uf']} and sequential number "
+                f"No candidate for year {line['ano']}, state "
+                f"{line['sigla_unidade_federativa']} and sequential number "
                 f"{line['numero_sequencial']}."
             )
             return None
@@ -38,7 +38,7 @@ class Command(BaseCommand):
         return Asset(
             candidate=candidate,
             value=line["valor"],
-            category=line["descricao_tipo"],
+            category=line["tipo"],
             category_code=parse_integer(line["codigo_tipo"]),
             detail=line["detalhe"],
             order=parse_integer(line["numero_ordem"]),
