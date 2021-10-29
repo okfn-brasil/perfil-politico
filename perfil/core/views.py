@@ -199,8 +199,8 @@ class AssetStats(Stats):
 
     def _build_posts_filter(self):
         if len(self.posts) == 1:
-            return f"core_candidate.posts='{self.posts[0]}'"
-        return f"core_candidate.posts IN {tuple(self.posts)}"
+            return f"core_candidate.post='{self.posts[0]}'"
+        return f"core_candidate.post IN {tuple(self.posts)}"
 
     def _calculate_assets_median_for_specific_group(self) -> list:
         query_filter = "core_candidate.round_result LIKE 'ELEIT%'"
@@ -224,7 +224,7 @@ class AssetStats(Stats):
         with connection.cursor() as cursor:
             cursor.execute(sql)
             return [
-                {"year": year, "value": statistics.median(values)}
+                {"year": year, "value": float(statistics.median(values))}
                 for year, values in cursor.fetchall()
             ]
 

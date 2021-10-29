@@ -1,10 +1,13 @@
 from datetime import date
+from pathlib import Path
 
 import pytest
 from django.http import Http404, HttpResponse
 from django.shortcuts import resolve_url
+from django.core.management import call_command
 
-from perfil.core.views import Stats, CandidateCharacteristicsStats
+from perfil.core.models import PreCalculatedStats
+from perfil.core.views import Stats, CandidateCharacteristicsStats, AssetStats
 
 
 def test_validate_argument():
@@ -86,7 +89,21 @@ def test_assets_stats_view_without_filters(client, mocker):
     stats.assert_called_once_with(states=[], posts=[])
 
 
-def test_assets_stats_view_with_filters(client, mocker):
+def test_assets_stats_view_with_states_filter(client, mocker):
+    stats = mocker.patch("perfil.core.views.AssetStats")
+    stats.return_value = HttpResponse
+    client.get(f"{resolve_url('api_asset_stats')}?state=MG")
+    stats.assert_called_once_with(states=["MG"], posts=[])
+
+
+def test_assets_stats_view_with_candidate_post_filter(client, mocker):
+    stats = mocker.patch("perfil.core.views.AssetStats")
+    stats.return_value = HttpResponse
+    client.get(f"{resolve_url('api_asset_stats')}?candidate_post=some_post")
+    stats.assert_called_once_with(states=[], posts=["some_post"])
+
+
+def test_assets_stats_view_with_all_filters(client, mocker):
     stats = mocker.patch("perfil.core.views.AssetStats")
     stats.return_value = HttpResponse
     client.get(
@@ -115,3 +132,94 @@ def test_age_stats_method():
         {"characteristic": "70-or-more", "total": 1},
     )
     assert expected == stats.age_stats(data)
+
+
+@pytest.mark.django_db
+def test_assets_stats_method_get_pre_calculated_stats_when_no_filter_is_used(mocker):
+    # Given
+    response = mocker.patch("perfil.core.views.JsonResponse")
+    PreCalculatedStats(
+        type=PreCalculatedStats.ASSETS_MEDIAN,
+        year=2014,
+        value=25000.00,
+    ).save()
+    PreCalculatedStats(
+        type=PreCalculatedStats.ASSETS_MEDIAN,
+        year=2016,
+        value=3088.05,
+    ).save()
+    PreCalculatedStats(
+        type=PreCalculatedStats.ASSETS_MEDIAN,
+        year=2018,
+        value=2271.98,
+    ).save()
+    # When
+    stats = AssetStats()
+    stats()
+    # Then
+    expected = [
+        {"year": 2014, "value": 25000.00},
+        {"year": 2016, "value": 3088.05},
+        {"year": 2018, "value": 2271.98},
+    ]
+    response.assert_called_once_with({"mediana_patrimonios": expected})
+
+
+@pytest.mark.django_db
+def test_assets_stats_method_properly_fetches_stats_with_filters(mocker):
+    # Given
+    response = mocker.patch("perfil.core.views.JsonResponse")
+    FIXTURE = [
+        Path() / "perfil" / "core" / "tests" / "fixtures" / "candidatura.csv",
+        Path() / "perfil" / "core" / "tests" / "fixtures" / "bemdeclarado.csv",
+    ]
+    call_command("load_candidates", str(FIXTURE[0]))
+    call_command("load_assets", str(FIXTURE[1]))
+    # When
+    stats = AssetStats(states=["DF", "SP"])
+    stats()
+    # Then
+    expected = [
+        {"year": 2016, "value": 40900.87},
+        {"year": 2018, "value": 80000.00},
+    ]
+    response.assert_called_once_with({"mediana_patrimonios": expected})
+
+
+@pytest.mark.django_db
+def test_assets_stats_method_returns_empty_list_when_no_values_are_found(mocker):
+    # Given
+    response = mocker.patch("perfil.core.views.JsonResponse")
+    FIXTURE = [
+        Path() / "perfil" / "core" / "tests" / "fixtures" / "candidatura.csv",
+        Path() / "perfil" / "core" / "tests" / "fixtures" / "bemdeclarado.csv",
+    ]
+    call_command("load_candidates", str(FIXTURE[0]))
+    call_command("load_assets", str(FIXTURE[1]))
+    # When
+    stats = AssetStats(posts=["deputado distrital", "governador"])
+    stats()
+    # Then
+    expected = [
+        {"year": 2016, "value": 40900.87},
+        {"year": 2018, "value": 80000.00},
+    ]
+    response.assert_called_once_with({"mediana_patrimonios": expected})
+
+
+@pytest.mark.django_db
+def test_assets_stats_method_returns_empty_list_when_no_values_are_found(mocker):
+    # Given
+    response = mocker.patch("perfil.core.views.JsonResponse")
+    FIXTURE = [
+        Path() / "perfil" / "core" / "tests" / "fixtures" / "candidatura.csv",
+        Path() / "perfil" / "core" / "tests" / "fixtures" / "bemdeclarado.csv",
+    ]
+    call_command("load_candidates", str(FIXTURE[0]))
+    call_command("load_assets", str(FIXTURE[1]))
+    # When
+    stats = AssetStats(states=["MG"], posts=["vereador"])
+    stats()
+    # Then
+    expected = []
+    response.assert_called_once_with({"mediana_patrimonios": expected})
