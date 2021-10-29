@@ -21,6 +21,12 @@ def test_politicians_are_removed():
 
 
 @pytest.mark.django_db
+def test_command_does_not_crash_without_politicians_to_remove():
+    call_command("unlink_and_delete_politician_references")
+    assert Politician.objects.count() == 0
+
+
+@pytest.mark.django_db
 def test_candidates_are_preserved_without_politicians():
     call_command("load_affiliations", str(FIXTURES[0]))
     call_command("load_candidates", str(FIXTURES[1]))

@@ -89,3 +89,54 @@ def test_non_existing_candidates_were_created():
 
     assert "ELEITO" == candidate.round_result
     assert -1 == candidate.round_result_code
+
+
+@pytest.mark.django_db
+def test_if_more_than_one_candidate_exists_the_command_does_not_crash():
+    # Given
+    party = Party.objects.create(
+        name="PARTIDO PROGRESSISTA",
+        abbreviation="PP",
+    )
+    Candidate.objects.create(
+        year=2018,
+        party=party,
+        state="DF",
+        voter_id="014403110906",
+        round=1,
+        post_code=8,
+        name="CLAUDIA SOUSA COSTA duplicada",
+        sequential=70000601690,
+    )
+    candidate_we_want_to_update = Candidate.objects.create(
+        year=2018,
+        party=party,
+        state="DF",
+        voter_id="014403110906",
+        round=1,
+        post_code=8,
+        name="CLAUDIA SOUSA COSTA",
+        sequential=70000601690,
+    )
+    # When
+    call_command("update_or_create_candidates", str(FIXTURE))
+    # Then
+    assert 4 == Candidate.objects.count()
+
+    updated_candidate = Candidate.objects.filter(
+        pk=candidate_we_want_to_update.pk
+    ).get()
+    assert candidate_we_want_to_update.name == updated_candidate.name
+    assert candidate_we_want_to_update.year == updated_candidate.year
+    assert candidate_we_want_to_update.party == updated_candidate.party
+    assert candidate_we_want_to_update.voter_id == updated_candidate.voter_id
+    assert candidate_we_want_to_update.round == updated_candidate.round
+    assert candidate_we_want_to_update.post_code == updated_candidate.post_code
+    assert candidate_we_want_to_update.date_of_birth != updated_candidate.date_of_birth
+    assert candidate_we_want_to_update.taxpayer_id != updated_candidate.taxpayer_id
+    assert (
+        candidate_we_want_to_update.place_of_birth != updated_candidate.place_of_birth
+    )
+    assert candidate_we_want_to_update.gender != updated_candidate.gender
+    assert candidate_we_want_to_update.email != updated_candidate.email
+    assert candidate_we_want_to_update.age != updated_candidate.age
