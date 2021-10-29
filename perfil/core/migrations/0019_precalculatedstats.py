@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("core", "0017_fix_models_to_support_2021_datasets"),
+        ("core", "0018_alter_affiliation_electoral_section"),
     ]
 
     operations = [
