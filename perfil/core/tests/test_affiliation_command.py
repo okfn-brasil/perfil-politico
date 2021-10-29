@@ -49,7 +49,7 @@ def test_affiliations_were_created():
     assert "MARCOS ANTONIO ROSA SILVA" == first.name
     assert "014403110906" == first.voter_id
     assert date(1999, 9, 30) == first.started_in
-    assert 136 == first.electoral_section
+    assert "136" == first.electoral_section
     assert 99 == first.electoral_zone
 
     assert Party.objects.get(abbreviation="AV") == first.party
@@ -66,7 +66,7 @@ def test_politicians_were_created():
     assert "MARCOS ANTONIO ROSA SILVA" == last.current_affiliation.name
     assert "014403110906" == last.current_affiliation.voter_id
     assert date(1999, 9, 30) == last.current_affiliation.started_in
-    assert 136 == last.current_affiliation.electoral_section
+    assert "136" == last.current_affiliation.electoral_section
     assert 99 == last.current_affiliation.electoral_zone
 
     assert Party.objects.get(abbreviation="AV") == last.current_affiliation.party
