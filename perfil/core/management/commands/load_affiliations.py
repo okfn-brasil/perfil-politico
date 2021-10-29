@@ -1,5 +1,6 @@
 from tqdm import tqdm
 from rows.plugins.utils import ipartition
+from django.db import connection
 
 from perfil.core.management.commands import BaseCommand, get_city, get_party, parse_date
 from perfil.core.models import Affiliation, Politician
@@ -55,18 +56,20 @@ class Command(BaseCommand):
         ]
 
     def politicians_from_affiliation(self):
-        regular_voter_ids = (
-            Affiliation.objects.filter(status=Affiliation.REGULAR)
-            .values("voter_id")
-            .distinct()
-        )
-        for result in regular_voter_ids:
-            current_affiliation = self.get_current_affiliation(result["voter_id"])
-            affiliation_history = self.build_affiliation_history(result["voter_id"])
-            yield Politician(
-                current_affiliation=current_affiliation,
-                affiliation_history=affiliation_history,
-            )
+        sql = """
+            SELECT DISTINCT(voter_id)
+            FROM core_affiliation
+            WHERE status = 'R';
+        """
+        with connection.cursor() as cursor:
+            cursor.execute(sql)
+            for voter_id, *_ in cursor.fetchall():
+                current_affiliation = self.get_current_affiliation(voter_id)
+                affiliation_history = self.build_affiliation_history(voter_id)
+                yield Politician(
+                    current_affiliation=current_affiliation,
+                    affiliation_history=affiliation_history,
+                )
 
     def post_handle(self):
         # get most recent affiliation to create `Politician` instances
