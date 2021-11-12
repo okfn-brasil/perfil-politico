@@ -3,10 +3,10 @@ from collections import defaultdict
 from cached_property import cached_property
 from django.db.models import Count
 from django.http import Http404, JsonResponse
-from django.shortcuts import redirect
 from restless.dj import DjangoResource
 from restless.preparers import CollectionSubPreparer, FieldsPreparer
 
+from perfil.core.management.commands import get_electoral_income_history
 from perfil.core.models import STATES, Candidate, age
 
 
@@ -140,6 +140,22 @@ class CandidateDetailResource(DjangoResource):
             .only(*self.api_fields)
             .get(pk=pk)
         )
+
+
+class CandidateElectoralIncomeHistory:
+    @staticmethod
+    def get(request, pk):
+        try:
+            candidate = Candidate.objects.get(pk=pk)
+        except Candidate.DoesNotExist:
+            raise Http404(f"Candidate with pk ({pk}) not found.")
+
+        if candidate.politician:
+            income_history = candidate.politician.electoral_income_history
+        else:
+            income_history = get_electoral_income_history(candidate)
+
+        return JsonResponse({"election_income_history": income_history}, safe=False)
 
 
 class Stats:
