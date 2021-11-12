@@ -141,6 +141,7 @@ class Politician(models.Model):
     )
     affiliation_history = JSONField(default=list)
     asset_history = JSONField(default=list)
+    electoral_income_history = JSONField(default=list)
     election_history = JSONField(default=list)
     bill_keywords = JSONField(default=list)
     rosies_suspicions = JSONField(default=list)
