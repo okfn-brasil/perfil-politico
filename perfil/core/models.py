@@ -311,3 +311,37 @@ class Bill(models.Model):
         verbose_name_plural = "bills"
         ordering = ("name",)
         indexes = (models.Index(fields=("keywords",)), models.Index(fields=("url",)))
+
+
+class ElectionIncomeStatement(models.Model):
+    year = models.IntegerField()
+    value = models.DecimalField(max_digits=16, decimal_places=2)
+    document_number = models.CharField(max_length=100, blank=True, default="")
+    receipt_number = models.CharField(max_length=75, blank=True, default="")
+    description = models.CharField(max_length=255, blank=True, default="")
+
+    accountant_sequential = models.CharField(max_length=16, blank=True, default="")
+    accountant_taxpayer_id = models.CharField(max_length=11, blank=True, default="")
+    vice_candidate_taxpayer_id = models.CharField(max_length=11, blank=True, default="")
+    deputy_substitute_taxpayer_id = models.CharField(
+        max_length=11, blank=True, default=""
+    )
+
+    donor_name = models.CharField(max_length=256, blank=True, default="")
+    donor_taxpayer_id = models.CharField(max_length=16, blank=True, default="")
+    donor_economic_sector = models.CharField(max_length=165, blank=True, default="")
+    donor_economic_sector_code = models.CharField(max_length=10, blank=True, default="")
+
+    additional_information = JSONField(default=dict)
+
+    def __repr__(self):
+        return f"From {self.donor_name} to {self.accountant_sequential} (R$ {Decimal(self.value):,} in {self.year})"
+
+    class Meta:
+        verbose_name = "election income statement"
+        verbose_name_plural = "election income statements"
+        ordering = ("accountant_sequential", "year")
+        indexes = (
+            models.Index(fields=("accountant_sequential",)),
+            models.Index(fields=("accountant_taxpayer_id",)),
+        )
