@@ -9,14 +9,19 @@ from math import ceil
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from django.core.exceptions import ObjectDoesNotExist
 from django.core.management import base
 from django.db.models import Q
 from django.utils.timezone import get_default_timezone
 from rows.plugins.utils import ipartition
 from tqdm import tqdm
 
-from perfil.core.models import Candidate, City, Party, Politician
+from perfil.core.models import (
+    Candidate,
+    City,
+    Party,
+    Politician,
+    ElectionIncomeStatement,
+)
 
 
 def parse_integer(value):
@@ -56,6 +61,38 @@ def parse_datetime(value):
             pass
 
     return None
+
+
+def get_electoral_income_history(candidate: Candidate) -> list:
+    if candidate.sequential and candidate.taxpayer_id:
+        income_statements = ElectionIncomeStatement.objects.filter(
+            Q(accountant_sequential=candidate.sequential)
+            | Q(accountant_taxpayer_id=candidate.taxpayer_id)
+        )
+    elif candidate.sequential:
+        income_statements = ElectionIncomeStatement.objects.filter(
+            accountant_sequential=candidate.sequential
+        )
+    elif candidate.taxpayer_id:
+        income_statements = ElectionIncomeStatement.objects.filter(
+            accountant_taxpayer_id=candidate.taxpayer_id
+        )
+    else:
+        return []
+    return sorted(
+        [
+            {
+                "year": int(statement.year),
+                "value": float(statement.value),
+                "donor_economic_sector": statement.donor_economic_sector,
+                "donor_economic_sector_code": statement.donor_economic_sector_code,
+                "donor_name": statement.donor_name,
+                "donor_taxpayer_id": statement.donor_taxpayer_id,
+            }
+            for statement in income_statements.all()
+        ],
+        key=lambda item: item["year"],
+    )
 
 
 @lru_cache(maxsize=1024)
