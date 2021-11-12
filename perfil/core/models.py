@@ -336,7 +336,7 @@ class ElectionIncomeStatement(models.Model):
     additional_information = JSONField(default=dict)
 
     def __repr__(self):
-        return f"From {self.donor_name} to {self.accountant_sequential} (R$ {Decimal(self.value):,} in {self.year})"
+        return f"From {self.donor_name} to {self.accountant_sequential} (R$ {float(self.value)} in {self.year})"
 
     class Meta:
         verbose_name = "election income statement"
