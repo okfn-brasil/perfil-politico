@@ -124,6 +124,27 @@ Characteristic options are:
 
 Same as above but aggregated by state.
 
+#### `GET /api/electoral-income-history/candidate/<pk>/`
+
+Get electoral income history for a given candidate.
+
+Returns an object with the structure:
+```
+{
+  "election_income_history": [
+    {
+      "year": int,
+      "value": float,
+      "donor_economic_sector": string,
+      "donor_economic_sector_code": string,
+      "donor_name": string,
+      "donor_taxpayer_id": string
+    },
+    // ... other income statements in the same format as above ...
+  ]
+}
+```
+
 ## Tests
 
 ```sh
