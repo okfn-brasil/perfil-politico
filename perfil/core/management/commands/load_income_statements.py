@@ -18,6 +18,7 @@ class Command(BaseCommand):
             return
 
         return ElectionIncomeStatement(
+            date=line["data"],
             year=line["ano"],
             value=line["valor"],
             accountant_sequential=line["numero_sequencial"],
@@ -28,21 +29,16 @@ class Command(BaseCommand):
             receipt_number=line["numero_recibo"] or line["numero_recibo_eleitoral"],
             description=line["descricao"],
             donor_name=(
-                line["doador"]
-                or line["doador_originario"]
+                line["doador_receita_federal"]
                 or line["doador_originario_receita_federal"]
-                or line["doador_receita_federal"]
+                or line["doador"]
+                or line["doador_originario"]
             ),
             donor_taxpayer_id=(
                 line["cpf_cnpj_doador"] or line["cpf_cnpj_doador_originario"]
             ),
-            donor_economic_sector=(
-                line["setor_economico_doador"]
-                or line["setor_economico_doador_originario"]
-            ),
             donor_economic_sector_code=line["codigo_setor_economico_doador"],
-            additional_information={
-                "date": line["data"],
+            additional_income_information={
                 "accountant_candidature_number": line["numero_candidatura"],
                 "donor_type": line["tipo"] or line["origem_receita"],
                 "income_statement_type": line["tipo_prestacao_contas"],
@@ -51,6 +47,10 @@ class Command(BaseCommand):
                 "income_nature": line["natureza_receita"],
                 "resource_kind": line["especie_recurso"] or line["tipo_recurso"],
                 "resource_source": line["fonte_recurso"],
+                "donor_economic_sector_description": (
+                        line["setor_economico_doador"]
+                        or line["setor_economico_doador_originario"]
+                ),
             },
         )
 
