@@ -64,6 +64,8 @@ $ docker-compose run django python manage.py load_assets /mnt/data/bemdeclarado.
 $ docker-compose run django python manage.py load_bills /mnt/data/senado.csv
 $ docker-compose run django python manage.py load_bills /mnt/data/camara.csv
 $ docker-compose run django python manage.py load_income_statements /mnt/data/receita.csv
+# make sure to read the instructions on populate_company_info.sql before running the next command
+$ docker-compose run postgres psql -U perfilpolitico < populate_company_info.sql
 ```
 
 ### API
