@@ -1,7 +1,5 @@
-from tqdm import tqdm
-from django.db.models import Q
 from perfil.core.management.commands import BaseCommand
-from perfil.core.models import ElectionIncomeStatement, Candidate
+from perfil.core.models import ElectionIncomeStatement
 
 
 class Command(BaseCommand):
@@ -54,65 +52,5 @@ class Command(BaseCommand):
             },
         )
 
-    def _get_electoral_income_history(self, candidate: Candidate) -> list:
-        if candidate.sequential and candidate.taxpayer_id:
-            income_statements = ElectionIncomeStatement.objects.filter(
-                Q(accountant_sequential=candidate.sequential)
-                | Q(accountant_taxpayer_id=candidate.taxpayer_id)
-            )
-        elif candidate.sequential:
-            income_statements = ElectionIncomeStatement.objects.filter(
-                accountant_sequential=candidate.sequential
-            )
-        elif candidate.taxpayer_id:
-            income_statements = ElectionIncomeStatement.objects.filter(
-                accountant_taxpayer_id=candidate.taxpayer_id
-            )
-        else:
-            return []
-        return sorted(
-            [
-                {
-                    "year": int(statement.year),
-                    "value": float(statement.value),
-                    "donor_economic_sector": statement.donor_economic_sector,
-                    "donor_economic_sector_code": statement.donor_economic_sector_code,
-                    "donor_name": statement.donor_name,
-                    "donor_taxpayer_id": statement.donor_taxpayer_id,
-                }
-                for statement in income_statements.all()
-            ],
-            key=lambda item: item["year"],
-        )
-
-    def _search_and_set_electoral_income_history(self, candidate: Candidate):
-        income_history = self._get_electoral_income_history(candidate)
-        if not income_history:
-            return
-        candidate.politician.electoral_income_history = income_history
-        candidate.politician.save(update_fields=["electoral_income_history"])
-
     def post_handle(self):
-        candidates_with_politicians = Candidate.objects.filter(
-            politician__isnull=False
-        ).filter(Q(taxpayer_id__isnull=False) | Q(sequential__isnull=False))
-        kwargs = {
-            "desc": f"Pre-processing electoral income history for politicians.",
-            "total": candidates_with_politicians.count(),
-            "unit": "objects",
-        }
-        counter = 0
-        bulk_size = 1000
-        with tqdm(**kwargs) as progress_bar:
-            for candidate in candidates_with_politicians.iterator():
-                # some politicians are repeated in more than one candidate
-                # we don't need to reprocess the income history for them
-                if not candidate.politician.electoral_income_history:
-                    self._search_and_set_electoral_income_history(candidate)
-
-                # update counter after some time in order to the prompt not to be frantically updating
-                counter += 1
-                if counter == bulk_size:
-                    progress_bar.update(counter)
-                    counter = 0
-            progress_bar.update(counter)
+        pass
