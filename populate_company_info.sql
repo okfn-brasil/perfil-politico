@@ -225,6 +225,7 @@ where core_candidate.id = candidates_companies.candidate_id;
 
 -- ENRICHING ELECTION INCOME STATEMENT (donor_company_information)
 UPDATE core_election_income_statement
+-- if a person has more than 1 company only one will be saved :(
 SET donor_company_information = to_json(result)
 FROM (
     -- search data when donor has cnpj
@@ -242,8 +243,7 @@ FROM (
          ON empresas_socios_temp.cnpj_raiz = substring(core_election_income_statement.donor_taxpayer_id, 1, 8)
      where LENGTH(core_election_income_statement.donor_taxpayer_id) > 11
     union
-     -- search data when donor has cpf
-     -- if a person has more than 1 company only one will be saved :(
+     -- search data when donor has cpf and companies don't have the full cpf of the associate
      select core_election_income_statement.id as income_id,
             cnpj_raiz,
             cnpj_ordem,
@@ -256,7 +256,23 @@ FROM (
      from empresas_socios_temp
       inner join core_election_income_statement
         ON empresas_socios_temp.socio_merge_uuid = generate_uuid(core_election_income_statement.donor_name, core_election_income_statement.donor_taxpayer_id)
-     where LENGTH(core_election_income_statement.donor_taxpayer_id) = 11
+     where (empresas_socios_temp.cpf_socio like '*%') and LENGTH(core_election_income_statement.donor_taxpayer_id) = 11
+     union
+       -- search data when donor has cpf and companies don't have the full cpf of
+       -- the associate and we need to search by name + cpf (socio_merge_uuid)
+         select core_election_income_statement.id as income_id,
+         cnpj_raiz,
+         cnpj_ordem,
+         cnpj_dv,
+         nome_empresa,
+         cnae_principal,
+         cnae_secundaria,
+         data_inicio_atividade,
+         uf
+     from empresas_socios_temp
+         inner join core_election_income_statement
+     ON empresas_socios_temp.cpf_socio = core_election_income_statement.donor_taxpayer_id
+     where (empresas_socios_temp.cpf_socio not like '*%') and LENGTH(core_election_income_statement.donor_taxpayer_id) = 11
 ) as result
 where core_election_income_statement.id = result.income_id;
 
