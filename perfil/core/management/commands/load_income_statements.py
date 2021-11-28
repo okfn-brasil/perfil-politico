@@ -48,8 +48,8 @@ class Command(BaseCommand):
                 "resource_kind": line["especie_recurso"] or line["tipo_recurso"],
                 "resource_source": line["fonte_recurso"],
                 "donor_economic_sector_description": (
-                        line["setor_economico_doador"]
-                        or line["setor_economico_doador_originario"]
+                    line["setor_economico_doador"]
+                    or line["setor_economico_doador_originario"]
                 ),
             },
         )

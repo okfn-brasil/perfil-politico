@@ -341,7 +341,7 @@ class ElectionIncomeStatement(models.Model):
         return f"From {self.donor_name} to {self.accountant_sequential} (R$ {float(self.value)} in {self.year})"
 
     class Meta:
-        db_table = 'core_election_income_statement'
+        db_table = "core_election_income_statement"
         verbose_name = "election income statement"
         verbose_name_plural = "election income statements"
         ordering = ("accountant_sequential", "year")
