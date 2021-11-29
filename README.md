@@ -124,13 +124,19 @@ Characteristic options are:
 
 Same as above but aggregated by state.
 
-#### `GET /api/electoral-income-history/candidate/<pk>/`
+#### `GET /api/economic-bonds/candidate/<pk>/`
 
-Get electoral income history for a given candidate.
+Get electoral income history for a given candidate and companies that have a partnership.
 
 Returns an object with the structure:
 ```
 {
+  "companies_associated_with_politician": [
+    {
+      // todo -> describe the content here
+    }
+    // ... other companies in the same format as above ...
+  ],
   "election_income_history": [
     {
       "year": int,

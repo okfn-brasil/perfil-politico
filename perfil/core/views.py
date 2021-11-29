@@ -142,7 +142,7 @@ class CandidateDetailResource(DjangoResource):
         )
 
 
-class CandidateElectoralIncomeHistory:
+class CandidateEconomicBonds:
     @staticmethod
     def get(request, pk):
         try:

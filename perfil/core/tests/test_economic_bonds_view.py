@@ -15,7 +15,7 @@ FIXTURE = [
 
 @pytest.mark.django_db
 def test_returns_404_when_candidate_does_not_exist(client):
-    url = resolve_url("api_candidate_electoral_income_history", 12300000)
+    url = resolve_url("api_candidate_economic_bonds", 12300000)
     response = client.get(url)
     assert response.status_code == 404
 
@@ -29,7 +29,7 @@ def test_return_income_history_from_politician_when_exists(client):
     call_command("load_income_statements", str(FIXTURE[2]))
     # When
     candidate_pk = Candidate.objects.filter(sequential="70000625538").get().id
-    url = resolve_url("api_candidate_electoral_income_history", candidate_pk)
+    url = resolve_url("api_candidate_economic_bonds", candidate_pk)
     response = client.get(url)
     # Then
     returned_history = eval(response.content)["election_income_history"]
@@ -48,7 +48,7 @@ def test_fetches_income_history_if_candidate_does_not_have_politician(client):
     candidate.save()
     # When
     candidate_pk = candidate.id
-    url = resolve_url("api_candidate_electoral_income_history", candidate_pk)
+    url = resolve_url("api_candidate_economic_bonds", candidate_pk)
     response = client.get(url)
     # Then
     returned_history = eval(response.content)["election_income_history"]
