@@ -93,3 +93,61 @@ def test_properly_fetches_companies_associated_with_politician(client):
     }
     for item in returned_companies:
         assert expected_company == item
+
+
+@pytest.mark.django_db
+def test_income_history_is_fetched_when_candidate_has_no_sequential(client):
+    # Given
+    call_command("load_affiliations", str(FIXTURE[0]))
+    call_command("load_candidates", str(FIXTURE[1]))
+    call_command("link_affiliations_and_candidates")
+    call_command("load_income_statements", str(FIXTURE[2]))
+    candidate = Candidate.objects.filter(sequential="70000625538").get()
+    candidate.sequential = ""
+    candidate.save()
+    # When
+    candidate_pk = candidate.id
+    url = resolve_url("api_candidate_economic_bonds", candidate_pk)
+    response = client.get(url)
+    # Then
+    returned_history = json.loads(response.content)["election_income_history"]
+    assert len(returned_history) == 3
+
+
+@pytest.mark.django_db
+def test_income_history_is_fetched_when_candidate_has_no_taxpayer_id(client):
+    # Given
+    call_command("load_affiliations", str(FIXTURE[0]))
+    call_command("load_candidates", str(FIXTURE[1]))
+    call_command("link_affiliations_and_candidates")
+    call_command("load_income_statements", str(FIXTURE[2]))
+    candidate = Candidate.objects.filter(sequential="70000625538").get()
+    candidate.taxpayer_id = ""
+    candidate.save()
+    # When
+    candidate_pk = candidate.id
+    url = resolve_url("api_candidate_economic_bonds", candidate_pk)
+    response = client.get(url)
+    # Then
+    returned_history = json.loads(response.content)["election_income_history"]
+    assert len(returned_history) == 1
+
+
+@pytest.mark.django_db
+def test_income_history_is_empty_if_candidate_has_no_sequential_nor_taxpayer_id(client):
+    # Given
+    call_command("load_affiliations", str(FIXTURE[0]))
+    call_command("load_candidates", str(FIXTURE[1]))
+    call_command("link_affiliations_and_candidates")
+    call_command("load_income_statements", str(FIXTURE[2]))
+    candidate = Candidate.objects.filter(sequential="70000625538").get()
+    candidate.sequential = ""
+    candidate.taxpayer_id = ""
+    candidate.save()
+    # When
+    candidate_pk = candidate.id
+    url = resolve_url("api_candidate_economic_bonds", candidate_pk)
+    response = client.get(url)
+    # Then
+    returned_history = json.loads(response.content)["election_income_history"]
+    assert returned_history == []
