@@ -133,7 +133,13 @@ Returns an object with the structure:
 {
   "companies_associated_with_politician": [
     {
-      // todo -> describe the content here
+      "cnpj": string,
+      "company_name": string,
+      "main_cnae": string,
+      "secondary_cnaes": string (cnaes separated by ','),
+      "uf": string,
+      "foundation_date": string (date format 'YYYY/MM/DD'),
+      "participation_start_date": string (date format 'YYYY/MM/DD')
     }
     // ... other companies in the same format as above ...
   ],
@@ -141,10 +147,12 @@ Returns an object with the structure:
     {
       "year": int,
       "value": float,
-      "donor_economic_sector": string,
-      "donor_economic_sector_code": string,
       "donor_name": string,
       "donor_taxpayer_id": string
+      "donor_company_name": string
+      "donor_company_cnpj": string
+      "donor_economic_sector_code": string,
+      "donor_secondary_sector_codes": string
     },
     // ... other income statements in the same format as above ...
   ]

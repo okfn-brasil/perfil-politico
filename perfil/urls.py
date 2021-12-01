@@ -39,7 +39,7 @@ urlpatterns = [
     ),
     path(
         "api/economic-bonds/candidate/<int:pk>/",
-        CandidateEconomicBonds.get,
+        CandidateEconomicBonds().get,
         name="api_candidate_economic_bonds",
     ),
     path(
