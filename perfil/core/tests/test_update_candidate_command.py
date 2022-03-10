@@ -30,7 +30,7 @@ def test_existing_candidates_are_updated():
     # When
     call_command("update_or_create_candidates", str(FIXTURE))
     # Then
-    assert 3 == Candidate.objects.count()
+    assert 4 == Candidate.objects.count()
 
     updated_candidate = Candidate.objects.filter(pk=existing_candidate.pk).get()
     assert existing_candidate.name == updated_candidate.name
@@ -50,15 +50,14 @@ def test_existing_candidates_are_updated():
 @pytest.mark.django_db
 def test_non_existing_candidates_were_created():
     call_command("update_or_create_candidates", str(FIXTURE))
-    assert 3 == Candidate.objects.count()
+    assert 4 == Candidate.objects.count()
 
-    candidate = Candidate.objects.get(taxpayer_id="10693471832")
-    assert 2018 == candidate.year
-    assert date(1968, 4, 2) == candidate.date_of_birth
-    assert City.objects.get(name="COLINAS") == candidate.place_of_birth
-    assert "FEMININO" == candidate.gender
-    assert "KLLAUDHIA@HOTMAIL.COM" == candidate.email
-    assert "50" == candidate.age
+    candidate = Candidate.objects.get(taxpayer_id="69823871191")
+    assert date(1978, 8, 12) == candidate.date_of_birth
+    assert City.objects.get(name="BRASILIA") == candidate.place_of_birth
+    assert "MASCULINO" == candidate.gender
+    assert "ELEICOESGERAISDF2018@GMAIL.COM" == candidate.email
+    assert "40" == candidate.age
 
     assert "PARDA" == candidate.ethnicity
     assert "03" == candidate.ethnicity_code
@@ -68,8 +67,8 @@ def test_non_existing_candidates_were_created():
     assert "8" == candidate.education_code
     assert "BRASILEIRA NATA" == candidate.nationality
     assert "1" == candidate.nationality_code
-    assert "PROFESSOR E INSTRUTOR DE FORMACAO PROFISSIONAL" == candidate.occupation
-    assert "235" == candidate.occupation_code
+    assert "POLICIAL MILITAR" == candidate.occupation
+    assert "233" == candidate.occupation_code
 
     assert "ELEICOES GERAIS ESTADUAIS 2018" == candidate.election
     assert 2018 == candidate.year
@@ -78,16 +77,16 @@ def test_non_existing_candidates_were_created():
     assert "DEPUTADO DISTRITAL" == candidate.post
     assert "CADASTRADO" == candidate.status
 
-    assert "PARTIDO PROGRESSISTA" == candidate.party.name
-    assert "PROFESSORA CLAUDIA COSTA" == candidate.ballot_name
-    assert 11114 == candidate.number
-    assert "70000601690" == candidate.sequential
+    assert "PARTIDO REPUBLICANO DA ORDEM SOCIAL" == candidate.party.name
+    assert "FORLANGOV" == candidate.ballot_name
+    assert 90999 == candidate.number
+    assert "70000605601" == candidate.sequential
     assert "PARTIDO ISOLADO" == candidate.coalition_name
-    assert "PP" == candidate.coalition_description
+    assert "PROS" == candidate.coalition_description
     assert "" == candidate.coalition_short_name
     assert "-1" == candidate.max_budget
 
-    assert "ELEITO" == candidate.round_result
+    assert "NAO ELEITO" == candidate.round_result
     assert -1 == candidate.round_result_code
 
 
@@ -121,7 +120,7 @@ def test_if_more_than_one_candidate_exists_the_command_does_not_crash():
     # When
     call_command("update_or_create_candidates", str(FIXTURE))
     # Then
-    assert 4 == Candidate.objects.count()
+    assert 5 == Candidate.objects.count()
 
     updated_candidate = Candidate.objects.filter(
         pk=candidate_we_want_to_update.pk

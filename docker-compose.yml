@@ -30,6 +30,7 @@ services:
     image: postgres:10.5-alpine
     volumes:
       - ./postgres:/var/lib/postgresql/data
+      - ./data:/mnt/data
     environment:
       - POSTGRES_DB=perfilpolitico
       - POSTGRES_USER=perfilpolitico

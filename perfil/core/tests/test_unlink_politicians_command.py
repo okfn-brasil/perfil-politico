@@ -32,5 +32,5 @@ def test_candidates_are_preserved_without_politicians():
     call_command("load_candidates", str(FIXTURES[1]))
     call_command("link_affiliations_and_candidates")
     call_command("unlink_and_delete_politician_references")
-    assert Candidate.objects.count() == 3
+    assert Candidate.objects.count() == 4
     assert Candidate.objects.filter(politician__isnull=False).count() == 0

@@ -203,6 +203,8 @@ class Candidate(models.Model):
 
     objects = CampaignManager()
 
+    owned_companies = JSONField(default=list)
+
     def _history(self, prefix, sort_by="year"):
         if not self.politician:
             return []
@@ -311,6 +313,42 @@ class Bill(models.Model):
         verbose_name_plural = "bills"
         ordering = ("name",)
         indexes = (models.Index(fields=("keywords",)), models.Index(fields=("url",)))
+
+
+class ElectionIncomeStatement(models.Model):
+    date = models.DateField(null=True)
+    year = models.IntegerField()
+    value = models.DecimalField(max_digits=16, decimal_places=2)
+    document_number = models.CharField(max_length=100, blank=True, default="")
+    receipt_number = models.CharField(max_length=75, blank=True, default="")
+    description = models.CharField(max_length=255, blank=True, default="")
+
+    accountant_sequential = models.CharField(max_length=16, blank=True, default="")
+    accountant_taxpayer_id = models.CharField(max_length=11, blank=True, default="")
+    vice_candidate_taxpayer_id = models.CharField(max_length=11, blank=True, default="")
+    deputy_substitute_taxpayer_id = models.CharField(
+        max_length=11, blank=True, default=""
+    )
+
+    donor_name = models.CharField(max_length=256, blank=True, default="")
+    donor_taxpayer_id = models.CharField(max_length=16, blank=True, default="")
+    donor_economic_sector_code = models.CharField(max_length=10, blank=True, default="")
+
+    additional_income_information = JSONField(default=dict)
+    donor_company_information = JSONField(default=dict)
+
+    def __repr__(self):
+        return f"From {self.donor_name} to {self.accountant_sequential} (R$ {float(self.value)} in {self.year})"
+
+    class Meta:
+        db_table = "core_election_income_statement"
+        verbose_name = "election income statement"
+        verbose_name_plural = "election income statements"
+        ordering = ("accountant_sequential", "year")
+        indexes = (
+            models.Index(fields=("accountant_sequential",)),
+            models.Index(fields=("accountant_taxpayer_id",)),
+        )
 
 
 class PreCalculatedStats(models.Model):
