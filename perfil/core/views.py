@@ -8,7 +8,13 @@ from django.http import Http404, JsonResponse
 from restless.dj import DjangoResource
 from restless.preparers import CollectionSubPreparer, FieldsPreparer
 
-from perfil.core.models import STATES, Candidate, age, ElectionIncomeStatement, PreCalculatedStats
+from perfil.core.models import (
+    STATES,
+    Candidate,
+    age,
+    ElectionIncomeStatement,
+    PreCalculatedStats,
+)
 
 
 def home(request):
