@@ -2,13 +2,19 @@ import statistics
 from collections import defaultdict
 
 from cached_property import cached_property
-from django.db.models import Count
-from django.http import Http404, JsonResponse
 from django.db import connection
+from django.db.models import Count, Q
+from django.http import Http404, JsonResponse
 from restless.dj import DjangoResource
 from restless.preparers import CollectionSubPreparer, FieldsPreparer
 
-from perfil.core.models import STATES, Candidate, age, PreCalculatedStats
+from perfil.core.models import (
+    STATES,
+    Candidate,
+    age,
+    ElectionIncomeStatement,
+    PreCalculatedStats,
+)
 
 
 def home(request):
@@ -140,6 +146,89 @@ class CandidateDetailResource(DjangoResource):
             Candidate.objects.select_related("party", "politician", "place_of_birth")
             .only(*self.api_fields)
             .get(pk=pk)
+        )
+
+
+class CandidateEconomicBonds:
+    @staticmethod
+    def build_company_cnpj(company: dict):
+        return f"{company.get('cnpj_raiz', '')}{company.get('cnpj_ordem', '')}{company.get('cnpj_dv', '')}"
+
+    @staticmethod
+    def get_companies_with_participation(candidate: Candidate) -> list:
+        return [
+            {
+                "cnpj": CandidateEconomicBonds.build_company_cnpj(company),
+                "company_name": company.get("nome_empresa"),
+                "main_cnae": str(company.get("cnae_principal"))
+                if company.get("cnae_principal")
+                else None,
+                "secondary_cnaes": company.get("cnae_secundaria"),
+                "uf": company.get("uf"),
+                "foundation_date": company.get("data_inicio_atividade"),
+                "participation_start_date": company.get("data_entrada_sociedade"),
+            }
+            for company in candidate.owned_companies
+        ]
+
+    @staticmethod
+    def get_electoral_income_history(candidate: Candidate) -> list:
+        if candidate.sequential and candidate.taxpayer_id:
+            income_statements = ElectionIncomeStatement.objects.filter(
+                Q(accountant_sequential=candidate.sequential)
+                | Q(accountant_taxpayer_id=candidate.taxpayer_id)
+            )
+        elif candidate.sequential:
+            income_statements = ElectionIncomeStatement.objects.filter(
+                accountant_sequential=candidate.sequential
+            )
+        elif candidate.taxpayer_id:
+            income_statements = ElectionIncomeStatement.objects.filter(
+                accountant_taxpayer_id=candidate.taxpayer_id
+            )
+        else:
+            return []
+        return sorted(
+            [
+                {
+                    "year": int(statement.year),
+                    "value": float(statement.value),
+                    "donor_name": statement.donor_name,
+                    "donor_taxpayer_id": statement.donor_taxpayer_id,
+                    "donor_company_name": statement.additional_income_information.get(
+                        "nome_empresa"
+                    ),
+                    "donor_company_cnpj": CandidateEconomicBonds.build_company_cnpj(
+                        statement.additional_income_information
+                    ),
+                    "donor_economic_sector_code": str(
+                        statement.additional_income_information.get("cnae_principal")
+                        or statement.donor_economic_sector_code
+                    ),
+                    "donor_secondary_sector_codes": statement.additional_income_information.get(
+                        "cnae_secundaria"
+                    ),
+                }
+                for statement in income_statements.all()
+            ],
+            key=lambda item: item["year"],
+        )
+
+    def get(self, request, pk):
+        try:
+            candidate = Candidate.objects.get(pk=pk)
+        except Candidate.DoesNotExist:
+            raise Http404(f"Candidate with pk ({pk}) not found.")
+
+        income_history = self.get_electoral_income_history(candidate)
+        companies_with_participation = self.get_companies_with_participation(candidate)
+
+        return JsonResponse(
+            {
+                "election_income_history": income_history,
+                "companies_associated_with_politician": companies_with_participation,
+            },
+            safe=False,
         )
 
 

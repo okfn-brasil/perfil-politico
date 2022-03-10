@@ -15,7 +15,12 @@ from django.utils.timezone import get_default_timezone
 from rows.plugins.utils import ipartition
 from tqdm import tqdm
 
-from perfil.core.models import Candidate, City, Party, Politician
+from perfil.core.models import (
+    Candidate,
+    City,
+    Party,
+    Politician,
+)
 
 
 def parse_integer(value):

@@ -18,6 +18,7 @@ from django.urls import path
 from perfil.core.views import (
     CandidateDetailResource,
     CandidateListResource,
+    CandidateEconomicBonds,
     home,
     asset_stats,
     national_stats,
@@ -36,6 +37,11 @@ urlpatterns = [
         "api/candidate/<int:pk>/",
         CandidateDetailResource.as_detail(),
         name="api_candidate_detail",
+    ),
+    path(
+        "api/economic-bonds/candidate/<int:pk>/",
+        CandidateEconomicBonds().get,
+        name="api_candidate_economic_bonds",
     ),
     path(
         "api/stats/<str:state>/<int:year>/<str:post>/<str:characteristic>/",

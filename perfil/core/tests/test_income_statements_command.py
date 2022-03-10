@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 from django.core.management import call_command
 
-from perfil.core.models import ElectionIncomeStatement, Politician, Candidate
+from perfil.core.models import ElectionIncomeStatement
 
 FIXTURE = [
     Path() / "perfil" / "core" / "tests" / "fixtures" / "receita.csv",
