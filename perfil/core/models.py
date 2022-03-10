@@ -350,7 +350,7 @@ class ElectionIncomeStatement(models.Model):
             models.Index(fields=("accountant_taxpayer_id",)),
         )
 
-        
+
 class PreCalculatedStats(models.Model):
     ASSETS_MEDIAN = "AssetsMedian"
     TYPES = ((ASSETS_MEDIAN, "AssetsMedian"),)
