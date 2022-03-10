@@ -20,6 +20,7 @@ from perfil.core.views import (
     CandidateListResource,
     CandidateEconomicBonds,
     home,
+    asset_stats,
     national_stats,
     state_stats,
 )
@@ -51,5 +52,10 @@ urlpatterns = [
         "api/stats/<int:year>/<str:post>/<str:characteristic>/",
         national_stats,
         name="api_national_stats",
+    ),
+    path(
+        "api/asset-stats/",
+        asset_stats,
+        name="api_asset_stats",
     ),
 ]

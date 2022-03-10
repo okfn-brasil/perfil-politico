@@ -53,7 +53,8 @@ Each command uses a CSV (compressed as `.xz` or not) from a public and
 available source. Use `--help` for more info. Yet some extra data can be
 generated with some Django custom commands.
 
-Once you have download the datasets to `data/`, the roadmap is:
+Once you have download the datasets to `data/`, you can **create your own database from scratch**
+running:
 
 ```sh
 $ docker-compose run django python manage.py load_affiliations /mnt/data/filiacao.csv
@@ -61,12 +62,34 @@ $ docker-compose run django python manage.py load_candidates /mnt/data/candidatu
 $ docker-compose run django python manage.py link_affiliations_and_candidates
 $ docker-compose run django python manage.py link_politicians_and_election_results
 $ docker-compose run django python manage.py load_assets /mnt/data/bemdeclarado.csv
+$ docker-compose run django python manage.py pre_calculate_stats
 $ docker-compose run django python manage.py load_bills /mnt/data/senado.csv
 $ docker-compose run django python manage.py load_bills /mnt/data/camara.csv
 $ docker-compose run django python manage.py load_income_statements /mnt/data/receita.csv
 # make sure to read the instructions on populate_company_info.sql before running the next command
 $ docker-compose run postgres psql -U perfilpolitico < populate_company_info.sql
 ```
+> :warning: Note that it will change the primary keys for all candidates in the database!
+> So be careful on running it for production environment because some endpoints as
+> ` /api/candidate/<pk>/` depends on this primary key to retrieve the correct data.
+
+Or you can **update the data from your database** using the commands:
+
+```sh
+$ docker-compose run django python manage.py unlink_and_delete_politician_references
+$ docker-compose run django python manage.py load_affiliations /mnt/data/filiacao.csv clean-previous-data
+$ docker-compose run django python manage.py update_or_create_candidates /mnt/data/candidatura.csv
+$ docker-compose run django python manage.py link_affiliations_and_candidates
+$ docker-compose run django python manage.py link_politicians_and_election_results
+$ docker-compose run django python manage.py load_assets /mnt/data/bemdeclarado.csv clean-previous-data
+```
+
+> PS: The code only updates data coming from the csv's to the database.
+  It does not consider the possibility of changing data that is already on the
+  database but does not appear in the csv for some reason (in this case the data
+  in the database is kept untouched).
+
+> PS 2: we still don't have commands to update the bills.
 
 ### API
 
@@ -95,34 +118,6 @@ national election posts.
 #### `GET /api/candidate/<pk>/`
 
 Returns the details of a given candidate.
-
-#### `GET /api/stats/<year>/<post>/<characteristic>/`
-
-Get national statistics for a given characteristic in a elected post.
-
-Post options are:
-
-* `deputado-distrital`
-* `deputado-estadual`
-* `deputado-federal`
-* `governador`
-* `prefeito`
-* `senador`
-* `vereador`
-
-Characteristic options are:
-
-* `age`
-* `education`
-* `ethnicity`
-* `gender`
-* `marital_status`
-* `occupation`
-* `party`
-
-#### `GET /api/stats/<state>/<year>/<post>/<characteristic>/`
-
-Same as above but aggregated by state.
 
 #### `GET /api/economic-bonds/candidate/<pk>/`
 
@@ -158,6 +153,46 @@ Returns an object with the structure:
   ]
 }
 ```
+
+#### `GET /api/stats/<year>/<post>/<characteristic>/`
+
+Get national statistics for a given characteristic in a elected post.
+
+Post options are:
+
+* `deputado-distrital`
+* `deputado-estadual`
+* `deputado-federal`
+* `governador`
+* `prefeito`
+* `senador`
+* `vereador`
+
+Characteristic options are:
+
+* `age`
+* `education`
+* `ethnicity`
+* `gender`
+* `marital_status`
+* `occupation`
+* `party`
+
+#### `GET /api/stats/<state>/<year>/<post>/<characteristic>/`
+
+Same as above but aggregated by state.
+
+#### `GET /api/asset-stats/`
+
+Returns an object with a key called `mediana_patrimonios` that is a list with
+the median of elected people's asset value aggregated by year.
+
+`optionally` you can add query parameters to filter the results by `state` or by
+the `candidate post` (the valid posts are the same ones that are in the list above).
+
+These parameters can support multiple values if you wish to filter by more than one thing.
+
+Ex: `/api/asset-stats?state=MG&state=RJ&candidate_post=governador&candidate_post=prefeito`
 
 ## Tests
 

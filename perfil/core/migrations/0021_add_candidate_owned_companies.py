@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("core", "0019_create_election_income_statement"),
+        ("core", "0020_create_election_income_statement"),
     ]
 
     operations = [

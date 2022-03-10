@@ -10,7 +10,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from django.core.management import base
-from django.db.models import Q
+from django.db.models import Q, Max, Min
 from django.utils.timezone import get_default_timezone
 from rows.plugins.utils import ipartition
 from tqdm import tqdm
@@ -193,12 +193,48 @@ class BaseCommand(base.BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument("csv", help="Path to CSV file")
+        parser.add_argument(
+            "clean-previous-data",
+            default=False,
+            nargs="?",
+            help=(
+                "Creates politicians for all affiliations "
+                "regardless if the politician exists or not."
+            ),
+        )
+
+    def delete_all_objects(self):
+        all_objs = self.model.objects.all()
+        minor_pk = all_objs.aggregate(Min("pk")).get("pk__min")
+        major_pk = all_objs.aggregate(Max("pk")).get("pk__max")
+
+        if not minor_pk or not major_pk:
+            print(f"There are no data to delete in {self.model._meta.verbose_name}")
+            return
+
+        kwargs = {
+            "desc": f"Deleting data from {self.model._meta.verbose_name}...",
+            "total": major_pk - minor_pk + 1,
+            "unit": "objetcs",
+        }
+        offset = minor_pk
+        bulk_size = 100
+        with tqdm(**kwargs) as progress_bar:
+            while offset <= major_pk:
+                self.model.objects.filter(
+                    pk__gte=offset, pk__lt=offset + bulk_size
+                ).delete()
+                offset += bulk_size
+                progress_bar.update(bulk_size)
 
     def handle(self, *args, **options):
         self.log = getLogger(__name__)
         self.path = Path(options["csv"])
         if not self.path.exists():
             raise base.CommandError(f"{self.path} does not exist")
+
+        if options["clean-previous-data"]:
+            self.delete_all_objects()
 
         with CsvSlicer(self.path) as source:
             kwargs = {

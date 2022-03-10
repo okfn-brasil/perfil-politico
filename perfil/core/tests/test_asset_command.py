@@ -1,4 +1,3 @@
-from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
 
@@ -6,7 +5,6 @@ import pytest
 from django.core.management import call_command
 
 from perfil.core.models import Asset, Candidate
-
 
 FIXTURE = Path() / "perfil" / "core" / "tests" / "fixtures" / "bemdeclarado.csv"
 
