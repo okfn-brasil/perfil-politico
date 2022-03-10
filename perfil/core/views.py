@@ -1,13 +1,14 @@
+import statistics
 from collections import defaultdict
 
 from cached_property import cached_property
 from django.db.models import Count
 from django.http import Http404, JsonResponse
-from django.shortcuts import redirect
+from django.db import connection
 from restless.dj import DjangoResource
 from restless.preparers import CollectionSubPreparer, FieldsPreparer
 
-from perfil.core.models import STATES, Candidate, age
+from perfil.core.models import STATES, Candidate, age, PreCalculatedStats
 
 
 def home(request):
@@ -143,7 +144,7 @@ class CandidateDetailResource(DjangoResource):
 
 
 class Stats:
-    """Class that supports stats views"""
+    """Base class that supports stats views"""
 
     STATES = set(abbreviation.upper() for abbreviation, _ in STATES)
 
@@ -152,15 +153,6 @@ class Stats:
         "DEPUTADO ESTADUAL",
         "DEPUTADO FEDERAL",
         "GOVERNADOR",
-        "PREFEITO",
-        "SENADOR",
-        "VEREADOR",
-    }
-
-    STATE_POSTS = {
-        "DEPUTADO DISTRITAL",
-        "DEPUTADO ESTADUAL",
-        "DEPUTADO FEDERAL",
         "PREFEITO",
         "SENADOR",
         "VEREADOR",
@@ -177,6 +169,85 @@ class Stats:
         "post",
     }
 
+    @staticmethod
+    def validate_argument(argument, choices):
+        if argument not in choices:
+            valid_choices = ", ".join(choices)
+            msg = f"{argument} is invalid. Try one of those: {valid_choices}"
+            raise Http404(msg)
+
+    @staticmethod
+    def validate_arguments(arguments: list, choices):
+        for argument in arguments:
+            Stats.validate_argument(argument, choices)
+
+
+class AssetStats(Stats):
+    """Class that supports the candidates assets stats views"""
+
+    def __init__(self, states=None, posts=None):
+        self.states = [state.upper() for state in (states or [])]
+        self.posts = [post.replace("-", " ").upper() for post in (posts or [])]
+
+        self.validate_arguments(self.posts, self.NATIONAL_POSTS)
+        self.validate_arguments(self.states, self.STATES)
+
+    def _build_states_filter(self):
+        if len(self.states) == 1:
+            return f"core_candidate.state='{self.states[0]}'"
+        return f"core_candidate.state IN {tuple(self.states)}"
+
+    def _build_posts_filter(self):
+        if len(self.posts) == 1:
+            return f"core_candidate.post='{self.posts[0]}'"
+        return f"core_candidate.post IN {tuple(self.posts)}"
+
+    def _calculate_assets_median_for_specific_group(self) -> list:
+        query_filter = "core_candidate.round_result LIKE 'ELEIT%'"
+        if self.states:
+            states_filter = self._build_states_filter()
+            query_filter = f"{query_filter} AND {states_filter}"
+        if self.posts:
+            posts_filter = self._build_posts_filter()
+            query_filter = f"{query_filter} AND {posts_filter}"
+
+        sql = f"""
+            SELECT
+                core_candidate.year,
+                array_agg(core_asset.value) as assets_values
+            FROM core_asset
+            INNER JOIN core_candidate
+            ON core_candidate.id = core_asset.candidate_id
+            WHERE {query_filter}
+            GROUP BY core_candidate.year;
+        """
+        with connection.cursor() as cursor:
+            cursor.execute(sql)
+            return [
+                {"year": year, "value": float(statistics.median(values))}
+                for year, values in cursor.fetchall()
+            ]
+
+    @staticmethod
+    def _get_pre_calculated_assets_median() -> list:
+        stats = PreCalculatedStats.objects.filter(
+            type=PreCalculatedStats.ASSETS_MEDIAN
+        ).order_by("year")
+        return [{"year": item.year, "value": float(item.value)} for item in stats]
+
+    def __call__(self):
+        assets_median = (
+            self._get_pre_calculated_assets_median()
+            if not (self.states or self.posts)
+            else self._calculate_assets_median_for_specific_group()
+        )
+
+        return JsonResponse({"mediana_patrimonios": assets_median})
+
+
+class CandidateCharacteristicsStats(Stats):
+    """Class that supports the candidates characteristics stats views"""
+
     def __init__(self, year, post, characteristic, state=None):
         self.state = state.upper() if state else None
         self.year = year
@@ -188,13 +259,6 @@ class Stats:
         self.validate_argument(self.characteristic, self.CHARACTERISTICS)
         if state:
             self.validate_argument(self.state, self.STATES)
-
-    @staticmethod
-    def validate_argument(argument, choices):
-        if argument not in choices:
-            valid_choices = ", ".join(choices)
-            msg = f"{argument} is invalid. Try one of those: {valid_choices}"
-            raise Http404(msg)
 
     @staticmethod
     def get_field_name(characteristic):
@@ -258,10 +322,18 @@ class Stats:
 
 
 def national_stats(request, year, post, characteristic):
-    stats = Stats(year, post, characteristic)
+    stats = CandidateCharacteristicsStats(year, post, characteristic)
     return stats()
 
 
 def state_stats(request, state, year, post, characteristic):
-    stats = Stats(year, post, characteristic, state)
+    stats = CandidateCharacteristicsStats(year, post, characteristic, state)
+    return stats()
+
+
+def asset_stats(request):
+    states = request.GET.getlist("state", [])
+    posts = request.GET.getlist("candidate_post", [])
+
+    stats = AssetStats(states=states, posts=posts)
     return stats()

@@ -62,6 +62,7 @@ $ docker-compose run django python manage.py load_candidates /mnt/data/candidatu
 $ docker-compose run django python manage.py link_affiliations_and_candidates
 $ docker-compose run django python manage.py link_politicians_and_election_results
 $ docker-compose run django python manage.py load_assets /mnt/data/bemdeclarado.csv
+$ docker-compose run django python manage.py pre_calculate_stats
 $ docker-compose run django python manage.py load_bills /mnt/data/senado.csv
 $ docker-compose run django python manage.py load_bills /mnt/data/camara.csv
 ```
@@ -142,6 +143,18 @@ Characteristic options are:
 #### `GET /api/stats/<state>/<year>/<post>/<characteristic>/`
 
 Same as above but aggregated by state.
+
+#### `GET /api/asset-stats/`
+
+Returns an object with a key called `mediana_patrimonios` that is a list with
+the median of elected people's asset value aggregated by year.
+
+`optionally` you can add query parameters to filter the results by `state` or by
+the `candidate post` (the valid posts are the same ones that are in the list above).
+
+These parameters can support multiple values if you wish to filter by more than one thing.
+
+Ex: `/api/asset-stats?state=MG&state=RJ&candidate_post=governador&candidate_post=prefeito`
 
 ## Tests
 
