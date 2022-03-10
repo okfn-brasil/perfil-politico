@@ -49,14 +49,14 @@ class Command(BaseCommand):
         # create election history
         for row in bulk:
             politician = politicians.get(row.id)
-            politician.election_history.append(
-                {
-                    "year": int(row.year),
-                    "elected": row.result.startswith("ELEIT"),
-                    "result": row.result,
-                    "post": row.post,
-                }
-            )
+            new_election = {
+                "year": int(row.year),
+                "elected": row.result.startswith("ELEIT"),
+                "result": row.result,
+                "post": row.post,
+            }
+            if new_election not in politician.election_history:
+                politician.election_history.append(new_election)
 
         yield from politicians.values()
 

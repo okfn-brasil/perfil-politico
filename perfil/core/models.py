@@ -349,3 +349,13 @@ class ElectionIncomeStatement(models.Model):
             models.Index(fields=("accountant_sequential",)),
             models.Index(fields=("accountant_taxpayer_id",)),
         )
+
+        
+class PreCalculatedStats(models.Model):
+    ASSETS_MEDIAN = "AssetsMedian"
+    TYPES = ((ASSETS_MEDIAN, "AssetsMedian"),)
+
+    type = models.CharField(max_length=15, choices=TYPES)
+    year = models.IntegerField()
+    value = models.DecimalField(max_digits=16, decimal_places=2)
+    description = models.CharField(max_length=255, null=True)

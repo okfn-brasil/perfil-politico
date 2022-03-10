@@ -26,6 +26,12 @@ def test_election_history_was_created():
     assert last.election_history == [
         {
             "post": "DEPUTADO DISTRITAL",
+            "year": 2016,
+            "result": "ELEITO",
+            "elected": True,
+        },
+        {
+            "post": "DEPUTADO DISTRITAL",
             "year": 2018,
             "result": "NAO ELEITO",
             "elected": False,
