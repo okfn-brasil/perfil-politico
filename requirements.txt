@@ -20,7 +20,7 @@ codecov==2.1.12
 django-extensions==3.1.5
 ipdb==0.13.9
 mixer==7.2.2
-pytest==5.4.3
+pytest==7.1.1
 pytest-cov==2.10.0
 pytest-django==3.9.0
 pytest-mock==3.1.1
