@@ -6,7 +6,7 @@ django-bulk-update==2.2.0
 django-cors-headers==3.4.0
 django-redis==4.12.1
 psycopg2-binary==2.8.5
-python-decouple==3.3
+python-decouple==3.6
 pytz==2020.1
 requests==2.24.0
 restless==2.1.1
