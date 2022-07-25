@@ -1,7 +1,7 @@
 import statistics
 from django.db import connection
-from django.core.management.base import BaseCommand
 
+from perfil.core.management.commands import BaseCommand
 from perfil.core.models import PreCalculatedStats
 
 
@@ -9,6 +9,15 @@ class Command(BaseCommand):
     help = "Pre calculate statistics over the politicians data to retrieve them faster"
 
     model = PreCalculatedStats
+
+    def serialize(self, line):
+        pass
+
+    def post_handle(self):
+        pass
+
+    def add_arguments(self, parser):
+        pass
 
     @staticmethod
     def _get_assets_median_per_year() -> dict:
@@ -29,6 +38,7 @@ class Command(BaseCommand):
             }
 
     def handle(self, *args, **options):
+        self.delete_all_objects()
         print("-> Collecting data...")
         medians = self._get_assets_median_per_year()
         print(f"medians: {medians}")
