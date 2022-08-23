@@ -25,13 +25,15 @@ You need to create the docker container:
 ```sh
 $ docker-compose up -d
 ```
+> Note: you can use `docker compose` instead of `docker-compose` in this project. 
+> You can find more information about this topic on [this link](https://docs.docker.com/compose/#compose-v2-and-the-new-docker-compose-command).
 
 #### Database initial setup
 
 You should create your database by applying migrations:
 
 ```sh
-$ docker-compose run django ./manage.py migrate
+$ docker-compose run --rm django ./manage.py migrate
 ```
 
 ### Running
@@ -57,17 +59,17 @@ Once you have download the datasets to `data/`, you can **create your own databa
 running:
 
 ```sh
-$ docker-compose run django python manage.py load_affiliations /mnt/data/filiacao.csv
-$ docker-compose run django python manage.py load_candidates /mnt/data/candidatura.csv
-$ docker-compose run django python manage.py link_affiliations_and_candidates
-$ docker-compose run django python manage.py link_politicians_and_election_results
-$ docker-compose run django python manage.py load_assets /mnt/data/bemdeclarado.csv
-$ docker-compose run django python manage.py pre_calculate_stats
-$ docker-compose run django python manage.py load_bills /mnt/data/senado.csv
-$ docker-compose run django python manage.py load_bills /mnt/data/camara.csv
-$ docker-compose run django python manage.py load_income_statements /mnt/data/receita.csv
+$ docker-compose run --rm django ./manage.py load_affiliations /mnt/data/filiacao.csv
+$ docker-compose run --rm django ./manage.py load_candidates /mnt/data/candidatura.csv
+$ docker-compose run --rm django ./manage.py link_affiliations_and_candidates
+$ docker-compose run --rm django ./manage.py link_politicians_and_election_results
+$ docker-compose run --rm django ./manage.py load_assets /mnt/data/bemdeclarado.csv
+$ docker-compose run --rm django ./manage.py pre_calculate_stats
+$ docker-compose run --rm django ./manage.py load_bills /mnt/data/senado.csv
+$ docker-compose run --rm django ./manage.py load_bills /mnt/data/camara.csv
+$ docker-compose run --rm django ./manage.py load_income_statements /mnt/data/receita.csv
 # make sure to read the instructions on populate_company_info.sql before running the next command
-$ docker-compose run postgres psql -U perfilpolitico < populate_company_info.sql
+$ docker-compose run --rm postgres psql -U perfilpolitico < populate_company_info.sql
 ```
 > :warning: Note that it will change the primary keys for all candidates in the database!
 > So be careful on running it for production environment because some endpoints as
@@ -76,20 +78,22 @@ $ docker-compose run postgres psql -U perfilpolitico < populate_company_info.sql
 Or you can **update the data from your database** using the commands:
 
 ```sh
-$ docker-compose run django python manage.py unlink_and_delete_politician_references
-$ docker-compose run django python manage.py load_affiliations /mnt/data/filiacao.csv clean-previous-data
-$ docker-compose run django python manage.py update_or_create_candidates /mnt/data/candidatura.csv
-$ docker-compose run django python manage.py link_affiliations_and_candidates
-$ docker-compose run django python manage.py link_politicians_and_election_results
-$ docker-compose run django python manage.py load_assets /mnt/data/bemdeclarado.csv clean-previous-data
+$ docker-compose run --rm django ./manage.py unlink_and_delete_politician_references
+$ docker-compose run --rm django ./manage.py load_affiliations /mnt/data/filiacao.csv clean-previous-data
+$ docker-compose run --rm django ./manage.py update_or_create_candidates /mnt/data/candidatura.csv
+$ docker-compose run --rm django ./manage.py link_affiliations_and_candidates
+$ docker-compose run --rm django ./manage.py link_politicians_and_election_results
+$ docker-compose run --rm django ./manage.py load_assets /mnt/data/bemdeclarado.csv clean-previous-data
+$ docker-compose run --rm django ./manage.py pre_calculate_stats
+$ docker-compose run --rm django ./manage.py load_bills /mnt/data/senado.csv clean-previous-data
+$ docker-compose run --rm django ./manage.py load_bills /mnt/data/camara.csv
 ```
 
-> PS: The code only updates data coming from the csv's to the database.
-  It does not consider the possibility of changing data that is already on the
+> Note: The code only updates data coming from the csv's to the database.
+  It does not consider the possibility of changing data that is already in the
   database but does not appear in the csv for some reason (in this case the data
-  in the database is kept untouched).
-
-> PS 2: we still don't have commands to update the bills.
+  in the database is kept untouched). Commands passing the `clean-previous-data-option` will
+  replace all the data for the respective csv, thus changing all primary keys.
 
 ### API
 
@@ -197,6 +201,6 @@ Ex: `/api/asset-stats?state=MG&state=RJ&candidate_post=governador&candidate_post
 ## Tests
 
 ```sh
-$ docker-compose run django py.test
-$ docker-compose run django black . --check
+$ docker-compose run --rm django py.test
+$ docker-compose run --rm django black . --check
 ```

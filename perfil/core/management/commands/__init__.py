@@ -215,7 +215,7 @@ class BaseCommand(base.BaseCommand):
         kwargs = {
             "desc": f"Deleting data from {self.model._meta.verbose_name}...",
             "total": major_pk - minor_pk + 1,
-            "unit": "objetcs",
+            "unit": "objects",
         }
         offset = minor_pk
         bulk_size = 100
