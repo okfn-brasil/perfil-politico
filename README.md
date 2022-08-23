@@ -25,8 +25,7 @@ You need to create the docker container:
 ```sh
 $ docker-compose up -d
 ```
-> Note: you can use `docker compose` instead of `docker-compose` in this project. 
-> You can find more information about this topic on [this link](https://docs.docker.com/compose/#compose-v2-and-the-new-docker-compose-command).
+> Note: You can use `docker compose` instead of `docker-compose` in this project.
 
 #### Database initial setup
 
