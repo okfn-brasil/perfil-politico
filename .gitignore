@@ -1,6 +1,7 @@
 *.pyc
 .coverage
 .env
+.env.staging
 .ipynb_checkpoints
 .pytest_cache/
 .python-version

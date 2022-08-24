@@ -1,0 +1,18 @@
+version: '3' 
+services: 
+ 
+  django-staging: 
+    build: 
+      context: . 
+    depends_on: 
+      - redis-staging 
+    env_file: 
+      - .env.staging 
+    ports: 
+      - "8002:8001" 
+    command: ["gunicorn", "perfil.wsgi:application", "--reload", "--bind", "0.0.0.0:8001", "--workers", "1", "--log-level", "INFO", "--timeout", "300"] 
+ 
+  redis-staging: 
+    image: redis:4.0.11-alpine 
+    ports: 
+      - "6380:6379" 
