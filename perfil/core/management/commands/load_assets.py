@@ -84,14 +84,31 @@ class Command(BaseCommand):
 
         yield from politicians.values()
 
+    @staticmethod
+    def clear_asset_history_bulk(bulk):
+        for politician in bulk:
+            politician.asset_history = []
+
     def post_handle(self):
+        politicians = Politician.objects.all().order_by().only("asset_history").filter(asset_history__0__isnull=False)
+        clean_bar_kwargs = {
+            "desc": f"Cleaning asset_history fields",
+            "total": politicians.count(),
+            "unit": "politician",
+        }
+        with tqdm(**clean_bar_kwargs) as progress_bar:
+            for bulk in ipartition(politicians, 4096):
+                self.clear_asset_history_bulk(bulk)
+                bulk_update(bulk, update_fields=["asset_history"])
+                progress_bar.update(len(bulk))
+
         assets = tuple(self.assets_per_politician_per_year())
-        kwargs = {
+        update_bar_kwargs = {
             "desc": f"Calculating {Asset._meta.verbose_name} per year/politician",
             "total": len(assets),
             "unit": "politician",
         }
-        with tqdm(**kwargs) as progress_bar:
+        with tqdm(**update_bar_kwargs) as progress_bar:
             for bulk in ipartition(assets, 4096):
                 bulk = tuple(self.serialize_bulk(bulk))
                 bulk_update(bulk, update_fields=["asset_history"])
