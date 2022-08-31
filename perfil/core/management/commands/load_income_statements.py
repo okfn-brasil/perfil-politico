@@ -16,7 +16,7 @@ class Command(BaseCommand):
             return
 
         return ElectionIncomeStatement(
-            date=line["data"],
+            date=line["data"] or None,
             year=line["ano"],
             value=line["valor"],
             accountant_sequential=line["numero_sequencial"],

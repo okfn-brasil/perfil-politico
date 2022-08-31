@@ -91,8 +91,14 @@ CREATE OR REPLACE FUNCTION clean_text(text) RETURNS text
     RETURNS NULL ON NULL INPUT;
 
 CREATE OR REPLACE FUNCTION format_date(text) RETURNS date
-    AS $$ select TO_DATE($1,'YYYYMMDD'); $$
-    LANGUAGE SQL
+    AS $$
+      BEGIN
+        RETURN TO_DATE($1,'YYYYMMDD');
+      EXCEPTION
+        WHEN others THEN RETURN NULL;
+      END;
+    $$
+    LANGUAGE plpgsql
     IMMUTABLE
     RETURNS NULL ON NULL INPUT;
 
