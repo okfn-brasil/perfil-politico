@@ -44,7 +44,7 @@ CREATE TABLE "estabelecimento_temp" (
     "numero" TEXT,
     "complemento" TEXT,
     "bairro" TEXT,
-    "cep" REAL,
+    "cep" TEXT,
     "uf" TEXT,
     "codigo_municipio" INTEGER,
     "ddd_1" CHAR(4),
@@ -134,7 +134,7 @@ CREATE TABLE "empresas_socios_temp" (
     "data_inicio_atividade" DATE,
     "uf" CHAR(4),
     "nome_socio" TEXT,
-    "cpf_socio" CHAR(14),
+    "cpf_socio" TEXT,
     "data_entrada_sociedade" DATE,
     "socio_merge_uuid" uuid
 );
