@@ -199,17 +199,17 @@ class CandidateEconomicBonds:
                     "value": float(statement.value),
                     "donor_name": statement.donor_name,
                     "donor_taxpayer_id": statement.donor_taxpayer_id,
-                    "donor_company_name": statement.additional_income_information.get(
+                    "donor_company_name": statement.donor_company_information.get(
                         "nome_empresa"
                     ),
                     "donor_company_cnpj": CandidateEconomicBonds.build_company_cnpj(
-                        statement.additional_income_information
+                        statement.donor_company_information
                     ),
                     "donor_economic_sector_code": str(
-                        statement.additional_income_information.get("cnae_principal")
+                        statement.donor_company_information.get("cnae_principal")
                         or statement.donor_economic_sector_code
                     ),
-                    "donor_secondary_sector_codes": statement.additional_income_information.get(
+                    "donor_secondary_sector_codes": statement.donor_company_information.get(
                         "cnae_secundaria"
                     ),
                 }
