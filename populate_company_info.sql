@@ -44,7 +44,7 @@ CREATE TABLE "estabelecimento_temp" (
     "numero" TEXT,
     "complemento" TEXT,
     "bairro" TEXT,
-    "cep" REAL,
+    "cep" TEXT,
     "uf" TEXT,
     "codigo_municipio" INTEGER,
     "ddd_1" CHAR(4),
@@ -91,8 +91,14 @@ CREATE OR REPLACE FUNCTION clean_text(text) RETURNS text
     RETURNS NULL ON NULL INPUT;
 
 CREATE OR REPLACE FUNCTION format_date(text) RETURNS date
-    AS $$ select TO_DATE($1,'YYYYMMDD'); $$
-    LANGUAGE SQL
+    AS $$
+      BEGIN
+        RETURN TO_DATE($1,'YYYYMMDD');
+      EXCEPTION
+        WHEN others THEN RETURN NULL;
+      END;
+    $$
+    LANGUAGE plpgsql
     IMMUTABLE
     RETURNS NULL ON NULL INPUT;
 
@@ -128,7 +134,7 @@ CREATE TABLE "empresas_socios_temp" (
     "data_inicio_atividade" DATE,
     "uf" CHAR(4),
     "nome_socio" TEXT,
-    "cpf_socio" CHAR(14),
+    "cpf_socio" TEXT,
     "data_entrada_sociedade" DATE,
     "socio_merge_uuid" uuid
 );
@@ -141,7 +147,7 @@ SELECT
     etabelecimento.cnpj_raiz,
     etabelecimento.cnpj_ordem,
     etabelecimento.cnpj_dv,
-    etabelecimento.nome_fantasia as nome_empresa,
+    COALESCE(etabelecimento.nome_fantasia, empresa.razao_social) as nome_empresa,
     etabelecimento.cnae_principal,
     etabelecimento.cnae_secundaria,
     format_date(etabelecimento.data_inicio_atividade) as data_inicio_atividade,
@@ -153,6 +159,12 @@ SELECT
 FROM estabelecimento_temp as etabelecimento
 LEFT JOIN (
     SELECT
+        empresa_temp.cnpj_raiz,
+        empresa_temp.razao_social
+        FROM empresa_temp
+) as empresa ON empresa.cnpj_raiz = etabelecimento.cnpj_raiz
+LEFT JOIN (
+    SELECT
         socio.cnpj_raiz,
         socio.nome as nome_socio,
         socio.cpf_cnpj as cpf_socio,
@@ -160,17 +172,17 @@ LEFT JOIN (
     FROM socio_temp as socio WHERE socio.codigo_identificador = 2 AND socio.cpf_cnpj != '***000000**'
     UNION
     select
-        empresa.cnpj_raiz,
-        empresa.nome_socio,
-        empresa.cpf as cpf_socio,
+        empresa_cpf.cnpj_raiz,
+        empresa_cpf.nome_socio,
+        empresa_cpf.cpf as cpf_socio,
         null as data_entrada_sociedade
     FROM
         (select
              substring(empresa_temp.razao_social from '[0-9]*$') as cpf,
              substring(empresa_temp.razao_social from '\D*') as nome_socio,
              *
-         FROM empresa_temp) as empresa
-    WHERE (empresa.cpf = '') IS NOT TRUE
+         FROM empresa_temp) as empresa_cpf
+    WHERE (empresa_cpf.cpf = '') IS NOT TRUE
 ) as associados ON associados.cnpj_raiz = etabelecimento.cnpj_raiz;
 
 -- -----------------------
