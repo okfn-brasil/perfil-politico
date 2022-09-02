@@ -9,7 +9,10 @@ services:
     env_file: 
       - .env.staging 
     ports: 
-      - "8002:8001" 
+      - "8002:8001"
+    volumes:
+      - ./perfil:/code/perfil
+      - ./data:/mnt/data
     command: ["gunicorn", "perfil.wsgi:application", "--reload", "--bind", "0.0.0.0:8001", "--workers", "1", "--log-level", "INFO", "--timeout", "300"] 
  
   redis-staging: 

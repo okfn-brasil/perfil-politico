@@ -10,6 +10,8 @@ services:
       - .env.prod
     ports:
       - "8001:8001"
+    volumes:
+      - ./perfil:/code/perfil
     command: ["gunicorn", "perfil.wsgi:application", "--reload", "--bind", "0.0.0.0:8001", "--workers", "1", "--log-level", "INFO", "--timeout", "300"]
 
   redis:
