@@ -107,7 +107,7 @@ def get_candidate(year, state, sequential):
     if len(candidates) == 1:  # yay, there's only match!
         return candidates[0]
 
-    if len(candidates) == 2:  # probably it's the same person in the 2nd round
+    if len(candidates) == 2 and candidates[0].round != candidates[1].round:
         for candidate in candidates:
             if candidate.round == 1:
                 return candidate
