@@ -244,12 +244,9 @@ class Candidate(models.Model):
         return self.politician.rosies_suspicions if self.politician else []
 
     def image(self):
-        if self.year != 2018:
-            return None
-
         # TODO bucket configuration as a setting
         bucket = "https://serenata-de-amor-data.nyc3.digitaloceanspaces.com/"
-        return f"{bucket}perfil-politico/{self.state}/{self.sequential}.jpg"
+        return f"{bucket}perfil-politico/{self.year}/{self.state}/{self.sequential}.jpg"
 
     def get_age(self):
         """The age column is blank too many times, so let's calculate it"""
