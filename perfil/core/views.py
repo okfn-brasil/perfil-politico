@@ -25,6 +25,7 @@ class CandidateListResource(DjangoResource):
     preparer = FieldsPreparer(
         fields={
             "id": "id",
+            "politician_id": "politician_id",
             "name": "ballot_name",
             "party": "party.abbreviation",
             "state": "state",
@@ -75,6 +76,7 @@ class CandidateDetailResource(DjangoResource):
     preparer = FieldsPreparer(
         fields={
             "id": "id",
+            "politician_id": "politician_id",
             "name": "name",
             "image": "image",
             "ballot_name": "ballot_name",
