@@ -27,6 +27,7 @@ class CandidateListResource(DjangoResource):
             "id": "id",
             "politician_id": "politician_id",
             "name": "ballot_name",
+            "ballot_number": "number",
             "party": "party.abbreviation",
             "state": "state",
             "post": "post",
