@@ -168,6 +168,7 @@ Post options are:
 * `deputado-federal`
 * `governador`
 * `prefeito`
+* `presidente`
 * `senador`
 * `vereador`
 

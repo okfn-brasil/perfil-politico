@@ -245,6 +245,7 @@ class Stats:
     STATES = set(abbreviation.upper() for abbreviation, _ in STATES)
 
     NATIONAL_POSTS = {
+        "PRESIDENTE",
         "DEPUTADO DISTRITAL",
         "DEPUTADO ESTADUAL",
         "DEPUTADO FEDERAL",
