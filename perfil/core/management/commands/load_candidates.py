@@ -23,12 +23,9 @@ class Command(BaseCommand):
             and line["sigla_unidade_federativa_nascimento"] != "NAO DIVULGAVEL"
             else "ND"
         )
-        city = get_city(
-            line["codigo_municipio_nascimento"],
-            line["municipio_nascimento"],
-            code_state_of_birth,
-        )
+        city = get_city(line["municipio_nascimento"], code_state_of_birth)
         party = get_party(line["sigla_partido"], line["partido"])
+
         return Candidate(
             voter_id=line["titulo_eleitoral"],
             taxpayer_id=line["cpf"],

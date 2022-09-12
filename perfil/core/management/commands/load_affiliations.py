@@ -18,7 +18,7 @@ class Command(BaseCommand):
     }
 
     def serialize(self, line):
-        city = get_city(line["codigo_municipio"], line["municipio"], line["uf"])
+        city = get_city(line["municipio"], line["uf"])
         party = get_party(line["sigla_partido"], line["partido"])
         status = self.statuses.get(line["situacao"])
 
