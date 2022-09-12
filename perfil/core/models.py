@@ -56,7 +56,7 @@ def age(date_of_birth, election_year):
 
 
 class City(models.Model):
-    code = models.IntegerField()
+    code = models.IntegerField(null=True)
     name = models.CharField(max_length=63, default="", blank=True)
     state = models.CharField(max_length=2, choices=STATES + OTHER_STATE_STATUS)
 
