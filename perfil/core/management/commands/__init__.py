@@ -62,6 +62,10 @@ def parse_datetime(value):
     return None
 
 
+def remove_extra_spaces(value):
+    return " ".join(value.split())
+
+
 @lru_cache(maxsize=1024)
 def get_politician(name, post=None):
     name = name.upper()
@@ -226,6 +230,7 @@ class BaseCommand(base.BaseCommand):
                 progress_bar.update(bulk_size)
 
     def handle(self, *args, **options):
+        self.pre_handle()
         self.log = getLogger(__name__)
         self.path = Path(options["csv"])
         if not self.path.exists():
@@ -254,6 +259,9 @@ class BaseCommand(base.BaseCommand):
 
     def serialize(self, line):
         raise NotImplementedError
+
+    def pre_handle(self):
+        pass
 
     def post_handle(self):
         raise NotImplementedError
