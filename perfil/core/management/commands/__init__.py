@@ -151,6 +151,14 @@ class CsvSlicer(ContextDecorator):
         self.total_slices = ceil(self.total_lines / self.bulk_size)
 
     @property
+    def basic_readers(self):
+        for slice in self.slices:
+            with self.open(slice, "rt") as fobj:
+                reader = csv.reader(fobj)
+                next(reader)
+                yield reader
+
+    @property
     def readers(self):
         for slice in self.slices:
             with self.open(slice, "rt") as fobj:
