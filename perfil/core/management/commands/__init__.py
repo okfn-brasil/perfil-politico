@@ -116,10 +116,8 @@ def get_candidate(year, state, sequential):
 
 
 @lru_cache(maxsize=1024)
-def get_city(code, name, state):
-    city, _ = City.objects.get_or_create(
-        defaults={"code": int(code)}, name=name, state=state
-    )
+def get_city(name, state):
+    city, _ = City.objects.get_or_create(name=name, state=state)
     return city
 
 
