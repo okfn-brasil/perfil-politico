@@ -291,16 +291,16 @@ class AssetStats(Stats):
 
     def _build_states_filter(self):
         if len(self.states) == 1:
-            return f"core_candidate.state='{self.states[0]}'"
-        return f"core_candidate.state IN {tuple(self.states)}"
+            return f"candidate_result.state='{self.states[0]}'"
+        return f"candidate_result.state IN {tuple(self.states)}"
 
     def _build_posts_filter(self):
         if len(self.posts) == 1:
-            return f"core_candidate.post='{self.posts[0]}'"
-        return f"core_candidate.post IN {tuple(self.posts)}"
+            return f"candidate_result.post='{self.posts[0]}'"
+        return f"candidate_result.post IN {tuple(self.posts)}"
 
     def _calculate_assets_median_for_specific_group(self) -> list:
-        query_filter = "core_candidate.round_result LIKE 'ELEIT%'"
+        query_filter = "candidate_result.round_result LIKE 'ELEIT%'"
         if self.states:
             states_filter = self._build_states_filter()
             query_filter = f"{query_filter} AND {states_filter}"
@@ -310,13 +310,33 @@ class AssetStats(Stats):
 
         sql = f"""
             SELECT
-                core_candidate.year,
-                array_agg(core_asset.value) as assets_values
-            FROM core_asset
-            INNER JOIN core_candidate
-            ON core_candidate.id = core_asset.candidate_id
+              candidate_result.year,
+              array_agg(assets_per_year_per_candidate.asset_values_sum) as assets_sum_per_candidate
+            FROM core_candidate as candidate_result
+            INNER JOIN (
+              SELECT
+                candidate_first_entry.year,
+                candidate_first_entry.id,
+                candidate_first_entry.sequential,
+                candidate_first_entry.voter_id,
+                sum(core_asset.value) as asset_values_sum
+              FROM
+                core_asset
+              LEFT JOIN core_candidate as candidate_first_entry
+              ON candidate_first_entry.id = core_asset.candidate_id
+              GROUP BY
+                candidate_first_entry.year,
+                candidate_first_entry.id,
+                candidate_first_entry.sequential,
+                candidate_first_entry.voter_id
+            ) as assets_per_year_per_candidate
+            ON
+              (candidate_result.sequential = assets_per_year_per_candidate.sequential)
+              AND (candidate_result.voter_id = assets_per_year_per_candidate.voter_id)
+              AND (candidate_result.year = assets_per_year_per_candidate.year)
             WHERE {query_filter}
-            GROUP BY core_candidate.year;
+            GROUP BY
+              candidate_result.year;
         """
         with connection.cursor() as cursor:
             cursor.execute(sql)
