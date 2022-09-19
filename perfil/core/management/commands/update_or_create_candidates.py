@@ -42,6 +42,16 @@ class Command(BaseCommand):
         if new_place_of_birth_code != old_place_of_birth_code:
             fields_to_update["place_of_birth"] = all_attrs["place_of_birth"]
 
+        old_values.pop("party")
+        new_party_abbreviation = (
+            all_attrs["party"].abbreviation if all_attrs["party"] else None
+        )
+        old_party_abbreviation = (
+            candidate.party.abbreviation if candidate.party else None
+        )
+        if new_party_abbreviation != old_party_abbreviation:
+            fields_to_update["party"] = all_attrs["party"]
+
         for attribute_name, new_value in all_attrs.items():
             if old_values.get(attribute_name) != new_value:
                 fields_to_update[attribute_name] = new_value
@@ -62,14 +72,14 @@ class Command(BaseCommand):
 
         queryable_attrs = {
             "year": parse_integer(line["ano"]),
-            "party": party,
             "state": line["sigla_unidade_federativa"],
-            "voter_id": line["titulo_eleitoral"],
             "sequential": line["numero_sequencial"],
             "round": parse_integer(line["turno"]),
             "post_code": parse_integer(line["codigo_cargo"]),
         }
         all_attrs = {
+            "party": party,
+            "voter_id": line["titulo_eleitoral"],
             "taxpayer_id": line["cpf"],
             "date_of_birth": parse_date(line["data_nascimento"]),
             "place_of_birth": city,
