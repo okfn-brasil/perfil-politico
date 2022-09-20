@@ -3,14 +3,13 @@ from collections import namedtuple
 from argparse import RawTextHelpFormatter
 from django_bulk_update.helper import bulk_update
 from django.db import connection
-from django.db.utils import IntegrityError
 from django.core.management import base
 from logging import getLogger
 from pathlib import Path
 from rows.plugins.utils import ipartition
 from tqdm import tqdm
 
-from perfil.core.management.commands import CsvSlicer, get_city, get_party, parse_date
+from perfil.core.management.commands import CsvSlicer, get_city, get_party
 from perfil.core.models import Affiliation, Politician
 from perfil.core.management.parties_map_2022 import parties
 
@@ -48,14 +47,6 @@ class Command(base.BaseCommand):
 
     total_lines = 0
 
-    #TODO document to delete and unlink politicians
-    #Done create tmp table
-    #Done insert into tmp table from csv
-    #Update values that are in tmp table
-    #Create values that are in tmp table but not in core_affiliations
-    #Done? or create politicians
-    #TODO link politicians
-
     def handle(self, *args, **options):
         self.log = getLogger(__name__)
         path = Path(options["csv"])
@@ -66,6 +57,7 @@ class Command(base.BaseCommand):
         self.create_tmp_table()
         self.import_csv_data_to_tmp_table(path)
 
+        print("\nUpdating Affiliation data...")
         updated_affiliations = self.update_affiliations()
         print(f"Updated {len(updated_affiliations)} Affiliations")
 
@@ -75,11 +67,10 @@ class Command(base.BaseCommand):
         affiliations = updated_affiliations + created_affiliations
         print(f"Total Affiliations changed {len(affiliations)}")
 
-        self.create_or_update_politicians_from_affiliations(affiliations)
-        # self.delete_outdated_affiliations()
-        # self.insert_from_tmp_table()
+        print("\nUpdating Politician data...")
+        self.create_or_update_politcians(affiliations)
 
-        # self.drop_tmp_table()
+        self.drop_tmp_table()
 
     def create_tmp_table(self):
         sql = """
@@ -102,10 +93,11 @@ class Command(base.BaseCommand):
         sql = "DROP TABLE tmp_affiliation;"
 
         with connection.cursor() as cursor:
-            cursor.execute(sql)
-
-    def get_politicians_from_affiliations(self):
-        pass
+            try:
+                cursor.execute(sql)
+            except:
+                # Ignore errors if the table doesn't exist
+                pass
 
     def get_outdated_affiliations_new_values_dict(self):
         sql = """
@@ -202,17 +194,6 @@ class Command(base.BaseCommand):
         with connection.cursor() as cursor:
             cursor.executemany(sql, data)
 
-    # def delete_outdated_affiliations(self):
-    #     sql = """
-    #         DELETE
-    #         FROM core_affiliation A
-    #         USING tmp_affiliation B
-    #         WHERE A.voter_id = B.titulo_eleitoral
-    #             AND CAST(A.started_in AS VARCHAR) = B.data_filiacao;
-    #     """
-    #     with connection.cursor() as cursor:
-    #         cursor.execute(sql)
-
     def insert_from_tmp_table(self):
         kwargs = {"desc": "Inserting data from temporary table", "total": self.total_lines, "unit": "rows"}
         rows = self.get_affiliation_rows()
@@ -274,45 +255,25 @@ class Command(base.BaseCommand):
 
         return affiliation
 
-    def create_or_update_politicians_from_affiliations(self, affiliations):
-        affiliations_set = set(affiliations)
-        politicians_to_update = Politician.objects.select_related("current_affiliation").filter(
-            current_affiliation__in=affiliations_set,
-        )
-        # from ipdb import set_trace; set_trace()
-
-        for politician in politicians_to_update:
-            # politician.current_affiliation = self.get_current_affiliation(politician.current_affiliation.voter_id)
-            # politician.affiliation_history = self.build_affiliation_history(politician.current_affiliation.voter_id)
-            # politician.save()
-            affiliations_set -= {politician.current_affiliation}
-
-        # from ipdb import set_trace; set_trace()
-
-        print(f"Updated {len(politicians_to_update)} Politicians")
-
-        politicians_to_create = tuple()
-        errors = []
-        for affiliation in affiliations_set:
-            politician = Politician(
-                current_affiliation=affiliation,
-                affiliation_history=self.build_affiliation_history(affiliation.voter_id),
-            )
-            politicians_to_create += (politician,)
-            try:
+    def create_or_update_politcians(self, affiliations):
+        created_count = 0
+        updated_count = 0
+        for affiliation in affiliations:
+            politicians = Politician.objects.filter(current_affiliation__voter_id=affiliation.voter_id).order_by("-id")
+            if not politicians:
+                Politician.objects.create(
+                    current_affiliation=affiliation,
+                    affiliation_history=self.build_affiliation_history(affiliation.voter_id),
+                )
+                created_count += 1
+            else:
+                politician = politicians[0]
+                politician.affiliation_history = self.build_affiliation_history(affiliation.voter_id)
                 politician.save()
-            except IntegrityError as e:
-                errors += [e]
+                updated_count += 1
 
-        print(errors)
-
-        # Politician.objects.bulk_create(politicians_to_create)
-        print(f"Created {len(politicians_to_create)} Politicians")
-
-        from ipdb import set_trace;set_trace()
-
-        return tuple(politicians_to_update) + politicians_to_create
-
+        print(f"Updated {updated_count} Politicians")
+        print(f"Created {created_count} Politicians")
 
     @staticmethod
     def get_current_affiliation(voter_id) -> Affiliation:
@@ -330,41 +291,3 @@ class Command(base.BaseCommand):
             {"party": party, "started_in": started_in.strftime("%Y-%m-%d")}
             for party, started_in in affiliations
         ]
-
-    def politicians_from_affiliation(self):
-        sql = """
-            SELECT DISTINCT(voter_id)
-            FROM core_affiliation
-            WHERE status = 'R';
-        """
-        with connection.cursor() as cursor:
-            cursor.execute(sql)
-            for voter_id, *_ in cursor.fetchall():
-                current_affiliation = self.get_current_affiliation(voter_id)
-                affiliation_history = self.build_affiliation_history(voter_id)
-                yield Politician(
-                    current_affiliation=current_affiliation,
-                    affiliation_history=affiliation_history,
-                )
-
-    def post_handle(self):
-        print(f"Deleted {self.delete_count} outdated affiliations")
-        return
-        # get most recent affiliation to create `Politician` instances
-        total = (
-            Affiliation.objects.filter(status=Affiliation.REGULAR)
-            .values("voter_id")
-            .distinct()
-            .count()
-        )
-        kwargs = {
-            "desc": f"Creating {Politician._meta.verbose_name} data with affiliation history",
-            "total": total,
-            "unit": "politicians",
-        }
-        with tqdm(**kwargs) as progress_bar:
-            for bulk in ipartition(self.politicians_from_affiliation(), 8192):
-                Politician.objects.bulk_create(bulk)
-                progress_bar.update(len(bulk))
-
-        self.drop_tmp_table()
