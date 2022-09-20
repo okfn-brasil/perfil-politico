@@ -68,7 +68,7 @@ class Command(base.BaseCommand):
         print(f"Total Affiliations changed {len(affiliations)}")
 
         print("\nUpdating Politician data...")
-        self.create_or_update_politcians(affiliations)
+        self.create_or_update_politicians(affiliations)
 
         self.drop_tmp_table()
 
@@ -133,7 +133,7 @@ class Command(base.BaseCommand):
 
         return tuple(affiliations)
 
-    def get_new_affliation_rows(self):
+    def get_new_affiliation_rows(self):
         sql = """
         SELECT 
             B.partido,
@@ -154,7 +154,7 @@ class Command(base.BaseCommand):
             return (Row(*row) for row in cursor.fetchall())
 
     def create_new_affiliations(self):
-        row_values = self.get_new_affliation_rows()
+        row_values = self.get_new_affiliation_rows()
         affiliations = tuple()
         for values in row_values:
             affiliations += (self.set_affiliation_values(Affiliation(), values),)
@@ -255,7 +255,7 @@ class Command(base.BaseCommand):
 
         return affiliation
 
-    def create_or_update_politcians(self, affiliations):
+    def create_or_update_politicians(self, affiliations):
         created_count = 0
         updated_count = 0
         for affiliation in affiliations:
