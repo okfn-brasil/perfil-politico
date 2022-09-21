@@ -5,7 +5,7 @@
 
 # Perfil Político
 
-A platform for profiling candidates in Brazilian 2018 General Election, based
+A platform for profiling candidates in Brazilian 2022 General Election, based
 entirely on open data.
 
 ## Install
